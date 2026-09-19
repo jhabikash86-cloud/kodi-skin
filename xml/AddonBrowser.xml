@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">50</defaultcontrol>
+    <views>50</views>
+    <controls>
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture colordiffuse="FF0B0B0D">white.png</texture>
+        </control>
+
+        <control type="label">
+            <left>90</left>
+            <top>50</top>
+            <width>1000</width>
+            <height>70</height>
+            <label>Add-ons</label>
+            <font>font27</font>
+            <textcolor>FFFFFFFF</textcolor>
+            <aligny>center</aligny>
+        </control>
+
+        <control type="button" id="8">
+            <left>1280</left>
+            <top>60</top>
+            <width>250</width>
+            <height>50</height>
+            <label>Browser settings</label>
+            <font>font13</font>
+            <textcolor>B3FFFFFF</textcolor>
+            <focusedcolor>FFFFFFFF</focusedcolor>
+            <align>center</align>
+            <aligny>center</aligny>
+            <texturefocus colordiffuse="22FFFFFF">white.png</texturefocus>
+            <texturenofocus>-</texturenofocus>
+            <onleft>7</onleft>
+            <ondown>50</ondown>
+        </control>
+        <control type="button" id="7">
+            <left>1540</left>
+            <top>60</top>
+            <width>280</width>
+            <height>50</height>
+            <label>Check for updates</label>
+            <font>font13</font>
+            <textcolor>B3FFFFFF</textcolor>
+            <focusedcolor>FFFFFFFF</focusedcolor>
+            <align>center</align>
+            <aligny>center</aligny>
+            <texturefocus colordiffuse="22FFFFFF">white.png</texturefocus>
+            <texturenofocus>-</texturenofocus>
+            <onleft>8</onleft>
+            <onright>8</onright>
+            <ondown>50</ondown>
+        </control>
+
+        <control type="list" id="50">
+            <left>90</left>
+            <top>150</top>
+            <width>1740</width>
+            <height>860</height>
+            <orientation>vertical</orientation>
+            <itemgap>4</itemgap>
+            <onup>8</onup>
+            <itemlayout height="72" width="1740">
+                <control type="label">
+                    <left>24</left>
+                    <top>0</top>
+                    <width>1700</width>
+                    <height>72</height>
+                    <label>$INFO[ListItem.Label]</label>
+                    <font>font16</font>
+                    <textcolor>B3FFFFFF</textcolor>
+                    <aligny>center</aligny>
+                </control>
+            </itemlayout>
+            <focusedlayout height="72" width="1740">
+                <control type="image">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>1740</width>
+                    <height>72</height>
+                    <texture colordiffuse="22FFFFFF">white.png</texture>
+                </control>
+                <control type="label">
+                    <left>24</left>
+                    <top>0</top>
+                    <width>1700</width>
+                    <height>72</height>
+                    <label>$INFO[ListItem.Label]</label>
+                    <font>font16</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <aligny>center</aligny>
+                </control>
+            </focusedlayout>
+        </control>
+    </controls>
+</window>

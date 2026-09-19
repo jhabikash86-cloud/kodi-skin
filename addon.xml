@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="skin.appletv.minimal"
+       version="0.0.2"
+       name="ATV Minimal"
+       provider-name="Bikash">
+    <requires>
+        <import addon="xbmc.gui" version="5.17.0"/>
+    </requires>
+
+    <extension point="xbmc.gui.skin"
+               debugging="false"
+               effectslowdown="1.00">
+        <res width="1920"
+             height="1080"
+             aspect="16:9"
+             default="true"
+             folder="xml"/>
+    </extension>
+
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Cinematic 1080p skin inspired by the Apple TV home layout.</summary>
+        <description lang="en_GB">A dark, minimal 1080p Kodi skin built around a translucent top menu, large poster shelves, and quiet focus motion. Independent layout framework — not affiliated with Apple.</description>
+        <disclaimer lang="en_GB">Independent fan skin. Not affiliated with, endorsed by, or associated with Apple Inc.</disclaimer>
+        <platform>all</platform>
+        <license>CC BY-NC-SA 4.0</license>
+        <forum></forum>
+        <website></website>
+        <source></source>
+        <assets>
+            <icon>resources/icon.png</icon>
+            <fanart>resources/fanart.jpg</fanart>
+            <screenshot>resources/screenshot-01.jpg</screenshot>
+        </assets>
+        <news lang="en_GB">0.0.2[CR]- Premium addon metadata and 1080p default[CR]- Debug overlay disabled[CR]- Font and colour system added</news>
+    </extension>
+</addon>

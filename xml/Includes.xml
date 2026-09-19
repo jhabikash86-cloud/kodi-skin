@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+
+    <include name="PosterShelf">
+        <definition>
+            <control type="group">
+                <width>1920</width>
+                <height>390</height>
+
+                <control type="label">
+                    <left>90</left>
+                    <top>0</top>
+                    <width>1000</width>
+                    <height>46</height>
+                    <label>$PARAM[title]  ›</label>
+                    <font>font27</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <aligny>center</aligny>
+                </control>
+
+                <control type="list" id="$PARAM[id]">
+                    <left>78</left>
+                    <top>52</top>
+                    <width>1842</width>
+                    <height>338</height>
+                    <orientation>horizontal</orientation>
+                    <itemgap>16</itemgap>
+                    <preloaditems>6</preloaditems>
+                    <scrolltime tween="cubic" easing="out">220</scrolltime>
+                    <onup>$PARAM[onup]</onup>
+                    <ondown>$PARAM[ondown]</ondown>
+                    <itemlayout width="236" height="338">
+                        <control type="image">
+                            <left>8</left>
+                            <top>8</top>
+                            <width>220</width>
+                            <height>330</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                        </control>
+                        <control type="image">
+                            <left>8</left>
+                            <top>8</top>
+                            <width>220</width>
+                            <height>330</height>
+                            <texture>poster_frame.png</texture>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout width="236" height="338">
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>236</width>
+                            <height>338</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                            <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
+                            <bordersize>3</bordersize>
+                        </control>
+                    </focusedlayout>
+                    <content limit="16">$PARAM[content]</content>
+                </control>
+            </control>
+        </definition>
+    </include>
+
+</includes>

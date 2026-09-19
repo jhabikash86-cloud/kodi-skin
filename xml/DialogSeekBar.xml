@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <controls>
+        <control type="group">
+            <left>160</left>
+            <top>960</top>
+            <width>1600</width>
+            <height>72</height>
+            <control type="image">
+                <width>1600</width>
+                <height>72</height>
+                <texture colordiffuse="E6101012">white.png</texture>
+            </control>
+            <control type="label" id="32">
+                <left>24</left>
+                <width>200</width>
+                <height>72</height>
+                <aligny>center</aligny>
+                <font>font13</font>
+                <textcolor>FFFFFFFF</textcolor>
+            </control>
+            <control type="progress" id="23">
+                <left>240</left>
+                <top>30</top>
+                <width>1120</width>
+                <height>12</height>
+            </control>
+            <control type="label" id="33">
+                <left>1380</left>
+                <width>200</width>
+                <height>72</height>
+                <align>right</align>
+                <aligny>center</aligny>
+                <font>font13</font>
+                <textcolor>FFFFFFFF</textcolor>
+            </control>
+        </control>
+    </controls>
+</window>

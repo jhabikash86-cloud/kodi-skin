@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">100</defaultcontrol>
+    <controls>
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture colordiffuse="FF0B0B0D">white.png</texture>
+        </control>
+
+        <control type="label">
+            <left>90</left>
+            <top>50</top>
+            <width>800</width>
+            <height>70</height>
+            <label>Settings</label>
+            <font>font27</font>
+            <textcolor>FFFFFFFF</textcolor>
+            <aligny>center</aligny>
+        </control>
+
+        <control type="grouplist" id="100">
+            <left>90</left>
+            <top>160</top>
+            <width>900</width>
+            <height>860</height>
+            <orientation>vertical</orientation>
+            <itemgap>8</itemgap>
+            <onleft>100</onleft>
+            <onright>100</onright>
+
+            <control type="button" id="101">
+                <width>900</width>
+                <height>72</height>
+                <label>Add-ons (install Fen Light, Umbrella, TMDb Helper)</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textoffsetx>28</textoffsetx>
+                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
+                <onclick>ActivateWindow(AddonBrowser)</onclick>
+            </control>
+
+            <control type="button" id="102">
+                <width>900</width>
+                <height>72</height>
+                <label>Accounts (TMDb, Trakt, Fen Light, Umbrella)</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textoffsetx>28</textoffsetx>
+                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
+                <onclick>ActivateWindow(SkinSettings)</onclick>
+            </control>
+
+            <control type="button" id="103">
+                <width>900</width>
+                <height>72</height>
+                <label>Interface (skin, language, region)</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textoffsetx>28</textoffsetx>
+                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
+                <onclick>ActivateWindow(SettingsCategory,interface,return)</onclick>
+            </control>
+
+            <control type="button" id="104">
+                <width>900</width>
+                <height>72</height>
+                <label>System</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textoffsetx>28</textoffsetx>
+                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
+                <onclick>ActivateWindow(SettingsCategory,system,return)</onclick>
+            </control>
+
+            <control type="button" id="105">
+                <width>900</width>
+                <height>72</height>
+                <label>Player</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textoffsetx>28</textoffsetx>
+                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
+                <onclick>ActivateWindow(SettingsCategory,player,return)</onclick>
+            </control>
+
+            <control type="button" id="106">
+                <width>900</width>
+                <height>72</height>
+                <label>Media</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textoffsetx>28</textoffsetx>
+                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
+                <onclick>ActivateWindow(SettingsCategory,media,return)</onclick>
+            </control>
+
+            <control type="button" id="107">
+                <width>900</width>
+                <height>72</height>
+                <label>Services</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textoffsetx>28</textoffsetx>
+                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
+                <onclick>ActivateWindow(SettingsCategory,services,return)</onclick>
+            </control>
+
+            <control type="button" id="108">
+                <width>900</width>
+                <height>72</height>
+                <label>Back to Home</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <textoffsetx>28</textoffsetx>
+                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
+                <onclick>ActivateWindow(Home)</onclick>
+            </control>
+        </control>
+    </controls>
+</window>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol>1</defaultcontrol>
+    <onload condition="String.IsEqual(Window(Home).Property(billboard_trailer),1)">Action(Back)</onload>
+    <controls>
+        <control type="videowindow" id="1">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+        </control>
+        <control type="label">
+            <left>80</left>
+            <top>1000</top>
+            <width>1400</width>
+            <height>40</height>
+            <label>$INFO[Player.Title]   ·   $INFO[Player.Time] / $INFO[Player.Duration]    ·    Back to stop</label>
+            <font>font16</font>
+            <textcolor>FFFFFFFF</textcolor>
+            <visible>Player.HasVideo + !String.IsEqual(Window(Home).Property(billboard_trailer),1)</visible>
+        </control>
+    </controls>
+</window>

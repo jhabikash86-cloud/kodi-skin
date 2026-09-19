@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fonts>
+    <fontset id="Default" unicode="true">
+        <font>
+            <name>font12</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>22</size>
+        </font>
+        <font>
+            <name>font13</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>26</size>
+        </font>
+        <font>
+            <name>font14</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>30</size>
+        </font>
+        <font>
+            <name>font16</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>34</size>
+        </font>
+        <font>
+            <name>font27</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>42</size>
+        </font>
+    
+    <font>
+      <name>font42</name>
+      <filename>NotoSans-Regular.ttf</filename>
+      <size>84</size>
+    </font>
+    <font>
+      <name>font60</name>
+      <filename>NotoSans-Regular.ttf</filename>
+      <size>120</size>
+    </font>
+    </fontset>
+</fonts>

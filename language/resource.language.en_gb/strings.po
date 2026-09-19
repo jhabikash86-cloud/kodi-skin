@@ -1,0 +1,28 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: skin.appletv.minimal\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Home"
+msgstr "Home"
+
+msgctxt "#31001"
+msgid "Movies"
+msgstr "Movies"
+
+msgctxt "#31002"
+msgid "TV Shows"
+msgstr "TV Shows"
+
+msgctxt "#31003"
+msgid "Settings"
+msgstr "Settings"
+
+msgctxt "#31010"
+msgid "Featured"
+msgstr "Featured"

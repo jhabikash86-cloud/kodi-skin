@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<colors>
+    <color name="bg">FF0B0B0D</color>
+    <color name="header">E6101012</color>
+    <color name="white">FFFFFFFF</color>
+    <color name="white70">B3FFFFFF</color>
+    <color name="white60">99FFFFFF</color>
+    <color name="white40">66FFFFFF</color>
+    <color name="line">1AFFFFFF</color>
+    <color name="card1">FF2C2C2E</color>
+    <color name="card1.focus">FF3A3A3C</color>
+    <color name="card2">FF1E2A3A</color>
+    <color name="card2.focus">FF2A3C52</color>
+    <color name="card3">FF2A1F24</color>
+    <color name="card3.focus">FF3D2C33</color>
+    <color name="card4">FF1F2A22</color>
+    <color name="card4.focus">FF2D3C31</color>
+    <color name="card5">FF252035</color>
+    <color name="card5.focus">FF352C4A</color>
+    <color name="card6">FF1A2428</color>
+    <color name="card6.focus">FF2A383E</color>
+</colors>
