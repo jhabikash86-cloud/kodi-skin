@@ -127,8 +127,6 @@ circle(f'{M}/mask_circle.png', 256)               # people / avatars
 # 9-slice fills (use border="N" so corners never stretch)
 rrect(f'{M}/rounded16.png', 64, 64, 16)           # border="16"
 rrect(f'{M}/rounded12.png', 48, 48, 12)           # border="12"
-rrect(f'{M}/pill.png', 96, 96, 48)                # border="48" - capsule of any width
-ring(f'{M}/ring_pill.png', 96, 96, 48, 3)         # border="48"
 # Focus shadow (9-slice, border="64")
 shadow(f'{M}/shadow.png', 192, 40, 18, 40, 0.75)
 # Icons

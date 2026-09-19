@@ -67,17 +67,19 @@
         <control type="group" id="7000">
             <left>0</left><top>0</top>
 
-            <!-- Page offsets: the focused row's title settles at y=150 -->
-            <animation effect="slide" end="0,-710"  time="450" tween="cubic" easing="out" condition="Control.HasFocus(50)">Conditional</animation>
-            <animation effect="slide" end="0,-1090" time="450" tween="cubic" easing="out" condition="Control.HasFocus(51) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1490" time="450" tween="cubic" easing="out" condition="Control.HasFocus(52) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1890" time="450" tween="cubic" easing="out" condition="Control.HasFocus(53) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-2290" time="450" tween="cubic" easing="out" condition="Control.HasFocus(54) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <!-- Page offsets: the focused row's title settles at y=150.
+                 Kodi reverses the old row's slide while playing the new one and adds them, so the
+                 easing must be symmetric (in-out); an ease-out curve overshoots by hundreds of px. -->
+            <animation effect="slide" end="0,-710"  time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(50)">Conditional</animation>
+            <animation effect="slide" end="0,-1090" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(51) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1490" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(52) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1890" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(53) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-2290" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(54) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
             <!-- Same targets when there's no Up Next (Trakt not connected) and the rows move up 380px -->
-            <animation effect="slide" end="0,-710"  time="450" tween="cubic" easing="out" condition="Control.HasFocus(51) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1110" time="450" tween="cubic" easing="out" condition="Control.HasFocus(52) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1510" time="450" tween="cubic" easing="out" condition="Control.HasFocus(53) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1910" time="450" tween="cubic" easing="out" condition="Control.HasFocus(54) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-710"  time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(51) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1110" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(52) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1510" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(53) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1910" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(54) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
 
             <!-- ===== HERO ===== -->
             <control type="group">

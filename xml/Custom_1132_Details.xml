@@ -42,14 +42,15 @@
 
         <!-- ===================== SCROLLING PAGE ===================== -->
         <control type="group" id="9700">
-            <!-- Focused section's first line settles near the top (TV has the season block first) -->
-            <animation effect="slide" end="0,-760"  time="450" tween="cubic" easing="out" condition="Control.HasFocus(9610) | Control.HasFocus(9620)">Conditional</animation>
-            <animation effect="slide" end="0,-1250" time="450" tween="cubic" easing="out" condition="Control.HasFocus(9630) + $EXP[ATV_DetailIsTV2]">Conditional</animation>
-            <animation effect="slide" end="0,-1650" time="450" tween="cubic" easing="out" condition="Control.HasFocus(9640) + $EXP[ATV_DetailIsTV2]">Conditional</animation>
-            <animation effect="slide" end="0,-2050" time="450" tween="cubic" easing="out" condition="Control.HasFocus(9650) + $EXP[ATV_DetailIsTV2]">Conditional</animation>
-            <animation effect="slide" end="0,-750"  time="450" tween="cubic" easing="out" condition="Control.HasFocus(9630) + !$EXP[ATV_DetailIsTV2]">Conditional</animation>
-            <animation effect="slide" end="0,-1150" time="450" tween="cubic" easing="out" condition="Control.HasFocus(9640) + !$EXP[ATV_DetailIsTV2]">Conditional</animation>
-            <animation effect="slide" end="0,-1550" time="450" tween="cubic" easing="out" condition="Control.HasFocus(9650) + !$EXP[ATV_DetailIsTV2]">Conditional</animation>
+            <!-- Focused section's first line settles near the top (TV has the season block first).
+                 In-out easing keeps overlapping reverse/forward slides from overshooting (see Home.xml). -->
+            <animation effect="slide" end="0,-760"  time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9610) | Control.HasFocus(9620)">Conditional</animation>
+            <animation effect="slide" end="0,-1250" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9630) + $EXP[ATV_DetailIsTV2]">Conditional</animation>
+            <animation effect="slide" end="0,-1650" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9640) + $EXP[ATV_DetailIsTV2]">Conditional</animation>
+            <animation effect="slide" end="0,-2050" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9650) + $EXP[ATV_DetailIsTV2]">Conditional</animation>
+            <animation effect="slide" end="0,-750"  time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9630) + !$EXP[ATV_DetailIsTV2]">Conditional</animation>
+            <animation effect="slide" end="0,-1150" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9640) + !$EXP[ATV_DetailIsTV2]">Conditional</animation>
+            <animation effect="slide" end="0,-1550" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9650) + !$EXP[ATV_DetailIsTV2]">Conditional</animation>
 
             <!-- ===== HERO ===== -->
             <control type="group">
