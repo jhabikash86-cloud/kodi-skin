@@ -2,154 +2,258 @@
 <window>
     <defaultcontrol always="true">100</defaultcontrol>
     <controls>
+
         <control type="image">
-            <left>0</left>
-            <top>0</top>
-            <width>1920</width>
-            <height>1080</height>
+            <left>0</left><top>0</top><width>1920</width><height>1080</height>
             <texture colordiffuse="FF0B0B0D">white.png</texture>
         </control>
 
         <control type="label">
-            <left>90</left>
-            <top>50</top>
-            <width>800</width>
-            <height>70</height>
+            <left>120</left><top>60</top><width>900</width><height>70</height>
             <label>Settings</label>
-            <font>font27</font>
+            <font>font45</font>
             <textcolor>FFFFFFFF</textcolor>
             <aligny>center</aligny>
         </control>
 
+        <control type="label">
+            <left>1100</left><top>60</top><width>700</width><height>70</height>
+            <label>$INFO[Container(100).ListItem.Label]</label>
+            <font>font13</font>
+            <textcolor>66FFFFFF</textcolor>
+            <align>right</align><aligny>center</aligny>
+        </control>
+
         <control type="grouplist" id="100">
-            <left>90</left>
-            <top>160</top>
-            <width>900</width>
-            <height>860</height>
+            <left>120</left><top>170</top><width>1100</width><height>820</height>
             <orientation>vertical</orientation>
-            <itemgap>8</itemgap>
-            <onleft>100</onleft>
-            <onright>100</onright>
+            <itemgap>6</itemgap>
+            <pagecontrol>-</pagecontrol>
+            <scrolltime tween="cubic" easing="out">200</scrolltime>
+
+            <!-- ============ ADD-ON PLUMBING ============ -->
+
+            <control type="label">
+                <left>0</left><top>0</top><width>1100</width><height>50</height>
+                <label>Add-ons</label>
+                <font>font13</font>
+                <textcolor>55FFFFFF</textcolor>
+                <aligny>center</aligny>
+            </control>
 
             <control type="button" id="101">
-                <width>900</width>
-                <height>72</height>
-                <label>Add-ons (install Fen Light, Umbrella, TMDb Helper)</label>
+                <width>1100</width><height>72</height>
+                <label>Add-on Browser  (install / enable / remove)</label>
                 <font>font16</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>FF0B0B0D</focusedcolor>
-                <align>left</align>
-                <aligny>center</aligny>
-                <textoffsetx>28</textoffsetx>
-                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
-                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
                 <onclick>ActivateWindow(AddonBrowser)</onclick>
             </control>
 
             <control type="button" id="102">
-                <width>900</width>
-                <height>72</height>
-                <label>Accounts (TMDb, Trakt, Fen Light, Umbrella)</label>
+                <width>1100</width><height>72</height>
+                <label>Install TMDb Helper</label>
                 <font>font16</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>FF0B0B0D</focusedcolor>
-                <align>left</align>
-                <aligny>center</aligny>
-                <textoffsetx>28</textoffsetx>
-                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
-                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
-                <onclick>ActivateWindow(SkinSettings)</onclick>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>InstallAddon(plugin.video.themoviedb.helper)</onclick>
             </control>
 
             <control type="button" id="103">
-                <width>900</width>
-                <height>72</height>
-                <label>Interface (skin, language, region)</label>
+                <width>1100</width><height>72</height>
+                <label>Enable TMDb Helper</label>
                 <font>font16</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>FF0B0B0D</focusedcolor>
-                <align>left</align>
-                <aligny>center</aligny>
-                <textoffsetx>28</textoffsetx>
-                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
-                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
-                <onclick>ActivateWindow(SettingsCategory,interface,return)</onclick>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>EnableAddon(plugin.video.themoviedb.helper)</onclick>
             </control>
 
             <control type="button" id="104">
-                <width>900</width>
-                <height>72</height>
-                <label>System</label>
+                <width>1100</width><height>72</height>
+                <label>TMDb Helper Settings  (Trakt sign-in, artwork, player)</label>
                 <font>font16</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>FF0B0B0D</focusedcolor>
-                <align>left</align>
-                <aligny>center</aligny>
-                <textoffsetx>28</textoffsetx>
-                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
-                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
-                <onclick>ActivateWindow(SettingsCategory,system,return)</onclick>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>Addon.OpenSettings(plugin.video.themoviedb.helper)</onclick>
             </control>
 
             <control type="button" id="105">
-                <width>900</width>
-                <height>72</height>
-                <label>Player</label>
+                <width>1100</width><height>72</height>
+                <label>Fen Light Settings</label>
                 <font>font16</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>FF0B0B0D</focusedcolor>
-                <align>left</align>
-                <aligny>center</aligny>
-                <textoffsetx>28</textoffsetx>
-                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
-                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
-                <onclick>ActivateWindow(SettingsCategory,player,return)</onclick>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>Addon.OpenSettings(plugin.video.fenlight)</onclick>
             </control>
 
             <control type="button" id="106">
-                <width>900</width>
-                <height>72</height>
-                <label>Media</label>
+                <width>1100</width><height>72</height>
+                <label>Umbrella Settings</label>
                 <font>font16</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>FF0B0B0D</focusedcolor>
-                <align>left</align>
-                <aligny>center</aligny>
-                <textoffsetx>28</textoffsetx>
-                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
-                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
-                <onclick>ActivateWindow(SettingsCategory,media,return)</onclick>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>Addon.OpenSettings(plugin.video.umbrella)</onclick>
             </control>
 
             <control type="button" id="107">
-                <width>900</width>
-                <height>72</height>
-                <label>Services</label>
+                <width>1100</width><height>72</height>
+                <label>Install from ZIP</label>
                 <font>font16</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>FF0B0B0D</focusedcolor>
-                <align>left</align>
-                <aligny>center</aligny>
-                <textoffsetx>28</textoffsetx>
-                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
-                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
-                <onclick>ActivateWindow(SettingsCategory,services,return)</onclick>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>InstallFromZip</onclick>
             </control>
 
-            <control type="button" id="108">
-                <width>900</width>
-                <height>72</height>
+            <!-- ============ KODI SETTINGS ============ -->
+
+            <control type="label">
+                <left>0</left><top>0</top><width>1100</width><height>70</height>
+                <label>Kodi</label>
+                <font>font13</font>
+                <textcolor>55FFFFFF</textcolor>
+                <aligny>bottom</aligny>
+            </control>
+
+            <control type="button" id="110">
+                <width>1100</width><height>72</height>
+                <label>Interface  (skin, language, region)</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>ActivateWindow(InterfaceSettings)</onclick>
+            </control>
+
+            <control type="button" id="111">
+                <width>1100</width><height>72</height>
+                <label>Player  (audio passthrough, video)</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>ActivateWindow(PlayerSettings)</onclick>
+            </control>
+
+            <control type="button" id="112">
+                <width>1100</width><height>72</height>
+                <label>Media  (library, sources)</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>ActivateWindow(MediaSettings)</onclick>
+            </control>
+
+            <control type="button" id="113">
+                <width>1100</width><height>72</height>
+                <label>System  (display, audio output, logging)</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>ActivateWindow(SystemSettings)</onclick>
+            </control>
+
+            <control type="button" id="114">
+                <width>1100</width><height>72</height>
+                <label>Services  (web server, control)</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>ActivateWindow(ServiceSettings)</onclick>
+            </control>
+
+            <control type="button" id="115">
+                <width>1100</width><height>72</height>
+                <label>System Info</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>ActivateWindow(SystemInfo)</onclick>
+            </control>
+
+            <control type="button" id="116">
+                <width>1100</width><height>72</height>
+                <label>Reload Skin</label>
+                <font>font16</font>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>ReloadSkin()</onclick>
+            </control>
+
+            <control type="button" id="117">
+                <width>1100</width><height>72</height>
                 <label>Back to Home</label>
                 <font>font16</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>FF0B0B0D</focusedcolor>
-                <align>left</align>
-                <aligny>center</aligny>
-                <textoffsetx>28</textoffsetx>
-                <texturefocus colordiffuse="E6FFFFFF">white.png</texturefocus>
-                <texturenofocus colordiffuse="22FFFFFF">white.png</texturenofocus>
+                <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                <align>left</align><aligny>center</aligny>
+                <textoffsetx>32</textoffsetx>
+                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                <texturenofocus colordiffuse="18FFFFFF">white.png</texturenofocus>
+                <pulseonselect>false</pulseonselect>
                 <onclick>ActivateWindow(Home)</onclick>
             </control>
+
         </control>
+
+        <control type="label">
+            <left>120</left><top>1014</top><width>1600</width><height>30</height>
+            <label>Up / Down to move    ·    Select to open    ·    Back returns Home</label>
+            <font>font12</font>
+            <textcolor>55FFFFFF</textcolor>
+        </control>
+
     </controls>
 </window>
