@@ -1,386 +1,280 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- ATV Minimal: Apple TV style home -->
 <window>
-    <defaultcontrol always="true">9001</defaultcontrol>
-    <menucontrol>9001</menucontrol>
+    <defaultcontrol>8001</defaultcontrol>
+    <menucontrol>9000</menucontrol>
     <controls>
 
-        <!-- Hidden data list that feeds the billboard -->
+        <!-- Hidden data list that feeds the hero ("top shelf"). Rotates every 10s. -->
         <control type="list" id="40">
             <left>0</left><top>1078</top><width>1740</width><height>2</height>
             <orientation>horizontal</orientation>
-            <autoscroll time="12000" repeat="12000">true</autoscroll>
-            <itemlayout width="1" height="1"/>
-            <focusedlayout width="1" height="1"/>
-            <content>plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;tmdb_type=movie</content>
+            <autoscroll time="10000">true</autoscroll>
+            <itemlayout width="1" height="1" />
+            <focusedlayout width="1" height="1" />
+            <content limit="8" target="videos">plugin://plugin.video.themoviedb.helper/?info=trending_day&amp;tmdb_type=movie</content>
         </control>
 
-        <!-- ===== FIXED BACKGROUND LAYERS (never scroll) ===== -->
+        <!-- ===================== FIXED BACKGROUND ===================== -->
 
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>1080</height>
             <texture colordiffuse="FF0B0B0D">white.png</texture>
         </control>
 
-        <!-- Billboard fanart only. Fades to the dark base when you scroll into the rows. -->
-        <control type="image">
-            <left>0</left><top>0</top><width>1920</width><height>1080</height>
-            <aspectratio align="center" aligny="center">scale</aspectratio>
-            <fadetime>400</fadetime>
-            <animation effect="fade" start="100" end="0" time="350" tween="quadratic" easing="out" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
-            <texture background="true" fallback="fallback.png">$INFO[Container(40).ListItem.Art(fanart)]</texture>
+        <!-- Hero backdrop: full bleed, slow Ken Burns drift, fades away when you move into the rows -->
+        <control type="group">
+            <animation effect="fade" start="100" end="0" time="400" tween="cubic" easing="out" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio align="center" aligny="top">scale</aspectratio>
+                <fadetime>600</fadetime>
+                <texture background="true">$INFO[Container(40).ListItem.Art(fanart)]</texture>
+                <animation effect="zoom" start="100" end="107" center="960,400" time="22000" tween="linear" pulse="true" condition="true">Conditional</animation>
+            </control>
+            <control type="image">
+                <left>0</left><top>0</top><width>1300</width><height>1080</height>
+                <texture>atv/grad_left.png</texture>
+            </control>
+            <control type="image">
+                <left>0</left><top>420</top><width>1920</width><height>660</height>
+                <texture colordiffuse="FF0B0B0D">atv/grad_bottom.png</texture>
+            </control>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>240</height>
+                <texture colordiffuse="B3FFFFFF">atv/grad_top.png</texture>
+            </control>
         </control>
 
-        <control type="image">
-            <left>0</left><top>0</top><width>1920</width><height>260</height>
-            <aspectratio>stretch</aspectratio>
-            <texture>gradient_top.png</texture>
-            <animation effect="fade" start="100" end="0" time="350" tween="quadratic" easing="out" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
-        </control>
-        <control type="image">
-            <left>0</left><top>0</top><width>1100</width><height>1080</height>
-            <aspectratio>stretch</aspectratio>
-            <texture>gradient_left.png</texture>
-            <animation effect="fade" start="100" end="0" time="350" tween="quadratic" easing="out" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
-        </control>
-        <control type="image">
-            <left>0</left><top>700</top><width>1920</width><height>380</height>
-            <aspectratio>stretch</aspectratio>
-            <texture>gradient_bottom.png</texture>
-            <animation effect="fade" start="100" end="0" time="350" tween="quadratic" easing="out" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
+        <!-- Ambient backdrop for the rows: the focused tile's fanart, heavily dimmed -->
+        <control type="group">
+            <visible>$EXP[ATV_RowsFocused]</visible>
+            <animation effect="fade" start="0" end="100" time="400" tween="cubic" easing="out">VisibleChange</animation>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio align="center" aligny="top">scale</aspectratio>
+                <fadetime>500</fadetime>
+                <colordiffuse>40FFFFFF</colordiffuse>
+                <texture background="true">$VAR[ATV_RowFanart]</texture>
+            </control>
+            <control type="image">
+                <left>0</left><top>360</top><width>1920</width><height>720</height>
+                <texture colordiffuse="FF0B0B0D">atv/grad_bottom.png</texture>
+            </control>
         </control>
 
-        <!-- ===== SCROLLING PAGE: billboard + all rows move together ===== -->
+        <!-- ===================== SCROLLING PAGE ===================== -->
         <control type="group" id="7000">
             <left>0</left><top>0</top>
 
-            <animation effect="slide" end="0,-680"  time="380" tween="quadratic" easing="out" condition="Control.HasFocus(50)">Conditional</animation>
-            <animation effect="slide" end="0,-1030" time="380" tween="quadratic" easing="out" condition="Control.HasFocus(51)">Conditional</animation>
-            <animation effect="slide" end="0,-1380" time="380" tween="quadratic" easing="out" condition="Control.HasFocus(52)">Conditional</animation>
-            <animation effect="slide" end="0,-1730" time="380" tween="quadratic" easing="out" condition="Control.HasFocus(53)">Conditional</animation>
-            <animation effect="slide" end="0,-2080" time="380" tween="quadratic" easing="out" condition="Control.HasFocus(54)">Conditional</animation>
+            <!-- Page offsets: the focused row's title settles at y=150 -->
+            <animation effect="slide" end="0,-710"  time="450" tween="cubic" easing="out" condition="Control.HasFocus(50)">Conditional</animation>
+            <animation effect="slide" end="0,-1090" time="450" tween="cubic" easing="out" condition="Control.HasFocus(51) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1490" time="450" tween="cubic" easing="out" condition="Control.HasFocus(52) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1890" time="450" tween="cubic" easing="out" condition="Control.HasFocus(53) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-2290" time="450" tween="cubic" easing="out" condition="Control.HasFocus(54) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <!-- Same targets when there's no Up Next (Trakt not connected) and the rows move up 380px -->
+            <animation effect="slide" end="0,-710"  time="450" tween="cubic" easing="out" condition="Control.HasFocus(51) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1110" time="450" tween="cubic" easing="out" condition="Control.HasFocus(52) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1510" time="450" tween="cubic" easing="out" condition="Control.HasFocus(53) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1910" time="450" tween="cubic" easing="out" condition="Control.HasFocus(54) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
 
-            <!-- Billboard: scrolls up with the page and fades out on the way -->
+            <!-- ===== HERO ===== -->
             <control type="group">
-                <left>90</left><top>430</top>
-                <animation effect="fade" start="100" end="0" time="300" tween="quadratic" easing="out" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
+                <left>90</left><top>0</top>
+                <animation effect="fade" start="100" end="0" time="300" tween="cubic" easing="out" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
 
+                <!-- Clear logo, or the title in bold if there's no logo -->
                 <control type="image">
-                    <left>0</left><top>0</top><width>620</width><height>170</height>
+                    <left>0</left><top>350</top><width>640</width><height>210</height>
                     <aspectratio align="left" aligny="bottom">keep</aspectratio>
-                    <fadetime>300</fadetime>
-                    <texture>$INFO[Container(40).ListItem.Art(clearlogo)]</texture>
+                    <fadetime>400</fadetime>
+                    <texture background="true">$INFO[Container(40).ListItem.Art(clearlogo)]</texture>
                     <visible>!String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
                 </control>
-                <control type="label">
-                    <left>0</left><top>100</top><width>1100</width><height>70</height>
+                <control type="textbox">
+                    <left>0</left><top>390</top><width>1100</width><height>170</height>
                     <label>$INFO[Container(40).ListItem.Title]</label>
-                    <font>font45</font>
+                    <font>atv_hero</font>
                     <textcolor>FFFFFFFF</textcolor>
                     <aligny>bottom</aligny>
-                    <scroll>false</scroll>
                     <visible>String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
                 </control>
+
+                <!-- Movie · 2025 · Thriller / Drama · ★ 7.8 -->
                 <control type="label">
-                    <left>0</left><top>186</top><width>1100</width><height>34</height>
-                    <label>$INFO[Container(40).ListItem.Year]$INFO[Container(40).ListItem.Genre,  ·  ]$INFO[Container(40).ListItem.Rating,  ·  ]</label>
-                    <font>font13</font>
+                    <left>0</left><top>580</top><width>1100</width><height>34</height>
+                    <label>Movie$INFO[Container(40).ListItem.Year,  ·  ]$INFO[Container(40).ListItem.Genre,  ·  ]$INFO[Container(40).ListItem.Rating,  ·  ★ ]</label>
+                    <font>atv_meta</font>
                     <textcolor>B3FFFFFF</textcolor>
                 </control>
                 <control type="textbox">
-                    <left>0</left><top>228</top><width>760</width><height>110</height>
+                    <left>0</left><top>622</top><width>800</width><height>70</height>
                     <label>$INFO[Container(40).ListItem.Plot]</label>
-                    <font>font13</font>
-                    <textcolor>D0FFFFFF</textcolor>
-                    <autoscroll time="3000" delay="6000" repeat="8000">true</autoscroll>
+                    <font>atv_body</font>
+                    <textcolor>D9FFFFFF</textcolor>
                 </control>
-                <control type="button" id="8001">
-                    <left>0</left><top>352</top><width>190</width><height>62</height>
-                    <label>Play</label>
-                    <font>font16</font>
-                    <textcolor>FF0B0B0D</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
-                    <texturenofocus colordiffuse="B0FFFFFF">white.png</texturenofocus>
-                    <pulseonselect>false</pulseonselect>
-                    <onclick>PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
-                    <onup>9001</onup>
-                    <onright>8002</onright>
-                    <ondown>50</ondown>
+
+                <!-- Play / More Info capsules. Left/right past the ends flips through the hero items. -->
+                <control type="group">
+                    <left>0</left><top>722</top><width>206</width><height>68</height>
+                    <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8001)">Conditional</animation>
+                    <include content="ATV_CapsuleButton">
+                        <param name="id" value="8001" />
+                        <param name="width" value="206" />
+                        <param name="label" value="Play" />
+                        <param name="icon" value="atv/icon_play.png" />
+                        <onclick>PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
+                        <onup>9000</onup>
+                        <ondown>50</ondown>
+                        <onleft>Control.Move(40,-1)</onleft>
+                        <onright>8002</onright>
+                    </include>
                 </control>
-                <control type="button" id="8002">
-                    <left>206</left><top>352</top><width>190</width><height>62</height>
-                    <label>More Info</label>
-                    <font>font16</font>
-                    <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
-                    <texturenofocus colordiffuse="33FFFFFF">white.png</texturenofocus>
-                    <pulseonselect>false</pulseonselect>
-                    <onclick>RunScript(plugin.video.themoviedb.helper,add_path=$INFO[Container(40).ListItem.FolderPath],call_auto=1190)</onclick>
-                    <onup>9001</onup>
-                    <onleft>8001</onleft>
-                    <ondown>50</ondown>
+                <control type="group">
+                    <left>226</left><top>722</top><width>270</width><height>68</height>
+                    <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8002)">Conditional</animation>
+                    <include content="ATV_CapsuleButton">
+                        <param name="id" value="8002" />
+                        <param name="width" value="270" />
+                        <param name="label" value="More Info" />
+                        <param name="icon" value="atv/icon_plus.png" />
+                        <!-- Opens the Apple TV style title page for the hero item -->
+                        <onclick>RunScript(special://skin/extras/details.py,open,40)</onclick>
+                        <onup>9000</onup>
+                        <ondown>50</ondown>
+                        <onleft>8001</onleft>
+                        <onright>Control.Move(40,1)</onright>
+                    </include>
+                </control>
+
+                <!-- Page dots for the hero carousel -->
+                <control type="grouplist">
+                    <left>0</left><top>818</top><width>400</width><height>12</height>
+                    <orientation>horizontal</orientation>
+                    <itemgap>10</itemgap>
+                    <usecontrolcoords>true</usecontrolcoords>
+                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor1]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,1)</visible></control>
+                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor2]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,2)</visible></control>
+                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor3]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,3)</visible></control>
+                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor4]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,4)</visible></control>
+                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor5]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,5)</visible></control>
+                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor6]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,6)</visible></control>
+                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor7]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,7)</visible></control>
+                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor8]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,8)</visible></control>
                 </control>
             </control>
 
-            <!-- ROW 1 -->
-            <control type="label">
-                <left>90</left><top>860</top><width>800</width><height>34</height>
-                <label>Continue Watching</label>
-                <font>font16</font><textcolor>FFFFFFFF</textcolor>
-            </control>
-            <control type="list" id="50">
-                <left>90</left><top>900</top><width>1740</width><height>300</height>
-                <orientation>horizontal</orientation>
-                <itemgap>18</itemgap>
-                <scrolltime tween="quadratic" easing="out">280</scrolltime>
-                <preloaditems>4</preloaditems>
-                <onup>8001</onup>
-                <ondown>51</ondown>
-                <itemlayout width="184" height="300">
-                    <control type="image">
-                        <left>14</left><top>40</top><width>156</width><height>234</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                    </control>
-                </itemlayout>
-                <focusedlayout width="184" height="300">
-                    <control type="image">
-                        <left>2</left><top>16</top><width>180</width><height>270</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
-                        <bordersize>2</bordersize>
-                        <animation effect="zoom" start="94" end="100" center="92,143" time="180" tween="quadratic" easing="out">Focus</animation>
-                    </control>
-                </focusedlayout>
-                <content>plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;type=tv</content>
-            </control>
+            <!-- ===== ROWS ===== -->
+            <include content="ATV_UpNextRow">
+                <param name="id" value="50" />
+                <param name="top" value="860" />
+                <param name="label" value="Up Next" />
+                <param name="onup" value="8001" />
+                <param name="ondown" value="51" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=tv" />
+            </include>
 
-            <!-- ROW 2 -->
-            <control type="label">
-                <left>90</left><top>1210</top><width>800</width><height>34</height>
-                <label>Trending This Week</label>
-                <font>font16</font><textcolor>FFFFFFFF</textcolor>
-            </control>
-            <control type="list" id="51">
-                <left>90</left><top>1250</top><width>1740</width><height>300</height>
-                <orientation>horizontal</orientation>
-                <itemgap>18</itemgap>
-                <scrolltime tween="quadratic" easing="out">280</scrolltime>
-                <preloaditems>4</preloaditems>
-                <onup>50</onup>
-                <ondown>52</ondown>
-                <itemlayout width="184" height="300">
-                    <control type="image">
-                        <left>14</left><top>40</top><width>156</width><height>234</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                    </control>
-                </itemlayout>
-                <focusedlayout width="184" height="300">
-                    <control type="image">
-                        <left>2</left><top>16</top><width>180</width><height>270</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
-                        <bordersize>2</bordersize>
-                        <animation effect="zoom" start="94" end="100" center="92,143" time="180" tween="quadratic" easing="out">Focus</animation>
-                    </control>
-                </focusedlayout>
-                <content>plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;tmdb_type=movie</content>
-            </control>
-
-            <!-- ROW 3 -->
-            <control type="label">
-                <left>90</left><top>1560</top><width>800</width><height>34</height>
-                <label>Top Thrillers</label>
-                <font>font16</font><textcolor>FFFFFFFF</textcolor>
-            </control>
-            <control type="list" id="52">
-                <left>90</left><top>1600</top><width>1740</width><height>300</height>
-                <orientation>horizontal</orientation>
-                <itemgap>18</itemgap>
-                <scrolltime tween="quadratic" easing="out">280</scrolltime>
-                <preloaditems>4</preloaditems>
-                <onup>51</onup>
-                <ondown>53</ondown>
-                <itemlayout width="184" height="300">
-                    <control type="image">
-                        <left>14</left><top>40</top><width>156</width><height>234</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                    </control>
-                </itemlayout>
-                <focusedlayout width="184" height="300">
-                    <control type="image">
-                        <left>2</left><top>16</top><width>180</width><height>270</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
-                        <bordersize>2</bordersize>
-                        <animation effect="zoom" start="94" end="100" center="92,143" time="180" tween="quadratic" easing="out">Focus</animation>
-                    </control>
-                </focusedlayout>
-                <content>plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=53&amp;with_id=True&amp;sort_by=popularity.desc</content>
-            </control>
-
-            <!-- ROW 4 -->
-            <control type="label">
-                <left>90</left><top>1910</top><width>800</width><height>34</height>
-                <label>Top Dramas</label>
-                <font>font16</font><textcolor>FFFFFFFF</textcolor>
-            </control>
-            <control type="list" id="53">
-                <left>90</left><top>1950</top><width>1740</width><height>300</height>
-                <orientation>horizontal</orientation>
-                <itemgap>18</itemgap>
-                <scrolltime tween="quadratic" easing="out">280</scrolltime>
-                <preloaditems>4</preloaditems>
-                <onup>52</onup>
-                <ondown>54</ondown>
-                <itemlayout width="184" height="300">
-                    <control type="image">
-                        <left>14</left><top>40</top><width>156</width><height>234</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                    </control>
-                </itemlayout>
-                <focusedlayout width="184" height="300">
-                    <control type="image">
-                        <left>2</left><top>16</top><width>180</width><height>270</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
-                        <bordersize>2</bordersize>
-                        <animation effect="zoom" start="94" end="100" center="92,143" time="180" tween="quadratic" easing="out">Focus</animation>
-                    </control>
-                </focusedlayout>
-                <content>plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=18&amp;with_id=True&amp;sort_by=popularity.desc</content>
-            </control>
-
-            <!-- ROW 5 -->
-            <control type="label">
-                <left>90</left><top>2260</top><width>800</width><height>34</height>
-                <label>Top Action</label>
-                <font>font16</font><textcolor>FFFFFFFF</textcolor>
-            </control>
-            <control type="list" id="54">
-                <left>90</left><top>2300</top><width>1740</width><height>300</height>
-                <orientation>horizontal</orientation>
-                <itemgap>18</itemgap>
-                <scrolltime tween="quadratic" easing="out">280</scrolltime>
-                <preloaditems>4</preloaditems>
-                <onup>53</onup>
-                <itemlayout width="184" height="300">
-                    <control type="image">
-                        <left>14</left><top>40</top><width>156</width><height>234</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                    </control>
-                </itemlayout>
-                <focusedlayout width="184" height="300">
-                    <control type="image">
-                        <left>2</left><top>16</top><width>180</width><height>270</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
-                        <bordersize>2</bordersize>
-                        <animation effect="zoom" start="94" end="100" center="92,143" time="180" tween="quadratic" easing="out">Focus</animation>
-                    </control>
-                </focusedlayout>
-                <content>plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True&amp;sort_by=popularity.desc</content>
+            <control type="group">
+                <animation effect="slide" end="0,-380" time="0" condition="$EXP[ATV_UpNextEmpty]">Conditional</animation>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="51" />
+                    <param name="top" value="1240" />
+                    <param name="label" value="Trending This Week" />
+                    <param name="onup" value="50" />
+                    <param name="ondown" value="52" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;tmdb_type=movie" />
+                </include>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="52" />
+                    <param name="top" value="1640" />
+                    <param name="label" value="Top Thrillers" />
+                    <param name="onup" value="51" />
+                    <param name="ondown" value="53" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=53&amp;with_id=True&amp;sort_by=popularity.desc" />
+                </include>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="53" />
+                    <param name="top" value="2040" />
+                    <param name="label" value="Top Dramas" />
+                    <param name="onup" value="52" />
+                    <param name="ondown" value="54" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=18&amp;with_id=True&amp;sort_by=popularity.desc" />
+                </include>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="54" />
+                    <param name="top" value="2440" />
+                    <param name="label" value="Top Action" />
+                    <param name="onup" value="53" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True&amp;sort_by=popularity.desc" />
+                </include>
             </control>
         </control>
 
-        <!-- ===== FIXED TOP BAR (stays put, like tvOS) ===== -->
-
+        <!-- Rows above the focused one dissolve into the top edge instead of being cut off -->
         <control type="image">
-            <left>70</left><top>36</top><width>200</width><height>80</height>
-            <aspectratio>stretch</aspectratio>
-            <texture>home_glow.png</texture>
+            <left>0</left><top>0</top><width>1920</width><height>190</height>
+            <texture>atv/grad_top.png</texture>
+            <visible>$EXP[ATV_RowsFocused]</visible>
+            <animation effect="fade" time="300">VisibleChange</animation>
         </control>
 
-        <control type="group" id="9000">
-            <left>90</left><top>48</top><width>1200</width><height>64</height>
+        <!-- ===================== TOP TAB BAR (tvOS capsule) ===================== -->
+        <control type="group">
+            <animation effect="slide" end="0,-150" time="350" tween="cubic" easing="out" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="250" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
 
-            <control type="button" id="9001">
-                <left>0</left><top>0</top><width>160</width><height>64</height>
-                <label>Home</label>
-                <font>font16</font>
-                <textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
-                <align>center</align><aligny>center</aligny>
-                <texturefocus colordiffuse="22FFFFFF">white.png</texturefocus>
-                <texturenofocus>-</texturenofocus>
-                <pulseonselect>false</pulseonselect>
-                <onleft>9005</onleft><onright>9002</onright>
-                <ondown>8001</ondown>
+            <!-- Glass capsule behind the tabs -->
+            <control type="image">
+                <left>589</left><top>40</top><width>742</width><height>72</height>
+                <texture border="36" colordiffuse="99000000">atv/pill_72.png</texture>
             </control>
-            <control type="button" id="9002">
-                <left>160</left><top>0</top><width>180</width><height>64</height>
-                <label>Movies</label>
-                <font>font16</font>
-                <textcolor>66FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
-                <align>center</align><aligny>center</aligny>
-                <texturefocus colordiffuse="22FFFFFF">white.png</texturefocus>
-                <texturenofocus>-</texturenofocus>
-                <pulseonselect>false</pulseonselect>
-                <onclick>ActivateWindow(Videos,plugin://plugin.video.themoviedb.helper/?info=dir_movie,return)</onclick>
-                <onleft>9001</onleft><onright>9003</onright>
-                <ondown>8001</ondown>
+            <control type="image">
+                <left>589</left><top>40</top><width>742</width><height>72</height>
+                <texture border="36" colordiffuse="24FFFFFF">atv/pill_72.png</texture>
             </control>
-            <control type="button" id="9003">
-                <left>340</left><top>0</top><width>210</width><height>64</height>
-                <label>TV Shows</label>
-                <font>font16</font>
-                <textcolor>66FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
-                <align>center</align><aligny>center</aligny>
-                <texturefocus colordiffuse="22FFFFFF">white.png</texturefocus>
-                <texturenofocus>-</texturenofocus>
-                <pulseonselect>false</pulseonselect>
-                <onclick>ActivateWindow(Videos,plugin://plugin.video.themoviedb.helper/?info=dir_tv,return)</onclick>
-                <onleft>9002</onleft><onright>9004</onright>
-                <ondown>8001</ondown>
-            </control>
-            <control type="button" id="9004">
-                <left>550</left><top>0</top><width>190</width><height>64</height>
-                <label>Settings</label>
-                <font>font16</font>
-                <textcolor>66FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
-                <align>center</align><aligny>center</aligny>
-                <texturefocus colordiffuse="22FFFFFF">white.png</texturefocus>
-                <texturenofocus>-</texturenofocus>
-                <pulseonselect>false</pulseonselect>
-                <onclick>ActivateWindow(Settings)</onclick>
-                <onleft>9003</onleft><onright>9005</onright>
-                <ondown>8001</ondown>
-            </control>
-            <control type="button" id="9005">
-                <left>740</left><top>0</top><width>190</width><height>64</height>
-                <label>Search</label>
-                <font>font16</font>
-                <textcolor>66FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
-                <align>center</align><aligny>center</aligny>
-                <texturefocus colordiffuse="22FFFFFF">white.png</texturefocus>
-                <texturenofocus>-</texturenofocus>
-                <pulseonselect>false</pulseonselect>
-                <onclick>ActivateWindow(1120)</onclick>
-                <onleft>9004</onleft><onright>9001</onright>
-                <ondown>8001</ondown>
-            </control>
-        </control>
 
-        <control type="image">
-            <left>122</left><top>112</top><width>96</width><height>3</height>
-            <texture colordiffuse="FFFFFFFF">white.png</texture>
-        </control>
+            <control type="grouplist" id="9000">
+                <left>597</left><top>48</top><width>726</width><height>56</height>
+                <orientation>horizontal</orientation>
+                <itemgap>4</itemgap>
+                <ondown>8001</ondown>
+                <include content="ATV_Tab">
+                    <param name="id" value="9001" /><param name="width" value="120" /><param name="label" value="Home" />
+                    <param name="textcolor" value="FFFFFFFF" />
+                    <param name="nofocus" value="26FFFFFF" />
+                    <param name="onclick" value="SetFocus(8001)" />
+                </include>
+                <include content="ATV_Tab">
+                    <param name="id" value="9002" /><param name="width" value="140" /><param name="label" value="Movies" />
+                    <param name="onclick" value="ActivateWindow(Videos,plugin://plugin.video.themoviedb.helper/?info=dir_movie,return)" />
+                </include>
+                <include content="ATV_Tab">
+                    <param name="id" value="9003" /><param name="width" value="164" /><param name="label" value="TV Shows" />
+                    <param name="onclick" value="ActivateWindow(Videos,plugin://plugin.video.themoviedb.helper/?info=dir_tv,return)" />
+                </include>
+                <include content="ATV_Tab">
+                    <param name="id" value="9004" /><param name="width" value="136" /><param name="label" value="Search" />
+                    <param name="onclick" value="Skin.Reset(SearchQuery)" />
+                    <!-- A fresh search each time you open it from the menu -->
+                    <onclick>Skin.Reset(SearchQueryURL)</onclick>
+                    <onclick>Skin.Reset(SearchPersonID)</onclick>
+                    <onclick>Skin.Reset(SearchPersonName)</onclick>
+                    <onclick>ActivateWindow(1120)</onclick>
+                </include>
+                <include content="ATV_Tab">
+                    <param name="id" value="9005" /><param name="width" value="150" /><param name="label" value="Settings" />
+                    <param name="onclick" value="ActivateWindow(Settings)" />
+                </include>
+            </control>
 
-        <control type="label">
-            <left>1480</left><top>48</top><width>340</width><height>64</height>
-            <label>$INFO[System.Time]</label>
-            <font>font16</font>
-            <textcolor>B3FFFFFF</textcolor>
-            <align>right</align><aligny>center</aligny>
+            <control type="label">
+                <left>1480</left><top>40</top><width>350</width><height>72</height>
+                <label>$INFO[System.Time]</label>
+                <font>atv_clock</font>
+                <textcolor>CCFFFFFF</textcolor>
+                <align>right</align><aligny>center</aligny>
+            </control>
         </control>
 
     </controls>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ATV Minimal: live search. Type on the left, results update as you go (Netflix style):
      people ("Explore titles related to"), movies and TV shows. Pick a person to see their titles. -->
-<window id="1120">
-    <defaultcontrol>8200</defaultcontrol>
-    <onload condition="Window.Previous(home)">SetFocus(8200)</onload>
+<window id="1121">
+    <defaultcontrol>8120</defaultcontrol>
+
     <controls>
 
         <!-- ===================== BACKGROUND ===================== -->
@@ -53,11 +53,11 @@
             <label>Movies, shows, actors</label>
             <font>atv_row</font><textcolor>66FFFFFF</textcolor>
             <aligny>center</aligny>
-            <visible>String.IsEmpty(Skin.String(SearchQuery))</visible>
+            <visible>String.IsEmpty(Skin.String(SearchQueryB))</visible>
         </control>
         <control type="label">
             <left>126</left><top>140</top><width>450</width><height>84</height>
-            <label>$INFO[Skin.String(SearchQuery)]</label>
+            <label>$INFO[Skin.String(SearchQueryB)]</label>
             <font>atv_row</font><textcolor>FFFFFFFF</textcolor>
             <aligny>center</aligny>
             <scroll>false</scroll>
@@ -65,7 +65,7 @@
         <!-- Blinking caret: same text in transparent, followed by a bar -->
         <control type="label">
             <left>124</left><top>140</top><width>450</width><height>84</height>
-            <label>[COLOR 00FFFFFF]$INFO[Skin.String(SearchQuery)][/COLOR]|</label>
+            <label>[COLOR 00FFFFFF]$INFO[Skin.String(SearchQueryB)][/COLOR]|</label>
             <font>atv_row</font><textcolor>FFFFFFFF</textcolor>
             <aligny>center</aligny>
             <animation effect="fade" start="100" end="0" time="550" pulse="true" condition="true">Conditional</animation>
@@ -170,255 +170,255 @@
             <content>
                     <item>
                         <label>A</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]a)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]a)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]a)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]a)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>B</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]b)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]b)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]b)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]b)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>C</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]c)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]c)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]c)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]c)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>D</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]d)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]d)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]d)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]d)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>E</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]e)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]e)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]e)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]e)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>F</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]f)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]f)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]f)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]f)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>G</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]g)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]g)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]g)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]g)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>H</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]h)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]h)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]h)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]h)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>I</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]i)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]i)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]i)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]i)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>J</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]j)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]j)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]j)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]j)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>K</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]k)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]k)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]k)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]k)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>L</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]l)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]l)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]l)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]l)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>M</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]m)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]m)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]m)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]m)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>N</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]n)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]n)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]n)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]n)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>O</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]o)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]o)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]o)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]o)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>P</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]p)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]p)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]p)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]p)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>Q</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]q)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]q)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]q)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]q)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>R</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]r)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]r)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]r)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]r)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>S</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]s)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]s)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]s)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]s)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>T</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]t)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]t)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]t)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]t)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>U</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]u)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]u)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]u)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]u)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>V</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]v)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]v)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]v)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]v)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>W</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]w)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]w)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]w)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]w)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>X</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]x)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]x)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]x)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]x)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>Y</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]y)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]y)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]y)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]y)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>Z</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]z)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]z)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]z)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]z)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>$NUMBER[1]</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]1)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]1)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]1)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]1)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>$NUMBER[2]</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]2)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]2)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]2)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]2)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>$NUMBER[3]</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]3)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]3)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]3)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]3)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>$NUMBER[4]</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]4)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]4)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]4)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]4)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>$NUMBER[5]</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]5)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]5)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]5)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]5)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>$NUMBER[6]</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]6)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]6)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]6)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]6)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>$NUMBER[7]</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]7)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]7)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]7)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]7)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>$NUMBER[8]</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]8)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]8)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]8)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]8)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>$NUMBER[9]</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]9)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]9)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]9)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]9)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
                     <item>
                         <label>$NUMBER[0]</label>
-                        <onclick>Skin.SetString(SearchQuery,$INFO[Skin.String(SearchQuery)]0)</onclick>
-                        <onclick>Skin.SetString(SearchQueryURL,$INFO[Skin.String(SearchQueryURL)]0)</onclick>
-                        <onclick>Skin.Reset(SearchPersonID)</onclick>
-                        <onclick>Skin.Reset(SearchPersonName)</onclick>
+                        <onclick>Skin.SetString(SearchQueryB,$INFO[Skin.String(SearchQueryB)]0)</onclick>
+                        <onclick>Skin.SetString(SearchQueryURLB,$INFO[Skin.String(SearchQueryURLB)]0)</onclick>
+                        <onclick>Skin.Reset(SearchPersonIDB)</onclick>
+                        <onclick>Skin.Reset(SearchPersonNameB)</onclick>
                     </item>
             </content>
         </control>
@@ -446,7 +446,7 @@
         <!-- People: "Explore titles related to" -->
         <control type="label">
             <left>700</left><top>56</top><width>1100</width><height>40</height>
-            <label>$VAR[ATV_SearchPeopleHeader]</label>
+            <label>$VAR[ATV_SearchPeopleHeaderB]</label>
             <font>atv_row</font><textcolor>FFFFFFFF</textcolor>
         </control>
         <control type="list" id="8110">
@@ -456,8 +456,8 @@
             <onleft>8200</onleft>
             <ondown>8120</ondown>
             <!-- Picking a person swaps the Movies / TV rows to their filmography -->
-            <onclick>Skin.SetString(SearchPersonID,$INFO[Container(8110).ListItem.UniqueID(tmdb)])</onclick>
-            <onclick>Skin.SetString(SearchPersonName,$ESCINFO[Container(8110).ListItem.Label])</onclick>
+            <onclick>Skin.SetString(SearchPersonIDB,$INFO[Container(8110).ListItem.UniqueID(tmdb)])</onclick>
+            <onclick>Skin.SetString(SearchPersonNameB,$ESCINFO[Container(8110).ListItem.Label])</onclick>
             <onclick>SetFocus(8120,0,absolute)</onclick>
             <itemlayout width="176" height="240">
                 <control type="image">
@@ -517,13 +517,13 @@
                     </control>
                 </control>
             </focusedlayout>
-            <content target="videos">$VAR[ATV_SearchPeoplePath]</content>
+            <content target="videos">$VAR[ATV_SearchPeoplePathB]</content>
         </control>
 
         <!-- ATV_SearchMoviesHeader -->
         <control type="label">
             <left>700</left><top>346</top><width>1100</width><height>40</height>
-            <label>$VAR[ATV_SearchMoviesHeader]</label>
+            <label>$VAR[ATV_SearchMoviesHeaderB]</label>
             <font>atv_row</font><textcolor>FFFFFFFF</textcolor>
         </control>
         <control type="label">
@@ -587,13 +587,13 @@
                     </control>
                 </control>
             </focusedlayout>
-            <content target="videos">$VAR[ATV_SearchMoviesPath]</content>
+            <content target="videos">$VAR[ATV_SearchMoviesPathB]</content>
         </control>
 
         <!-- ATV_SearchTVHeader -->
         <control type="label">
             <left>700</left><top>704</top><width>1100</width><height>40</height>
-            <label>$VAR[ATV_SearchTVHeader]</label>
+            <label>$VAR[ATV_SearchTVHeaderB]</label>
             <font>atv_row</font><textcolor>FFFFFFFF</textcolor>
         </control>
         <control type="label">
@@ -656,15 +656,15 @@
                     </control>
                 </control>
             </focusedlayout>
-            <content target="videos">$VAR[ATV_SearchTVPath]</content>
+            <content target="videos">$VAR[ATV_SearchTVPathB]</content>
         </control>
 
         <!-- Nothing found -->
         <control type="label">
             <left>700</left><top>420</top><width>1100</width><height>120</height>
-            <label>No results for “$INFO[Skin.String(SearchQuery)]”[CR][COLOR 80FFFFFF]Try a different title or an actor's name.[/COLOR]</label>
+            <label>No results for “$INFO[Skin.String(SearchQueryB)]”[CR][COLOR 80FFFFFF]Try a different title or an actor's name.[/COLOR]</label>
             <font>atv_row</font><textcolor>FFFFFFFF</textcolor>
-            <visible>$EXP[ATV_SearchHasQuery] + !Container(8110).IsUpdating + !Container(8120).IsUpdating + !Container(8130).IsUpdating + Integer.IsEqual(Container(8110).NumItems,0) + Integer.IsEqual(Container(8120).NumItems,0) + Integer.IsEqual(Container(8130).NumItems,0)</visible>
+            <visible>$EXP[ATV_SearchHasQueryB] + !Container(8110).IsUpdating + !Container(8120).IsUpdating + !Container(8130).IsUpdating + Integer.IsEqual(Container(8110).NumItems,0) + Integer.IsEqual(Container(8120).NumItems,0) + Integer.IsEqual(Container(8130).NumItems,0)</visible>
         </control>
 
     </controls>

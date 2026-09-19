@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ATV Minimal: Apple TV style building blocks shared by Home and Search -->
+<includes>
+
+	<!-- ===================== EXPRESSIONS ===================== -->
+
+	<expression name="ATV_RowsFocused">Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)</expression>
+	<expression name="ATV_UpNextEmpty">Integer.IsEqual(Container(50).NumItems,0) + !Container(50).IsUpdating</expression>
+
+	<!-- ===================== VARIABLES ===================== -->
+
+	<variable name="ATV_LandscapeArt">
+		<value condition="!String.IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.landscape))">$INFO[ListItem.Art(tvshow.landscape)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+
+	<!-- Ambient backdrop behind the rows: fanart of whatever tile is focused -->
+	<variable name="ATV_RowFanart">
+		<value condition="Control.HasFocus(50)">$INFO[Container(50).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(51)">$INFO[Container(51).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(52)">$INFO[Container(52).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(53)">$INFO[Container(53).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(54)">$INFO[Container(54).ListItem.Art(fanart)]</value>
+	</variable>
+
+	<!-- TMDb Helper people carry their photo as profile/poster, not thumb -->
+	<variable name="ATV_PersonArt">
+		<value condition="!String.IsEmpty(ListItem.Art(profile))">$INFO[ListItem.Art(profile)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+	<variable name="ATV_SearchFanart">
+		<value condition="Control.HasFocus(8120)">$INFO[Container(8120).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(8130)">$INFO[Container(8130).ListItem.Art(fanart)]</value>
+	</variable>
+
+	<!-- ===================== ANIMATIONS ===================== -->
+
+	<!-- tvOS "lift": tile grows and gains a soft shadow when focused -->
+	<include name="ATV_Lift">
+		<param name="center">auto</param>
+		<param name="zoom">108</param>
+		<definition>
+			<animation effect="zoom" start="100" end="$PARAM[zoom]" center="$PARAM[center]" time="220" tween="cubic" easing="out">Focus</animation>
+			<animation effect="zoom" start="$PARAM[zoom]" end="100" center="$PARAM[center]" time="180" tween="cubic" easing="out">Unfocus</animation>
+		</definition>
+	</include>
+
+	<!-- ===================== ROWS ===================== -->
+
+	<!-- Row of 2:3 posters (200x300 tiles) -->
+	<include name="ATV_PosterRow">
+		<param name="id" />
+		<param name="top" />
+		<param name="label" />
+		<param name="content" />
+		<param name="onup" />
+		<param name="ondown">noop</param>
+		<param name="onback">SetFocus(8001)</param>
+		<definition>
+			<control type="group">
+				<top>$PARAM[top]</top>
+				<control type="label">
+					<left>90</left><top>0</top><width>1400</width><height>44</height>
+					<label>$PARAM[label]</label>
+					<font>atv_row</font>
+					<textcolor>FFFFFFFF</textcolor>
+				</control>
+				<control type="list" id="$PARAM[id]">
+					<left>70</left><top>34</top><width>1850</width><height>380</height>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">420</scrolltime>
+					<preloaditems>2</preloaditems>
+					<onup>$PARAM[onup]</onup>
+					<ondown>$PARAM[ondown]</ondown>
+					<onback>$PARAM[onback]</onback>
+					<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[id])</onclick>
+					<itemlayout width="232" height="380">
+						<control type="image">
+							<left>20</left><top>30</top><width>200</width><height>300</height>
+							<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_poster.png">white.png</texture>
+						</control>
+						<control type="label">
+							<left>36</left><top>30</top><width>168</width><height>300</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>atv_caption</font><textcolor>B3FFFFFF</textcolor>
+							<align>center</align><aligny>center</aligny><wrapmultiline>true</wrapmultiline>
+							<visible>String.IsEmpty(ListItem.Art(poster))</visible>
+						</control>
+						<control type="image">
+							<left>20</left><top>30</top><width>200</width><height>300</height>
+							<aspectratio scalediffuse="false">scale</aspectratio>
+							<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Art(poster)]</texture>
+						</control>
+					</itemlayout>
+					<focusedlayout width="232" height="380">
+						<control type="group">
+							<include content="ATV_Lift"><param name="center" value="120,180" /></include>
+							<control type="image">
+								<left>-24</left><top>-6</top><width>288</width><height>388</height>
+								<texture border="64">atv/shadow.png</texture>
+								<animation effect="fade" start="0" end="100" time="220">Focus</animation>
+								<animation effect="fade" start="100" end="0" time="160">Unfocus</animation>
+							</control>
+							<control type="image">
+								<left>20</left><top>30</top><width>200</width><height>300</height>
+								<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_poster.png">white.png</texture>
+							</control>
+							<control type="label">
+								<left>36</left><top>30</top><width>168</width><height>300</height>
+								<label>$INFO[ListItem.Label]</label>
+								<font>atv_caption</font><textcolor>FFFFFFFF</textcolor>
+								<align>center</align><aligny>center</aligny><wrapmultiline>true</wrapmultiline>
+								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
+							</control>
+							<control type="image">
+								<left>20</left><top>30</top><width>200</width><height>300</height>
+								<aspectratio scalediffuse="false">scale</aspectratio>
+								<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Art(poster)]</texture>
+							</control>
+						</control>
+					</focusedlayout>
+					<content>$PARAM[content]</content>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- Up Next row: 16:9 tiles with progress bar, title and episode line underneath -->
+	<include name="ATV_UpNextTile">
+		<param name="focused">false</param>
+		<definition>
+			<control type="image">
+				<left>20</left><top>30</top><width>384</width><height>216</height>
+				<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_landscape.png">white.png</texture>
+			</control>
+			<control type="image">
+				<left>20</left><top>30</top><width>384</width><height>216</height>
+				<aspectratio scalediffuse="false">scale</aspectratio>
+				<texture background="true" diffuse="atv/mask_landscape.png">$VAR[ATV_LandscapeArt]</texture>
+			</control>
+			<control type="image">
+				<left>20</left><top>138</top><width>384</width><height>108</height>
+				<texture diffuse="atv/mask_landscape.png" colordiffuse="B3FFFFFF">atv/grad_bottom.png</texture>
+				<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
+			</control>
+			<control type="progress">
+				<left>40</left><top>222</top><width>344</width><height>6</height>
+				<info>ListItem.PercentPlayed</info>
+				<texturebg border="3" colordiffuse="4DFFFFFF">atv/rounded12.png</texturebg>
+				<midtexture border="3" colordiffuse="FFFFFFFF">atv/rounded12.png</midtexture>
+				<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
+			</control>
+			<control type="label">
+				<left>20</left><top>262</top><width>384</width><height>32</height>
+				<label>$VAR[ATV_UpNextTitle]</label>
+				<font>atv_caption</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<scroll>$PARAM[focused]</scroll>
+			</control>
+			<control type="label">
+				<left>20</left><top>294</top><width>384</width><height>30</height>
+				<label>$INFO[ListItem.Season,Season ,  ·  ]$INFO[ListItem.Episode,Episode ]</label>
+				<font>atv_small</font>
+				<textcolor>99FFFFFF</textcolor>
+			</control>
+		</definition>
+	</include>
+	<variable name="ATV_UpNextTitle">
+		<value condition="!String.IsEmpty(ListItem.TVShowTitle)">$INFO[ListItem.TVShowTitle]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+
+	<include name="ATV_UpNextRow">
+		<param name="id" />
+		<param name="top" />
+		<param name="label" />
+		<param name="content" />
+		<param name="onup" />
+		<param name="ondown" />
+		<definition>
+			<control type="group">
+				<top>$PARAM[top]</top>
+				<control type="label">
+					<left>90</left><top>0</top><width>1400</width><height>44</height>
+					<label>$PARAM[label]</label>
+					<font>atv_row</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<visible>!$EXP[ATV_UpNextEmpty]</visible>
+				</control>
+				<control type="list" id="$PARAM[id]">
+					<left>70</left><top>34</top><width>1850</width><height>340</height>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">420</scrolltime>
+					<preloaditems>2</preloaditems>
+					<onup>$PARAM[onup]</onup>
+					<ondown>$PARAM[ondown]</ondown>
+					<onback>SetFocus(8001)</onback>
+					<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[id])</onclick>
+					<itemlayout width="416" height="340">
+						<include content="ATV_UpNextTile" />
+					</itemlayout>
+					<focusedlayout width="416" height="340">
+						<control type="group">
+							<include content="ATV_Lift"><param name="center" value="212,138" /><param name="zoom" value="106" /></include>
+							<control type="image">
+								<left>-24</left><top>-4</top><width>472</width><height>290</height>
+								<texture border="64">atv/shadow.png</texture>
+								<animation effect="fade" start="0" end="100" time="220">Focus</animation>
+								<animation effect="fade" start="100" end="0" time="160">Unfocus</animation>
+							</control>
+							<include content="ATV_UpNextTile"><param name="focused" value="true" /></include>
+						</control>
+					</focusedlayout>
+					<content>$PARAM[content]</content>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ===================== BUTTONS ===================== -->
+
+	<!-- tvOS capsule button: translucent at rest, solid white with dark text when focused -->
+	<include name="ATV_CapsuleButton">
+		<!-- Place inside a group that sets left/top. Actions (onclick, onup...) passed inside the
+		     <include> land in the button via <nested />, which Kodi only honours on a top-level node. -->
+		<param name="id" />
+		<param name="width" />
+		<param name="label" />
+		<param name="icon">-</param>
+		<param name="textoffsetx">66</param>
+		<param name="align">left</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<left>0</left><top>0</top><width>$PARAM[width]</width><height>68</height>
+				<label>$PARAM[label]</label>
+				<font>atv_button</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<focusedcolor>FF0B0B0D</focusedcolor>
+				<align>$PARAM[align]</align><aligny>center</aligny>
+				<textoffsetx>$PARAM[textoffsetx]</textoffsetx>
+				<texturefocus border="34" colordiffuse="FFFFFFFF">atv/pill_68.png</texturefocus>
+				<texturenofocus border="34" colordiffuse="33FFFFFF">atv/pill_68.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<nested />
+			</control>
+			<control type="image">
+				<left>28</left><top>20</top><width>28</width><height>28</height>
+				<texture colordiffuse="FF0B0B0D">$PARAM[icon]</texture>
+				<visible>Control.HasFocus($PARAM[id])</visible>
+			</control>
+			<control type="image">
+				<left>28</left><top>20</top><width>28</width><height>28</height>
+				<texture colordiffuse="FFFFFFFF">$PARAM[icon]</texture>
+				<visible>!Control.HasFocus($PARAM[id])</visible>
+			</control>
+		</definition>
+	</include>
+
+	<variable name="ATV_DotColor1">
+		<value condition="Integer.IsEqual(Container(40).CurrentItem,1)">FFFFFFFF</value>
+		<value>59FFFFFF</value>
+	</variable>
+	<variable name="ATV_DotColor2">
+		<value condition="Integer.IsEqual(Container(40).CurrentItem,2)">FFFFFFFF</value>
+		<value>59FFFFFF</value>
+	</variable>
+	<variable name="ATV_DotColor3">
+		<value condition="Integer.IsEqual(Container(40).CurrentItem,3)">FFFFFFFF</value>
+		<value>59FFFFFF</value>
+	</variable>
+	<variable name="ATV_DotColor4">
+		<value condition="Integer.IsEqual(Container(40).CurrentItem,4)">FFFFFFFF</value>
+		<value>59FFFFFF</value>
+	</variable>
+	<variable name="ATV_DotColor5">
+		<value condition="Integer.IsEqual(Container(40).CurrentItem,5)">FFFFFFFF</value>
+		<value>59FFFFFF</value>
+	</variable>
+	<variable name="ATV_DotColor6">
+		<value condition="Integer.IsEqual(Container(40).CurrentItem,6)">FFFFFFFF</value>
+		<value>59FFFFFF</value>
+	</variable>
+	<variable name="ATV_DotColor7">
+		<value condition="Integer.IsEqual(Container(40).CurrentItem,7)">FFFFFFFF</value>
+		<value>59FFFFFF</value>
+	</variable>
+	<variable name="ATV_DotColor8">
+		<value condition="Integer.IsEqual(Container(40).CurrentItem,8)">FFFFFFFF</value>
+		<value>59FFFFFF</value>
+	</variable>
+
+	<!-- Top tab bar item: white capsule when focused, subtle capsule for the current page -->
+	<include name="ATV_Tab">
+		<param name="id" />
+		<param name="width" />
+		<param name="label" />
+		<param name="onclick" />
+		<param name="textcolor">B3FFFFFF</param>
+		<param name="nofocus">00FFFFFF</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<width>$PARAM[width]</width><height>56</height>
+				<label>$PARAM[label]</label>
+				<font>atv_nav</font>
+				<textcolor>$PARAM[textcolor]</textcolor>
+				<focusedcolor>FF0B0B0D</focusedcolor>
+				<align>center</align><aligny>center</aligny>
+				<texturefocus border="28" colordiffuse="FFFFFFFF">atv/pill_56.png</texturefocus>
+				<texturenofocus border="28" colordiffuse="$PARAM[nofocus]">atv/pill_56.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<onclick>$PARAM[onclick]</onclick>
+				<nested />
+			</control>
+		</definition>
+	</include>
+
+	<!-- ===================== TITLE PAGE (window 1130) ===================== -->
+
+	<expression name="ATV_DetailScrolled">Control.HasFocus(9610) | Control.HasFocus(9620) | Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)</expression>
+
+	<variable name="ATV_DetailSeason">
+		<value condition="!String.IsEmpty(Container(9610).ListItem.Season)">$INFO[Container(9610).ListItem.Season]</value>
+		<value>1</value>
+	</variable>
+	<variable name="ATV_EpisodeArt">
+		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(still))">$INFO[ListItem.Art(still)]</value>
+		<value>$INFO[ListItem.Art(fanart)]</value>
+	</variable>
+
+	<!-- Episode card on the title page -->
+	<include name="ATV_EpisodeTile">
+		<definition>
+			<control type="image">
+				<left>20</left><top>30</top><width>384</width><height>216</height>
+				<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_landscape.png">white.png</texture>
+			</control>
+			<control type="image">
+				<left>20</left><top>30</top><width>384</width><height>216</height>
+				<aspectratio scalediffuse="false">scale</aspectratio>
+				<texture background="true" diffuse="atv/mask_landscape.png">$VAR[ATV_EpisodeArt]</texture>
+			</control>
+			<control type="label">
+				<left>20</left><top>262</top><width>384</width><height>28</height>
+				<label>EPISODE $INFO[ListItem.Episode]$INFO[ListItem.Duration(mins),  ·  , MIN]</label>
+				<font>atv_meta</font><textcolor>80FFFFFF</textcolor>
+			</control>
+			<control type="label">
+				<left>20</left><top>292</top><width>384</width><height>32</height>
+				<label>$INFO[ListItem.Title]</label>
+				<font>atv_caption</font><textcolor>FFFFFFFF</textcolor>
+			</control>
+			<control type="textbox">
+				<left>20</left><top>328</top><width>384</width><height>62</height>
+				<label>$INFO[ListItem.Plot]</label>
+				<font>atv_small</font><textcolor>99FFFFFF</textcolor>
+			</control>
+		</definition>
+	</include>
+
+	<!-- Round cast photo with name and character -->
+	<include name="ATV_CastTile">
+		<param name="focused">false</param>
+		<definition>
+			<control type="image">
+				<left>25</left><top>20</top><width>150</width><height>150</height>
+				<texture colordiffuse="FF2C2C2E" diffuse="atv/mask_circle.png">white.png</texture>
+			</control>
+			<control type="image">
+				<left>25</left><top>20</top><width>150</width><height>150</height>
+				<aspectratio aligny="top" scalediffuse="false">scale</aspectratio>
+				<texture background="true" diffuse="atv/mask_circle.png">$VAR[ATV_PersonArt]</texture>
+			</control>
+			<control type="label">
+				<left>0</left><top>184</top><width>200</width><height>30</height>
+				<label>$INFO[ListItem.Label]</label>
+				<font>atv_caption</font><textcolor>FFFFFFFF</textcolor>
+				<align>center</align>
+				<scroll>$PARAM[focused]</scroll>
+			</control>
+			<control type="label">
+				<left>0</left><top>214</top><width>200</width><height>28</height>
+				<label>$INFO[ListItem.Label2]</label>
+				<font>atv_small</font><textcolor>80FFFFFF</textcolor>
+				<align>center</align>
+			</control>
+		</definition>
+	</include>
+
+</includes>
