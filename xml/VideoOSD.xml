@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- ATV Minimal: Apple TV style player controls.
+     Shown together with DialogSeekBar.xml, which draws the gradient, title, scrubber and times.
+     Transport buttons sit centred on the title line, options on the right; ids and actions are Estuary's. -->
 <window>
 	<onload condition="!Player.PauseEnabled">SetFocus(603)</onload>
 	<defaultcontrol always="true">602</defaultcontrol>
@@ -9,7 +12,7 @@
 			<left>0</left>
 			<top>0</top>
 			<width>100%</width>
-			<bottom>280</bottom>
+			<height>800</height>
 			<texturefocus />
 			<texturenofocus />
 			<onclick>Action(close)</onclick>
@@ -17,29 +20,26 @@
 		<include condition="Skin.HasSetting(touchmode)">TouchBackOSDButton</include>
 		<control type="group">
 			<include>Animation_BottomSlide</include>
-			<bottom>0</bottom>
-			<height>180</height>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(1110) | Window.IsVisible(osdaudiosettings) | Window.IsVisible(osdvideosettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(playerprocessinfo) | Window.IsVisible(osdcmssettings) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(pvrchannelguide)]</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
+
+			<!-- What the focused button does -->
 			<control type="label">
-				<animation effect="slide" end="0,-20" time="150" condition="VideoPlayer.Content(LiveTV)">conditional</animation>
-				<right>20</right>
-				<top>0</top>
-				<align>right</align>
-				<aligny>center</aligny>
-				<width>1000</width>
-				<height>50</height>
+				<left>930</left><top>782</top><width>900</width><height>36</height>
+				<align>right</align><aligny>center</aligny>
 				<label>$VAR[OSDHelpTextVar]</label>
-				<shadowcolor>black</shadowcolor>
+				<font>atv_small</font><textcolor>B3FFFFFF</textcolor>
 			</control>
+
 			<control type="group" id="200">
-				<include>Animation_BottomSlide</include>
+				<!-- Transport: centred on the title line -->
 				<control type="grouplist" id="201">
-					<left>20</left>
-					<top>90</top>
-					<width>100%</width>
-					<height>135</height>
-					<itemgap>10</itemgap>
+					<left>560</left>
+					<top>822</top>
+					<width>800</width>
+					<height>72</height>
+					<align>center</align>
+					<itemgap>18</itemgap>
 					<scrolltime tween="sine">200</scrolltime>
 					<orientation>horizontal</orientation>
 					<onup>87</onup>
@@ -47,14 +47,14 @@
 					<onleft>70048</onleft>
 					<onright>804</onright>
 					<control type="radiobutton" id="600">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
 						</include>
 						<onclick>PlayerControl(Previous)</onclick>
 						<visible>Player.HasSceneMarkers | Player.ChapterCount | Integer.IsGreater(Playlist.Length(video),1) | [Player.SeekEnabled + VideoPlayer.Content(livetv)]</visible>
 					</control>
 					<control type="radiobutton" id="601">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/rewind.png"/>
 						</include>
 						<onclick condition="Player.Paused">PlayerControl(Play)</onclick>
@@ -62,18 +62,19 @@
 						<visible>Player.SeekEnabled + !VideoPlayer.Content(livetv)</visible>
 					</control>
 					<control type="group" id="698">
-						<width>76</width>
-						<height>76</height>
+						<width>64</width>
+						<height>64</height>
 						<visible>Player.PauseEnabled</visible>
+						<animation effect="zoom" start="100" end="112" center="32,32" time="200" tween="cubic" easing="out" condition="Control.HasFocus(602)">Conditional</animation>
 						<control type="button" id="602">
 							<left>0</left>
 							<top>0</top>
-							<width>74</width>
-							<height>74</height>
+							<width>64</width>
+							<height>64</height>
 							<label></label>
 							<font></font>
-							<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
-							<texturenofocus />
+							<texturefocus colordiffuse="FFFFFFFF">atv/mask_circle.png</texturefocus>
+							<texturenofocus colordiffuse="2EFFFFFF">atv/mask_circle.png</texturenofocus>
 							<onleft>601</onleft>
 							<onright>603</onright>
 							<onup>87</onup>
@@ -81,22 +82,24 @@
 							<onclick>PlayerControl(Play)</onclick>
 						</control>
 						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>74</width>
-							<height>74</height>
-							<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(602)">Conditional</animation>
-							<texture colordiffuse="white">$VAR[PlayerControlsPlayImageVar]</texture>
+							<left>12</left><top>12</top><width>40</width><height>40</height>
+							<texture colordiffuse="FF0B0B0D">$VAR[ATV_OSDPlayIcon]</texture>
+							<visible>Control.HasFocus(602)</visible>
+						</control>
+						<control type="image">
+							<left>12</left><top>12</top><width>40</width><height>40</height>
+							<texture colordiffuse="FFFFFFFF">$VAR[ATV_OSDPlayIcon]</texture>
+							<visible>!Control.HasFocus(602)</visible>
 						</control>
 					</control>
 					<control type="radiobutton" id="603">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/stop.png"/>
 						</include>
 						<onclick>PlayerControl(Stop)</onclick>
 					</control>
 					<control type="radiobutton" id="606">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/forward.png"/>
 						</include>
 						<onclick condition="Player.Paused">PlayerControl(Play)</onclick>
@@ -104,40 +107,43 @@
 						<visible>Player.SeekEnabled + !VideoPlayer.Content(livetv)</visible>
 					</control>
 					<control type="radiobutton" id="607">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 						</include>
 						<onclick>PlayerControl(Next)</onclick>
 						<visible>Player.HasSceneMarkers | Player.ChapterCount | Integer.IsGreater(Playlist.Length(video),1) | PVR.IsTimeShift</visible>
 					</control>
 					<control type="radiobutton" id="608">
-						<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/record-white.png</textureradioonfocus>
+						<textureradioonfocus colordiffuse="FF0B0B0D">osd/fullscreen/buttons/record-white.png</textureradioonfocus>
 						<textureradioonnofocus>osd/fullscreen/buttons/record-white.png</textureradioonnofocus>
-						<textureradioofffocus colordiffuse="white">osd/fullscreen/buttons/record.png</textureradioofffocus>
+						<textureradioofffocus>osd/fullscreen/buttons/record.png</textureradioofffocus>
 						<textureradiooffnofocus>osd/fullscreen/buttons/record.png</textureradiooffnofocus>
-						<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
-						<width>76</width>
-						<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
-						<height>76</height>
-						<radiowidth>74</radiowidth>
-						<radioheight>74</radioheight>
+						<texturefocus colordiffuse="FFFFFFFF">atv/mask_circle.png</texturefocus>
+						<texturenofocus colordiffuse="2EFFFFFF">atv/mask_circle.png</texturenofocus>
+						<width>64</width>
+						<height>64</height>
+						<radiowidth>40</radiowidth>
+						<radioheight>40</radioheight>
+						<radioposx>12</radioposx>
+						<radioposy>12</radioposy>
 						<font></font>
-						<texturenofocus />
-						<radioposx>1</radioposx>
-						<radioposy>0</radioposy>
+						<animation effect="zoom" start="100" end="112" center="32,32" time="200" tween="cubic" easing="out">Focus</animation>
+						<animation effect="zoom" start="112" end="100" center="32,32" time="160" tween="cubic" easing="out">Unfocus</animation>
 						<selected>!PVR.IsRecordingPlayingChannel</selected>
 						<onclick>PVR.ToggleRecordPlayingChannel</onclick>
 						<visible>PVR.CanRecordPlayingChannel</visible>
 						<visible>VideoPlayer.Content(livetv)</visible>
 					</control>
 				</control>
+
+				<!-- Options: right-aligned on the title line -->
 				<control type="grouplist" id="202">
-					<right>20</right>
-					<top>90</top>
-					<width>1800</width>
-					<height>135</height>
+					<left>1230</left>
+					<top>822</top>
+					<width>600</width>
+					<height>72</height>
 					<align>right</align>
-					<itemgap>10</itemgap>
+					<itemgap>18</itemgap>
 					<scrolltime tween="sine">200</scrolltime>
 					<orientation>horizontal</orientation>
 					<onup>87</onup>
@@ -147,14 +153,14 @@
 					<onleft>608</onleft>
 					<onright>600</onright>
 					<control type="radiobutton" id="804">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/home.png"/>
 						</include>
 						<onclick>PlayerControl(ShowVideoMenu)</onclick>
 						<visible>VideoPlayer.HasMenu</visible>
 					</control>
 					<control type="radiobutton" id="70040">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/channels.png"/>
 						</include>
 						<onclick>Dialog.Close(VideoOSD)</onclick>
@@ -162,7 +168,7 @@
 						<visible>VideoPlayer.Content(livetv)</visible>
 					</control>
 					<control type="radiobutton" id="70041">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/guide.png"/>
 						</include>
 						<onclick>Dialog.Close(VideoOSD)</onclick>
@@ -170,7 +176,7 @@
 						<visible>VideoPlayer.Content(livetv) + VideoPlayer.HasEPG</visible>
 					</control>
 					<control type="radiobutton" id="70042">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/playlist.png"/>
 						</include>
 						<onclick>Dialog.Close(all, true)</onclick>
@@ -178,20 +184,20 @@
 						<visible>Integer.IsGreater(Playlist.Length(video),1)</visible>
 					</control>
 					<control type="radiobutton" id="70043">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/information.png"/>
 						</include>
 						<onclick>Info</onclick>
 					</control>
 					<control type="radiobutton" id="70044">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/bookmarks.png"/>
 						</include>
 						<onclick>ActivateWindow(videobookmarks)</onclick>
 						<visible>!VideoPlayer.Content(livetv)</visible>
 					</control>
 					<control type="radiobutton" id="70045">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/teletext.png"/>
 						</include>
 						<onclick>Dialog.Close(VideoOSD)</onclick>
@@ -199,14 +205,14 @@
 						<visible>VideoPlayer.HasTeletext</visible>
 					</control>
 					<control type="radiobutton" id="70046">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
 						</include>
 						<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
 						<visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasSubtitles</visible>
 					</control>
 					<control type="radiobutton" id="70047">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/stereoscopic.png"/>
 						</include>
 						<visible>VideoPlayer.IsStereoscopic</visible>
@@ -215,7 +221,7 @@
 						<onclick>ActivateWindow(1101)</onclick>
 					</control>
 					<control type="radiobutton" id="70048">
-						<include content="OSDButton">
+						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/settings.png"/>
 						</include>
 						<onclick>SetProperty(settingslist_content,osd,home)</onclick>
@@ -224,22 +230,10 @@
 					</control>
 				</control>
 			</control>
+
+			<!-- Seek: Up from the buttons focuses hidden button 87; Left/Right then step through the video.
+			     The sliders only draw the playhead dot on DialogSeekBar's scrubber (bigger while seeking). -->
 			<control type="group" id="6000">
-				<top>60</top>
-				<animation type="WindowOpen" condition="!Window.IsVisible(fullscreeninfo)" reversible="False">
-					<effect type="fade" start="0" end="100" time="300"/>
-					<effect type="slide" start="0,200" end="0,0" time="300" tween="cubic" easing="out" />
-				</animation>
-				<animation type="WindowClose" condition="!Window.IsVisible(fullscreeninfo)" reversible="False">
-					<effect type="fade" start="100" end="0" time="300"/>
-					<effect type="slide" start="0,0" end="0,200" time="300" tween="cubic" easing="out" />
-				</animation>
-				<animation type="WindowOpen" condition="Window.IsVisible(fullscreeninfo)" reversible="False">
-					<effect type="fade" start="0" end="100" time="300"/>
-				</animation>
-				<animation type="WindowClose" condition="Window.IsVisible(fullscreeninfo)" reversible="False">
-					<effect type="fade" start="100" end="0" time="300"/>
-				</animation>
 				<visible>Player.SeekEnabled</visible>
 				<control type="button" id="87">
 					<include>HiddenObject</include>
@@ -250,13 +244,10 @@
 					<onright condition="Player.Paused">PlayerControl(FrameAdvance(1))</onright>
 				</control>
 				<control type="slider">
-					<top>-5</top>
-					<left>0</left>
-					<width>100%</width>
-					<height>26</height>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
-					<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+					<left>80</left><top>940</top><width>1760</width><height>20</height>
+					<texturesliderbar colordiffuse="00FFFFFF">atv/nib.png</texturesliderbar>
+					<textureslidernib colordiffuse="FFFFFFFF">atv/nib.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="FFFFFFFF">atv/nib.png</textureslidernibfocus>
 					<info>Player.Progress</info>
 					<onup>200</onup>
 					<ondown>200</ondown>
@@ -264,13 +255,10 @@
 					<visible>!Control.HasFocus(87) + !VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="slider">
-					<top>-5</top>
-					<left>0</left>
-					<width>100%</width>
-					<height>26</height>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
-					<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+					<left>75</left><top>935</top><width>1770</width><height>30</height>
+					<texturesliderbar colordiffuse="00FFFFFF">atv/nib.png</texturesliderbar>
+					<textureslidernib colordiffuse="FFFFFFFF">atv/nib.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="FFFFFFFF">atv/nib.png</textureslidernibfocus>
 					<info>Player.Progress</info>
 					<onup>200</onup>
 					<ondown>200</ondown>
@@ -278,13 +266,10 @@
 					<visible>Control.HasFocus(87) + !VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="slider">
-					<top>-5</top>
-					<left>0</left>
-					<width>100%</width>
-					<height>26</height>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
-					<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+					<left>80</left><top>940</top><width>1760</width><height>20</height>
+					<texturesliderbar colordiffuse="00FFFFFF">atv/nib.png</texturesliderbar>
+					<textureslidernib colordiffuse="FFFFFFFF">atv/nib.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="FFFFFFFF">atv/nib.png</textureslidernibfocus>
 					<info>PVR.TimeshiftProgressPlayPos</info>
 					<onup>200</onup>
 					<ondown>200</ondown>
@@ -292,13 +277,10 @@
 					<visible>!Control.HasFocus(87) + VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="slider">
-					<top>-5</top>
-					<left>0</left>
-					<width>100%</width>
-					<height>26</height>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
-					<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+					<left>75</left><top>935</top><width>1770</width><height>30</height>
+					<texturesliderbar colordiffuse="00FFFFFF">atv/nib.png</texturesliderbar>
+					<textureslidernib colordiffuse="FFFFFFFF">atv/nib.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="FFFFFFFF">atv/nib.png</textureslidernibfocus>
 					<info>PVR.TimeshiftProgressPlayPos</info>
 					<onup>200</onup>
 					<ondown>200</ondown>

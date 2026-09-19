@@ -3,6 +3,8 @@
 	<onload>Skin.TimerStart(1109_topbaroverlay)</onload>
 	<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible>
 	<visible>Window.IsActive(seekbar) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide)</visible>
+	<!-- ATV Minimal: regular videos use the Apple TV style bar in DialogSeekBar.xml; keep this for live TV and music -->
+	<visible>VideoPlayer.Content(LiveTV) | Window.IsActive(visualisation)</visible>
 	<depth>DepthOSD</depth>
 	<include>Animation_TopSlide</include>
 	<zorder>0</zorder>

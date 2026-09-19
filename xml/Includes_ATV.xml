@@ -150,8 +150,8 @@
 			<control type="progress">
 				<left>40</left><top>222</top><width>344</width><height>6</height>
 				<info>ListItem.PercentPlayed</info>
-				<texturebg border="3" colordiffuse="4DFFFFFF">atv/rounded12.png</texturebg>
-				<midtexture border="3" colordiffuse="FFFFFFFF">atv/rounded12.png</midtexture>
+				<texturebg border="3,0,3,0" colordiffuse="4DFFFFFF">atv/bar6.png</texturebg>
+				<midtexture border="3,0,3,0" colordiffuse="FFFFFFFF">atv/bar6.png</midtexture>
 				<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
 			</control>
 			<control type="label">
@@ -388,6 +388,60 @@
 				<font>atv_small</font><textcolor>80FFFFFF</textcolor>
 				<align>center</align>
 			</control>
+		</definition>
+	</include>
+
+	<!-- ===================== PLAYER (DialogSeekBar / VideoOSD) ===================== -->
+
+	<variable name="ATV_OSDTitle">
+		<value condition="!String.IsEmpty(VideoPlayer.TVShowTitle)">$INFO[VideoPlayer.TVShowTitle]</value>
+		<value>$INFO[VideoPlayer.Title]</value>
+	</variable>
+	<variable name="ATV_OSDSubtitle">
+		<value condition="!String.IsEmpty(VideoPlayer.TVShowTitle)">$INFO[VideoPlayer.Season,Season , · ]$INFO[VideoPlayer.Episode,Episode , · ]$INFO[VideoPlayer.Title]</value>
+		<value>$INFO[VideoPlayer.Year]$INFO[VideoPlayer.Genre,  ·  ]$INFO[VideoPlayer.mpaa,  ·  ]</value>
+	</variable>
+	<variable name="ATV_OSDElapsed">
+		<value condition="!String.IsEmpty(Player.SeekNumeric)">$INFO[Player.SeekNumeric(hh:mm:ss)]</value>
+		<value condition="Player.Seeking">$INFO[Player.SeekTime]</value>
+		<value>$INFO[Player.Time]</value>
+	</variable>
+	<variable name="ATV_OSDStatus">
+		<value condition="!String.IsEmpty(Player.SeekStepSize)">$INFO[Player.SeekStepSize]</value>
+		<value condition="!String.IsEmpty(Player.SeekOffset) + Player.HasPerformedSeek(3)">$INFO[Player.SeekOffset]</value>
+		<value condition="Player.Forwarding">Fast Forward  $VAR[VideoPlayerForwardRewindVar]</value>
+		<value condition="Player.Rewinding">Rewind  $VAR[VideoPlayerForwardRewindVar]</value>
+		<value condition="Player.IsTempo">Speed $INFO[Player.PlaySpeed]</value>
+		<value condition="Player.Paused">Paused</value>
+	</variable>
+	<variable name="ATV_OSDPoster">
+		<value condition="!String.IsEmpty(Player.Art(tvshow.poster))">$INFO[Player.Art(tvshow.poster)]</value>
+		<value condition="!String.IsEmpty(Player.Art(poster))">$INFO[Player.Art(poster)]</value>
+		<value>$INFO[Player.Icon]</value>
+	</variable>
+	<variable name="ATV_OSDPlayIcon">
+		<value condition="Player.Playing + !Player.Forwarding + !Player.Rewinding">osd/fullscreen/buttons/pause.png</value>
+		<value>osd/fullscreen/buttons/play.png</value>
+	</variable>
+
+	<!-- Round glass button for the player; icons are Estuary's white glyphs, tinted dark on focus -->
+	<include name="ATV_OSDButton">
+		<param name="texture" />
+		<definition>
+			<width>64</width><height>64</height>
+			<texturefocus colordiffuse="FFFFFFFF">atv/mask_circle.png</texturefocus>
+			<texturenofocus colordiffuse="2EFFFFFF">atv/mask_circle.png</texturenofocus>
+			<textureradioonfocus colordiffuse="FF0B0B0D">$PARAM[texture]</textureradioonfocus>
+			<textureradioofffocus colordiffuse="FF0B0B0D">$PARAM[texture]</textureradioofffocus>
+			<textureradioonnofocus colordiffuse="FFFFFFFF">$PARAM[texture]</textureradioonnofocus>
+			<textureradiooffnofocus colordiffuse="FFFFFFFF">$PARAM[texture]</textureradiooffnofocus>
+			<textureradioondisabled colordiffuse="disabled">$PARAM[texture]</textureradioondisabled>
+			<textureradiooffdisabled colordiffuse="disabled">$PARAM[texture]</textureradiooffdisabled>
+			<radiowidth>40</radiowidth><radioheight>40</radioheight>
+			<radioposx>12</radioposx><radioposy>12</radioposy>
+			<font></font>
+			<animation effect="zoom" start="100" end="112" center="32,32" time="200" tween="cubic" easing="out">Focus</animation>
+			<animation effect="zoom" start="112" end="100" center="32,32" time="160" tween="cubic" easing="out">Unfocus</animation>
 		</definition>
 	</include>
 

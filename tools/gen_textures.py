@@ -144,3 +144,7 @@ rrect(f'{M}/pill_68.png', 136, 68, 34)   # hero buttons    border="34"
 rrect(f'{M}/pill_72.png', 144, 72, 36)   # nav capsule     border="36"
 rrect(f'{M}/pill_84.png', 168, 84, 42)   # search field    border="42"
 print('pills ok')
+circle(f'{M}/nib.png', 64)                        # scrubber playhead
+# Progress bars at their real height, so the rounded ends never get stretched
+rrect(f'{M}/bar8.png', 16, 8, 4)                  # player scrubber      border="4,0,4,0"
+rrect(f'{M}/bar6.png', 12, 6, 3)                  # Up Next progress     border="3,0,3,0"
