@@ -1,32 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <window>
-    <controls>
-        <control type="group">
-            <left>760</left>
-            <top>48</top>
-            <width>400</width>
-            <height>56</height>
-            <control type="image">
-                <width>400</width>
-                <height>56</height>
-                <texture colordiffuse="E6101012">white.png</texture>
-            </control>
-            <control type="label">
-                <left>20</left>
-                <top>0</top>
-                <width>80</width>
-                <height>56</height>
-                <aligny>center</aligny>
-                <font>font13</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <label>Vol</label>
-            </control>
-            <control type="progress" id="1">
-                <left>100</left>
-                <top>22</top>
-                <width>280</width>
-                <height>12</height>
-            </control>
-        </control>
-    </controls>
+	<zorder>4</zorder>
+	<controls>
+		<control type="group">
+			<visible>!Window.IsActive(startup) + !Window.IsActive(GameVolume)</visible>
+			<centerleft>50%</centerleft>
+			<width>112</width>
+			<top>0</top>
+			<animation effect="fade" start="100" end="0" time="200" delay="1000" condition="Player.Muted">Conditional</animation>
+			<animation effect="fade" start="0" end="100" time="150">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+			<control type="progress" id="29999">
+				<include>HiddenObject</include>
+				<info>Player.Volume</info>
+			</control>
+			<control type="image">
+				<left>12</left>
+				<top>5</top>
+				<width>88</width>
+				<height>88</height>
+				<texture>osd/buffer-bg.png</texture>
+				<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(FullscreenGame) | Window.IsActive(slideshow)</visible>
+			</control>
+			<control type="image">
+				<left>22</left>
+				<top>15</top>
+				<width>68</width>
+				<height>68</height>
+				<texture>dialogs/extendedprogress/loading-back.png</texture>
+				<animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
+			</control>
+			<control type="image">
+				<left>22</left>
+				<top>15</top>
+				<width>68</width>
+				<height>68</height>
+				<texture>$INFO[Control.GetLabel(29999),dialogs/volume/progress/p,.png]</texture>
+				<animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
+			</control>
+			<control type="image">
+				<left>36</left>
+				<top>29</top>
+				<width>40</width>
+				<height>40</height>
+				<texture colordiffuse="white">$VAR[VolumeIconVar]</texture>
+			</control>
+		</control>
+	</controls>
 </window>

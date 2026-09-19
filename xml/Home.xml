@@ -4,97 +4,296 @@
     <menucontrol>9001</menucontrol>
     <controls>
 
-        <!-- ============================================================
-             BILLBOARD LOADER
-             A 1px-tall list that stays on screen so Kodi always populates
-             it. Nothing is drawn from it; it only supplies the billboard
-             item. Never focusable. Autoscroll cycles the featured title.
-             ============================================================ -->
+        <!-- Hidden data list that feeds the billboard -->
         <control type="list" id="40">
             <left>0</left><top>1078</top><width>1740</width><height>2</height>
             <orientation>horizontal</orientation>
-            <autoscroll time="10000" repeat="10000">true</autoscroll>
+            <autoscroll time="12000" repeat="12000">true</autoscroll>
             <itemlayout width="1" height="1"/>
             <focusedlayout width="1" height="1"/>
-            <content>plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;type=movie</content>
+            <content>plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;tmdb_type=movie</content>
         </control>
 
-        <!-- ============ BACKGROUND ============ -->
+        <!-- ===== FIXED BACKGROUND LAYERS (never scroll) ===== -->
 
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>1080</height>
             <texture colordiffuse="FF0B0B0D">white.png</texture>
         </control>
 
+        <!-- Billboard fanart only. Fades to the dark base when you scroll into the rows. -->
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>1080</height>
             <aspectratio align="center" aligny="center">scale</aspectratio>
             <fadetime>400</fadetime>
+            <animation effect="fade" start="100" end="0" time="350" tween="quadratic" easing="out" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
             <texture background="true" fallback="fallback.png">$INFO[Container(40).ListItem.Art(fanart)]</texture>
-            <visible>!Control.HasFocus(50) + !Control.HasFocus(51) + !Control.HasFocus(52) + !Control.HasFocus(53) + !Control.HasFocus(54)</visible>
-        </control>
-        <control type="image">
-            <left>0</left><top>0</top><width>1920</width><height>1080</height>
-            <aspectratio align="center" aligny="center">scale</aspectratio>
-            <fadetime>400</fadetime>
-            <texture background="true" fallback="fallback.png">$INFO[Container(50).ListItem.Art(fanart)]</texture>
-            <visible>Control.HasFocus(50)</visible>
-        </control>
-        <control type="image">
-            <left>0</left><top>0</top><width>1920</width><height>1080</height>
-            <aspectratio align="center" aligny="center">scale</aspectratio>
-            <fadetime>400</fadetime>
-            <texture background="true" fallback="fallback.png">$INFO[Container(51).ListItem.Art(fanart)]</texture>
-            <visible>Control.HasFocus(51)</visible>
-        </control>
-        <control type="image">
-            <left>0</left><top>0</top><width>1920</width><height>1080</height>
-            <aspectratio align="center" aligny="center">scale</aspectratio>
-            <fadetime>400</fadetime>
-            <texture background="true" fallback="fallback.png">$INFO[Container(52).ListItem.Art(fanart)]</texture>
-            <visible>Control.HasFocus(52)</visible>
-        </control>
-        <control type="image">
-            <left>0</left><top>0</top><width>1920</width><height>1080</height>
-            <aspectratio align="center" aligny="center">scale</aspectratio>
-            <fadetime>400</fadetime>
-            <texture background="true" fallback="fallback.png">$INFO[Container(53).ListItem.Art(fanart)]</texture>
-            <visible>Control.HasFocus(53)</visible>
-        </control>
-        <control type="image">
-            <left>0</left><top>0</top><width>1920</width><height>1080</height>
-            <aspectratio align="center" aligny="center">scale</aspectratio>
-            <fadetime>400</fadetime>
-            <texture background="true" fallback="fallback.png">$INFO[Container(54).ListItem.Art(fanart)]</texture>
-            <visible>Control.HasFocus(54)</visible>
         </control>
 
-        <!-- Scrims -->
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>260</height>
             <aspectratio>stretch</aspectratio>
             <texture>gradient_top.png</texture>
+            <animation effect="fade" start="100" end="0" time="350" tween="quadratic" easing="out" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
         </control>
         <control type="image">
             <left>0</left><top>0</top><width>1100</width><height>1080</height>
             <aspectratio>stretch</aspectratio>
             <texture>gradient_left.png</texture>
+            <animation effect="fade" start="100" end="0" time="350" tween="quadratic" easing="out" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
         </control>
         <control type="image">
             <left>0</left><top>700</top><width>1920</width><height>380</height>
             <aspectratio>stretch</aspectratio>
             <texture>gradient_bottom.png</texture>
+            <animation effect="fade" start="100" end="0" time="350" tween="quadratic" easing="out" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
         </control>
 
-        <control type="image">
-            <left>0</left><top>0</top><width>1920</width><height>1080</height>
-            <texture colordiffuse="99000000">white.png</texture>
-            <visible>Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)</visible>
-            <animation effect="fade" start="0" end="100" time="250">Visible</animation>
-            <animation effect="fade" start="100" end="0" time="250">Hidden</animation>
+        <!-- ===== SCROLLING PAGE: billboard + all rows move together ===== -->
+        <control type="group" id="7000">
+            <left>0</left><top>0</top>
+
+            <animation effect="slide" end="0,-680"  time="380" tween="quadratic" easing="out" condition="Control.HasFocus(50)">Conditional</animation>
+            <animation effect="slide" end="0,-1030" time="380" tween="quadratic" easing="out" condition="Control.HasFocus(51)">Conditional</animation>
+            <animation effect="slide" end="0,-1380" time="380" tween="quadratic" easing="out" condition="Control.HasFocus(52)">Conditional</animation>
+            <animation effect="slide" end="0,-1730" time="380" tween="quadratic" easing="out" condition="Control.HasFocus(53)">Conditional</animation>
+            <animation effect="slide" end="0,-2080" time="380" tween="quadratic" easing="out" condition="Control.HasFocus(54)">Conditional</animation>
+
+            <!-- Billboard: scrolls up with the page and fades out on the way -->
+            <control type="group">
+                <left>90</left><top>430</top>
+                <animation effect="fade" start="100" end="0" time="300" tween="quadratic" easing="out" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
+
+                <control type="image">
+                    <left>0</left><top>0</top><width>620</width><height>170</height>
+                    <aspectratio align="left" aligny="bottom">keep</aspectratio>
+                    <fadetime>300</fadetime>
+                    <texture>$INFO[Container(40).ListItem.Art(clearlogo)]</texture>
+                    <visible>!String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
+                </control>
+                <control type="label">
+                    <left>0</left><top>100</top><width>1100</width><height>70</height>
+                    <label>$INFO[Container(40).ListItem.Title]</label>
+                    <font>font45</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <aligny>bottom</aligny>
+                    <scroll>false</scroll>
+                    <visible>String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
+                </control>
+                <control type="label">
+                    <left>0</left><top>186</top><width>1100</width><height>34</height>
+                    <label>$INFO[Container(40).ListItem.Year]$INFO[Container(40).ListItem.Genre,  ·  ]$INFO[Container(40).ListItem.Rating,  ·  ]</label>
+                    <font>font13</font>
+                    <textcolor>B3FFFFFF</textcolor>
+                </control>
+                <control type="textbox">
+                    <left>0</left><top>228</top><width>760</width><height>110</height>
+                    <label>$INFO[Container(40).ListItem.Plot]</label>
+                    <font>font13</font>
+                    <textcolor>D0FFFFFF</textcolor>
+                    <autoscroll time="3000" delay="6000" repeat="8000">true</autoscroll>
+                </control>
+                <control type="button" id="8001">
+                    <left>0</left><top>352</top><width>190</width><height>62</height>
+                    <label>Play</label>
+                    <font>font16</font>
+                    <textcolor>FF0B0B0D</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                    <texturenofocus colordiffuse="B0FFFFFF">white.png</texturenofocus>
+                    <pulseonselect>false</pulseonselect>
+                    <onclick>PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
+                    <onup>9001</onup>
+                    <onright>8002</onright>
+                    <ondown>50</ondown>
+                </control>
+                <control type="button" id="8002">
+                    <left>206</left><top>352</top><width>190</width><height>62</height>
+                    <label>More Info</label>
+                    <font>font16</font>
+                    <textcolor>FFFFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
+                    <texturenofocus colordiffuse="33FFFFFF">white.png</texturenofocus>
+                    <pulseonselect>false</pulseonselect>
+                    <onclick>RunScript(plugin.video.themoviedb.helper,add_path=$INFO[Container(40).ListItem.FolderPath],call_auto=1190)</onclick>
+                    <onup>9001</onup>
+                    <onleft>8001</onleft>
+                    <ondown>50</ondown>
+                </control>
+            </control>
+
+            <!-- ROW 1 -->
+            <control type="label">
+                <left>90</left><top>860</top><width>800</width><height>34</height>
+                <label>Continue Watching</label>
+                <font>font16</font><textcolor>FFFFFFFF</textcolor>
+            </control>
+            <control type="list" id="50">
+                <left>90</left><top>900</top><width>1740</width><height>300</height>
+                <orientation>horizontal</orientation>
+                <itemgap>18</itemgap>
+                <scrolltime tween="quadratic" easing="out">280</scrolltime>
+                <preloaditems>4</preloaditems>
+                <onup>8001</onup>
+                <ondown>51</ondown>
+                <itemlayout width="184" height="300">
+                    <control type="image">
+                        <left>14</left><top>40</top><width>156</width><height>234</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                    </control>
+                </itemlayout>
+                <focusedlayout width="184" height="300">
+                    <control type="image">
+                        <left>2</left><top>16</top><width>180</width><height>270</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
+                        <bordersize>2</bordersize>
+                        <animation effect="zoom" start="94" end="100" center="92,143" time="180" tween="quadratic" easing="out">Focus</animation>
+                    </control>
+                </focusedlayout>
+                <content>plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;type=tv</content>
+            </control>
+
+            <!-- ROW 2 -->
+            <control type="label">
+                <left>90</left><top>1210</top><width>800</width><height>34</height>
+                <label>Trending This Week</label>
+                <font>font16</font><textcolor>FFFFFFFF</textcolor>
+            </control>
+            <control type="list" id="51">
+                <left>90</left><top>1250</top><width>1740</width><height>300</height>
+                <orientation>horizontal</orientation>
+                <itemgap>18</itemgap>
+                <scrolltime tween="quadratic" easing="out">280</scrolltime>
+                <preloaditems>4</preloaditems>
+                <onup>50</onup>
+                <ondown>52</ondown>
+                <itemlayout width="184" height="300">
+                    <control type="image">
+                        <left>14</left><top>40</top><width>156</width><height>234</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                    </control>
+                </itemlayout>
+                <focusedlayout width="184" height="300">
+                    <control type="image">
+                        <left>2</left><top>16</top><width>180</width><height>270</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
+                        <bordersize>2</bordersize>
+                        <animation effect="zoom" start="94" end="100" center="92,143" time="180" tween="quadratic" easing="out">Focus</animation>
+                    </control>
+                </focusedlayout>
+                <content>plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;tmdb_type=movie</content>
+            </control>
+
+            <!-- ROW 3 -->
+            <control type="label">
+                <left>90</left><top>1560</top><width>800</width><height>34</height>
+                <label>Top Thrillers</label>
+                <font>font16</font><textcolor>FFFFFFFF</textcolor>
+            </control>
+            <control type="list" id="52">
+                <left>90</left><top>1600</top><width>1740</width><height>300</height>
+                <orientation>horizontal</orientation>
+                <itemgap>18</itemgap>
+                <scrolltime tween="quadratic" easing="out">280</scrolltime>
+                <preloaditems>4</preloaditems>
+                <onup>51</onup>
+                <ondown>53</ondown>
+                <itemlayout width="184" height="300">
+                    <control type="image">
+                        <left>14</left><top>40</top><width>156</width><height>234</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                    </control>
+                </itemlayout>
+                <focusedlayout width="184" height="300">
+                    <control type="image">
+                        <left>2</left><top>16</top><width>180</width><height>270</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
+                        <bordersize>2</bordersize>
+                        <animation effect="zoom" start="94" end="100" center="92,143" time="180" tween="quadratic" easing="out">Focus</animation>
+                    </control>
+                </focusedlayout>
+                <content>plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=53&amp;with_id=True&amp;sort_by=popularity.desc</content>
+            </control>
+
+            <!-- ROW 4 -->
+            <control type="label">
+                <left>90</left><top>1910</top><width>800</width><height>34</height>
+                <label>Top Dramas</label>
+                <font>font16</font><textcolor>FFFFFFFF</textcolor>
+            </control>
+            <control type="list" id="53">
+                <left>90</left><top>1950</top><width>1740</width><height>300</height>
+                <orientation>horizontal</orientation>
+                <itemgap>18</itemgap>
+                <scrolltime tween="quadratic" easing="out">280</scrolltime>
+                <preloaditems>4</preloaditems>
+                <onup>52</onup>
+                <ondown>54</ondown>
+                <itemlayout width="184" height="300">
+                    <control type="image">
+                        <left>14</left><top>40</top><width>156</width><height>234</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                    </control>
+                </itemlayout>
+                <focusedlayout width="184" height="300">
+                    <control type="image">
+                        <left>2</left><top>16</top><width>180</width><height>270</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
+                        <bordersize>2</bordersize>
+                        <animation effect="zoom" start="94" end="100" center="92,143" time="180" tween="quadratic" easing="out">Focus</animation>
+                    </control>
+                </focusedlayout>
+                <content>plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=18&amp;with_id=True&amp;sort_by=popularity.desc</content>
+            </control>
+
+            <!-- ROW 5 -->
+            <control type="label">
+                <left>90</left><top>2260</top><width>800</width><height>34</height>
+                <label>Top Action</label>
+                <font>font16</font><textcolor>FFFFFFFF</textcolor>
+            </control>
+            <control type="list" id="54">
+                <left>90</left><top>2300</top><width>1740</width><height>300</height>
+                <orientation>horizontal</orientation>
+                <itemgap>18</itemgap>
+                <scrolltime tween="quadratic" easing="out">280</scrolltime>
+                <preloaditems>4</preloaditems>
+                <onup>53</onup>
+                <itemlayout width="184" height="300">
+                    <control type="image">
+                        <left>14</left><top>40</top><width>156</width><height>234</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                    </control>
+                </itemlayout>
+                <focusedlayout width="184" height="300">
+                    <control type="image">
+                        <left>2</left><top>16</top><width>180</width><height>270</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
+                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
+                        <bordersize>2</bordersize>
+                        <animation effect="zoom" start="94" end="100" center="92,143" time="180" tween="quadratic" easing="out">Focus</animation>
+                    </control>
+                </focusedlayout>
+                <content>plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True&amp;sort_by=popularity.desc</content>
+            </control>
         </control>
 
-        <!-- ============ TOP MENU ============ -->
+        <!-- ===== FIXED TOP BAR (stays put, like tvOS) ===== -->
 
         <control type="image">
             <left>70</left><top>36</top><width>200</width><height>80</height>
@@ -114,7 +313,7 @@
                 <texturefocus colordiffuse="22FFFFFF">white.png</texturefocus>
                 <texturenofocus>-</texturenofocus>
                 <pulseonselect>false</pulseonselect>
-                <onleft>9004</onleft><onright>9002</onright>
+                <onleft>9005</onleft><onright>9002</onright>
                 <ondown>8001</ondown>
             </control>
             <control type="button" id="9002">
@@ -153,7 +352,20 @@
                 <texturenofocus>-</texturenofocus>
                 <pulseonselect>false</pulseonselect>
                 <onclick>ActivateWindow(Settings)</onclick>
-                <onleft>9003</onleft><onright>9001</onright>
+                <onleft>9003</onleft><onright>9005</onright>
+                <ondown>8001</ondown>
+            </control>
+            <control type="button" id="9005">
+                <left>740</left><top>0</top><width>190</width><height>64</height>
+                <label>Search</label>
+                <font>font16</font>
+                <textcolor>66FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+                <align>center</align><aligny>center</aligny>
+                <texturefocus colordiffuse="22FFFFFF">white.png</texturefocus>
+                <texturenofocus>-</texturenofocus>
+                <pulseonselect>false</pulseonselect>
+                <onclick>ActivateWindow(1120)</onclick>
+                <onleft>9004</onleft><onright>9001</onright>
                 <ondown>8001</ondown>
             </control>
         </control>
@@ -169,238 +381,6 @@
             <font>font16</font>
             <textcolor>B3FFFFFF</textcolor>
             <align>right</align><aligny>center</aligny>
-        </control>
-
-        <!-- ============ BILLBOARD ============ -->
-
-        <control type="group">
-            <left>90</left><top>430</top>
-            <animation effect="fade" start="100" end="30" time="250" condition="Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
-
-            <control type="image">
-                <left>0</left><top>0</top><width>620</width><height>170</height>
-                <aspectratio align="left" aligny="bottom">keep</aspectratio>
-                <fadetime>300</fadetime>
-                <texture>$INFO[Container(40).ListItem.Art(clearlogo)]</texture>
-                <visible>!String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
-            </control>
-            <control type="label">
-                <left>0</left><top>100</top><width>1100</width><height>70</height>
-                <label>$INFO[Container(40).ListItem.Title]</label>
-                <font>font45</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <aligny>bottom</aligny>
-                <scroll>true</scroll>
-                <visible>String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
-            </control>
-
-            <control type="label">
-                <left>0</left><top>186</top><width>1100</width><height>34</height>
-                <label>$INFO[Container(40).ListItem.Year]$INFO[Container(40).ListItem.Genre,  ·  ]$INFO[Container(40).ListItem.Rating,  ·  ]</label>
-                <font>font13</font>
-                <textcolor>B3FFFFFF</textcolor>
-            </control>
-
-            <control type="textbox">
-                <left>0</left><top>228</top><width>760</width><height>110</height>
-                <label>$INFO[Container(40).ListItem.Plot]</label>
-                <font>font13</font>
-                <textcolor>D0FFFFFF</textcolor>
-                <autoscroll time="3000" delay="6000" repeat="8000">true</autoscroll>
-            </control>
-
-            <control type="button" id="8001">
-                <left>0</left><top>352</top><width>230</width><height>62</height>
-                <label>More Info</label>
-                <font>font16</font>
-                <textcolor>FF0B0B0D</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
-                <align>center</align><aligny>center</aligny>
-                <texturefocus colordiffuse="FFFFFFFF">white.png</texturefocus>
-                <texturenofocus colordiffuse="B0FFFFFF">white.png</texturenofocus>
-                <pulseonselect>false</pulseonselect>
-                <onclick>SendClick(40)</onclick>
-                <onup>9001</onup>
-                <ondown condition="Integer.IsGreater(Container(50).NumItems,0)">50</ondown>
-                <ondown>51</ondown>
-            </control>
-        </control>
-
-        <!-- ============ RAILS ============ -->
-
-        <control type="group">
-            <left>0</left><top>820</top>
-
-            <!-- Rail 1 : Continue Watching (Trakt) -->
-            <control type="label">
-                <left>90</left><top>0</top><width>800</width><height>34</height>
-                <label>Continue Watching</label>
-                <font>font16</font><textcolor>FFFFFFFF</textcolor>
-                <visible>Integer.IsGreater(Container(50).NumItems,0)</visible>
-            </control>
-            <control type="list" id="50">
-                <left>90</left><top>40</top><width>1740</width><height>300</height>
-                <orientation>horizontal</orientation>
-                <itemgap>18</itemgap>
-                <scrolltime tween="cubic" easing="out">250</scrolltime>
-                <preloaditems>4</preloaditems>
-                <onup>8001</onup>
-                <ondown>51</ondown>
-                <itemlayout width="184" height="300">
-                    <control type="image">
-                        <left>14</left><top>40</top><width>156</width><height>234</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                    </control>
-                </itemlayout>
-                <focusedlayout width="184" height="300">
-                    <control type="image">
-                        <left>2</left><top>16</top><width>180</width><height>270</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
-                        <bordersize>2</bordersize>
-                    </control>
-                </focusedlayout>
-                <content>plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;type=tv</content>
-            </control>
-
-            <!-- Rail 2 : Top Thrillers (TMDb genre 53) -->
-            <control type="label">
-                <left>90</left><top>350</top><width>800</width><height>34</height>
-                <label>Top Thrillers</label>
-                <font>font16</font><textcolor>FFFFFFFF</textcolor>
-            </control>
-            <control type="list" id="51">
-                <left>90</left><top>390</top><width>1740</width><height>300</height>
-                <orientation>horizontal</orientation>
-                <itemgap>18</itemgap>
-                <scrolltime tween="cubic" easing="out">250</scrolltime>
-                <preloaditems>4</preloaditems>
-                <onup>50</onup>
-                <ondown>52</ondown>
-                <itemlayout width="184" height="300">
-                    <control type="image">
-                        <left>14</left><top>40</top><width>156</width><height>234</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                    </control>
-                </itemlayout>
-                <focusedlayout width="184" height="300">
-                    <control type="image">
-                        <left>2</left><top>16</top><width>180</width><height>270</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
-                        <bordersize>2</bordersize>
-                    </control>
-                </focusedlayout>
-                <content>plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=53&amp;with_id=True&amp;sort_by=popularity.desc</content>
-            </control>
-
-            <!-- Rail 3 : Top Dramas (TMDb genre 18) -->
-            <control type="label">
-                <left>90</left><top>700</top><width>800</width><height>34</height>
-                <label>Top Dramas</label>
-                <font>font16</font><textcolor>FFFFFFFF</textcolor>
-            </control>
-            <control type="list" id="52">
-                <left>90</left><top>740</top><width>1740</width><height>300</height>
-                <orientation>horizontal</orientation>
-                <itemgap>18</itemgap>
-                <scrolltime tween="cubic" easing="out">250</scrolltime>
-                <preloaditems>4</preloaditems>
-                <onup>51</onup>
-                <ondown>53</ondown>
-                <itemlayout width="184" height="300">
-                    <control type="image">
-                        <left>14</left><top>40</top><width>156</width><height>234</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                    </control>
-                </itemlayout>
-                <focusedlayout width="184" height="300">
-                    <control type="image">
-                        <left>2</left><top>16</top><width>180</width><height>270</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
-                        <bordersize>2</bordersize>
-                    </control>
-                </focusedlayout>
-                <content>plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=18&amp;with_id=True&amp;sort_by=popularity.desc</content>
-            </control>
-
-            <!-- Rail 4 : Top Action (TMDb genre 28) -->
-            <control type="label">
-                <left>90</left><top>1050</top><width>800</width><height>34</height>
-                <label>Top Action</label>
-                <font>font16</font><textcolor>FFFFFFFF</textcolor>
-            </control>
-            <control type="list" id="53">
-                <left>90</left><top>1090</top><width>1740</width><height>300</height>
-                <orientation>horizontal</orientation>
-                <itemgap>18</itemgap>
-                <scrolltime tween="cubic" easing="out">250</scrolltime>
-                <preloaditems>4</preloaditems>
-                <onup>52</onup>
-                <ondown>54</ondown>
-                <itemlayout width="184" height="300">
-                    <control type="image">
-                        <left>14</left><top>40</top><width>156</width><height>234</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                    </control>
-                </itemlayout>
-                <focusedlayout width="184" height="300">
-                    <control type="image">
-                        <left>2</left><top>16</top><width>180</width><height>270</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
-                        <bordersize>2</bordersize>
-                    </control>
-                </focusedlayout>
-                <content>plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True&amp;sort_by=popularity.desc</content>
-            </control>
-
-            <!-- Rail 5 : Top Romantic (TMDb genre 10749) -->
-            <control type="label">
-                <left>90</left><top>1400</top><width>800</width><height>34</height>
-                <label>Top Romantic</label>
-                <font>font16</font><textcolor>FFFFFFFF</textcolor>
-            </control>
-            <control type="list" id="54">
-                <left>90</left><top>1440</top><width>1740</width><height>300</height>
-                <orientation>horizontal</orientation>
-                <itemgap>18</itemgap>
-                <scrolltime tween="cubic" easing="out">250</scrolltime>
-                <preloaditems>4</preloaditems>
-                <onup>53</onup>
-                <itemlayout width="184" height="300">
-                    <control type="image">
-                        <left>14</left><top>40</top><width>156</width><height>234</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                    </control>
-                </itemlayout>
-                <focusedlayout width="184" height="300">
-                    <control type="image">
-                        <left>2</left><top>16</top><width>180</width><height>270</height>
-                        <aspectratio>scale</aspectratio>
-                        <texture background="true" fallback="fallback.png">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture colordiffuse="FFFFFFFF">white.png</bordertexture>
-                        <bordersize>2</bordersize>
-                    </control>
-                </focusedlayout>
-                <content>plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=10749&amp;with_id=True&amp;sort_by=popularity.desc</content>
-            </control>
-
-            <animation effect="slide" end="0,0" time="250" tween="cubic" easing="out" condition="Control.HasFocus(8001) | Control.HasFocus(9001) | Control.HasFocus(9002) | Control.HasFocus(9003) | Control.HasFocus(9004)">Conditional</animation>
-            <animation effect="slide" end="0,-290" time="250" tween="cubic" easing="out" condition="Control.HasFocus(50)">Conditional</animation>
-            <animation effect="slide" end="0,-640" time="250" tween="cubic" easing="out" condition="Control.HasFocus(51)">Conditional</animation>
-            <animation effect="slide" end="0,-990" time="250" tween="cubic" easing="out" condition="Control.HasFocus(52)">Conditional</animation>
-            <animation effect="slide" end="0,-1340" time="250" tween="cubic" easing="out" condition="Control.HasFocus(53)">Conditional</animation>
-            <animation effect="slide" end="0,-1690" time="250" tween="cubic" easing="out" condition="Control.HasFocus(54)">Conditional</animation>
         </control>
 
     </controls>

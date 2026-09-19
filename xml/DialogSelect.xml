@@ -1,91 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-    <defaultcontrol always="true">3</defaultcontrol>
-    <controls>
-        <control type="image">
-            <left>0</left>
-            <top>0</top>
-            <width>1920</width>
-            <height>1080</height>
-            <texture colordiffuse="CC000000">white.png</texture>
-        </control>
-        <control type="group">
-            <left>560</left>
-            <top>180</top>
-            <width>800</width>
-            <height>720</height>
-            <control type="image">
-                <width>800</width>
-                <height>720</height>
-                <texture colordiffuse="FF1C1C1E">white.png</texture>
-            </control>
-            <control type="label" id="1">
-                <left>40</left>
-                <top>24</top>
-                <width>720</width>
-                <height>50</height>
-                <font>font16</font>
-                <textcolor>FFFFFFFF</textcolor>
-                <align>center</align>
-                <aligny>center</aligny>
-            </control>
-            <control type="list" id="3">
-                <left>40</left>
-                <top>90</top>
-                <width>720</width>
-                <height>500</height>
-                <itemlayout height="64" width="720">
-                    <control type="label">
-                        <left>20</left>
-                        <width>680</width>
-                        <height>64</height>
-                        <aligny>center</aligny>
-                        <font>font14</font>
-                        <textcolor>99FFFFFF</textcolor>
-                        <info>ListItem.Label</info>
-                    </control>
-                </itemlayout>
-                <focusedlayout height="64" width="720">
-                    <control type="image">
-                        <width>720</width>
-                        <height>64</height>
-                        <texture colordiffuse="FF3A3A3C">white.png</texture>
-                    </control>
-                    <control type="label">
-                        <left>20</left>
-                        <width>680</width>
-                        <height>64</height>
-                        <aligny>center</aligny>
-                        <font>font14</font>
-                        <textcolor>FFFFFFFF</textcolor>
-                        <info>ListItem.Label</info>
-                    </control>
-                </focusedlayout>
-            </control>
-            <control type="button" id="5">
-                <left>80</left>
-                <top>620</top>
-                <width>280</width>
-                <height>56</height>
-                <label>OK</label>
-                <font>font14</font>
-                <align>center</align>
-                <aligny>center</aligny>
-                <texturefocus colordiffuse="FF3A3A3C">white.png</texturefocus>
-                <texturenofocus colordiffuse="FF2C2C2E">white.png</texturenofocus>
-            </control>
-            <control type="button" id="7">
-                <left>440</left>
-                <top>620</top>
-                <width>280</width>
-                <height>56</height>
-                <label>Cancel</label>
-                <font>font14</font>
-                <align>center</align>
-                <aligny>center</aligny>
-                <texturefocus colordiffuse="FF3A3A3C">white.png</texturefocus>
-                <texturenofocus colordiffuse="FF2C2C2E">white.png</texturenofocus>
-            </control>
-        </control>
-    </controls>
+	<defaultcontrol always="true">3</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthOSD</depth>
+	<controls>
+		<include condition="![Window.IsActive(selectvideoversion) | Window.IsActive(selectvideoextra) | Window.IsActive(gamesaves) | Window.IsActive(gamestretchmode) | Window.IsActive(gamevideofilter) | Window.IsActive(gamevideorotation) | Window.IsActive(ingamesaves)]">DefaultDialogSelectLayout</include>
+		<include condition="Window.IsActive(gamesaves)">GameDialogSelectSaveLayout</include>
+		<include condition="Window.IsActive(gamevideofilter)">GameDialogSelectFilterLayout</include>
+		<include condition="Window.IsActive(gamestretchmode)">GameDialogSelectViewLayout</include>
+		<include condition="Window.IsActive(gamevideorotation)">GameDialogSelectViewLayout</include>
+		<include condition="Window.IsActive(ingamesaves)">GameDialogSelectSaveInGameLayout</include>
+		<include condition="Window.IsActive(selectvideoversion)">VideoSelectLayout</include>
+		<include condition="Window.IsActive(selectvideoextra)">VideoSelectLayout</include>
+	</controls>
 </window>
