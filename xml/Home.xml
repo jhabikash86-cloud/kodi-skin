@@ -24,7 +24,7 @@
 
         <!-- Hero backdrop: full bleed, slow Ken Burns drift, fades away when you move into the rows -->
         <control type="group">
-            <animation effect="fade" start="100" end="0" time="560" tween="quadratic" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
@@ -49,7 +49,7 @@
         <!-- Ambient backdrop for the rows: the focused tile's fanart, heavily dimmed -->
         <control type="group">
             <visible>$EXP[ATV_RowsFocused]</visible>
-            <animation effect="fade" start="0" end="100" time="560" tween="quadratic" easing="inout">VisibleChange</animation>
+            <animation effect="fade" start="0" end="100" time="400" tween="sine" easing="inout">VisibleChange</animation>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
@@ -63,110 +63,109 @@
             </control>
         </control>
 
+        <!-- ===== HERO =====
+             Stays where it is and dims while the rows slide up over it (tvOS behaviour).
+             Two elements moving at different speeds read as unsteady. -->
+        <control type="group">
+            <left>90</left><top>0</top>
+            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+
+            <!-- Clear logo, or the title in bold if there's no logo -->
+            <control type="image">
+                <left>0</left><top>350</top><width>640</width><height>210</height>
+                <aspectratio align="left" aligny="bottom">keep</aspectratio>
+                <fadetime>400</fadetime>
+                <texture background="true">$INFO[Container(40).ListItem.Art(clearlogo)]</texture>
+                <visible>!String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
+            </control>
+            <control type="textbox">
+                <left>0</left><top>390</top><width>1100</width><height>170</height>
+                <label>$INFO[Container(40).ListItem.Title]</label>
+                <font>atv_hero</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <aligny>bottom</aligny>
+                <visible>String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
+            </control>
+
+            <!-- Movie · 2025 · Thriller / Drama · ★ 7.8 -->
+            <control type="label">
+                <left>0</left><top>580</top><width>1100</width><height>34</height>
+                <label>Movie$INFO[Container(40).ListItem.Year,  ·  ]$INFO[Container(40).ListItem.Genre,  ·  ]$INFO[Container(40).ListItem.Rating,  ·  ★ ]</label>
+                <font>atv_meta</font>
+                <textcolor>B3FFFFFF</textcolor>
+            </control>
+            <control type="textbox">
+                <left>0</left><top>622</top><width>800</width><height>70</height>
+                <label>$INFO[Container(40).ListItem.Plot]</label>
+                <font>atv_body</font>
+                <textcolor>D9FFFFFF</textcolor>
+            </control>
+
+            <!-- Play / More Info capsules. Left/right past the ends flips through the hero items. -->
+            <control type="group">
+                <left>0</left><top>722</top><width>206</width><height>68</height>
+                <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8001)">Conditional</animation>
+                <include content="ATV_CapsuleButton">
+                    <param name="id" value="8001" />
+                    <param name="width" value="206" />
+                    <param name="label" value="Play" />
+                    <param name="icon" value="atv/icon_play.png" />
+                    <onclick>PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
+                    <onup>9000</onup>
+                    <ondown>50</ondown>
+                    <onleft>Control.Move(40,-1)</onleft>
+                    <onright>8002</onright>
+                </include>
+            </control>
+            <control type="group">
+                <left>226</left><top>722</top><width>270</width><height>68</height>
+                <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8002)">Conditional</animation>
+                <include content="ATV_CapsuleButton">
+                    <param name="id" value="8002" />
+                    <param name="width" value="270" />
+                    <param name="label" value="More Info" />
+                    <param name="icon" value="atv/icon_plus.png" />
+                    <!-- Opens the Apple TV style title page for the hero item -->
+                    <onclick>RunScript(special://skin/extras/details.py,open,40)</onclick>
+                    <onup>9000</onup>
+                    <ondown>50</ondown>
+                    <onleft>8001</onleft>
+                    <onright>Control.Move(40,1)</onright>
+                </include>
+            </control>
+
+            <!-- Page dots for the hero carousel -->
+            <control type="grouplist">
+                <left>0</left><top>818</top><width>400</width><height>12</height>
+                <orientation>horizontal</orientation>
+                <itemgap>10</itemgap>
+                <usecontrolcoords>true</usecontrolcoords>
+                <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor1]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,1)</visible></control>
+                <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor2]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,2)</visible></control>
+                <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor3]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,3)</visible></control>
+                <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor4]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,4)</visible></control>
+                <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor5]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,5)</visible></control>
+                <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor6]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,6)</visible></control>
+                <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor7]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,7)</visible></control>
+                <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor8]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,8)</visible></control>
+            </control>
+        </control>
+
         <!-- ===================== SCROLLING PAGE ===================== -->
         <control type="group" id="7000">
             <left>0</left><top>0</top>
 
-            <!-- Page offsets: the focused row's title settles at y=150, but the page stops once the
-                 last row sits at the bottom of the screen, so there is never empty space below it.
-                 Kodi reverses the old row's slide while playing the new one and adds them, so the
-                 easing must be symmetric (in-out); an ease-out curve overshoots by hundreds of px. -->
-            <animation effect="slide" end="0,-710"  time="560" tween="quadratic" easing="inout" condition="Control.HasFocus(50)">Conditional</animation>
-            <animation effect="slide" end="0,-1090" time="560" tween="quadratic" easing="inout" condition="Control.HasFocus(51) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1490" time="560" tween="quadratic" easing="inout" condition="Control.HasFocus(52) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1840" time="560" tween="quadratic" easing="inout" condition="[Control.HasFocus(53) | Control.HasFocus(54)] + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <!-- Same, shifted up 380px, when there is no Up Next row (Trakt not connected) -->
-            <animation effect="slide" end="0,-710"  time="560" tween="quadratic" easing="inout" condition="Control.HasFocus(51) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1110" time="560" tween="quadratic" easing="inout" condition="Control.HasFocus(52) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1460" time="560" tween="quadratic" easing="inout" condition="[Control.HasFocus(53) | Control.HasFocus(54)] + $EXP[ATV_UpNextEmpty]">Conditional</animation>
-
-            <!-- ===== HERO ===== -->
-            <control type="group">
-                <left>90</left><top>0</top>
-                <!-- Moves up only ~300px while the page moves 710, so it drifts away instead of snapping -->
-                <animation effect="slide" end="0,400" time="560" tween="quadratic" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
-                <animation effect="fade" start="100" end="0" time="560" tween="quadratic" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
-
-                <!-- Clear logo, or the title in bold if there's no logo -->
-                <control type="image">
-                    <left>0</left><top>350</top><width>640</width><height>210</height>
-                    <aspectratio align="left" aligny="bottom">keep</aspectratio>
-                    <fadetime>400</fadetime>
-                    <texture background="true">$INFO[Container(40).ListItem.Art(clearlogo)]</texture>
-                    <visible>!String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
-                </control>
-                <control type="textbox">
-                    <left>0</left><top>390</top><width>1100</width><height>170</height>
-                    <label>$INFO[Container(40).ListItem.Title]</label>
-                    <font>atv_hero</font>
-                    <textcolor>FFFFFFFF</textcolor>
-                    <aligny>bottom</aligny>
-                    <visible>String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
-                </control>
-
-                <!-- Movie · 2025 · Thriller / Drama · ★ 7.8 -->
-                <control type="label">
-                    <left>0</left><top>580</top><width>1100</width><height>34</height>
-                    <label>Movie$INFO[Container(40).ListItem.Year,  ·  ]$INFO[Container(40).ListItem.Genre,  ·  ]$INFO[Container(40).ListItem.Rating,  ·  ★ ]</label>
-                    <font>atv_meta</font>
-                    <textcolor>B3FFFFFF</textcolor>
-                </control>
-                <control type="textbox">
-                    <left>0</left><top>622</top><width>800</width><height>70</height>
-                    <label>$INFO[Container(40).ListItem.Plot]</label>
-                    <font>atv_body</font>
-                    <textcolor>D9FFFFFF</textcolor>
-                </control>
-
-                <!-- Play / More Info capsules. Left/right past the ends flips through the hero items. -->
-                <control type="group">
-                    <left>0</left><top>722</top><width>206</width><height>68</height>
-                    <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8001)">Conditional</animation>
-                    <include content="ATV_CapsuleButton">
-                        <param name="id" value="8001" />
-                        <param name="width" value="206" />
-                        <param name="label" value="Play" />
-                        <param name="icon" value="atv/icon_play.png" />
-                        <onclick>PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
-                        <onup>9000</onup>
-                        <ondown>50</ondown>
-                        <onleft>Control.Move(40,-1)</onleft>
-                        <onright>8002</onright>
-                    </include>
-                </control>
-                <control type="group">
-                    <left>226</left><top>722</top><width>270</width><height>68</height>
-                    <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8002)">Conditional</animation>
-                    <include content="ATV_CapsuleButton">
-                        <param name="id" value="8002" />
-                        <param name="width" value="270" />
-                        <param name="label" value="More Info" />
-                        <param name="icon" value="atv/icon_plus.png" />
-                        <!-- Opens the Apple TV style title page for the hero item -->
-                        <onclick>RunScript(special://skin/extras/details.py,open,40)</onclick>
-                        <onup>9000</onup>
-                        <ondown>50</ondown>
-                        <onleft>8001</onleft>
-                        <onright>Control.Move(40,1)</onright>
-                    </include>
-                </control>
-
-                <!-- Page dots for the hero carousel -->
-                <control type="grouplist">
-                    <left>0</left><top>818</top><width>400</width><height>12</height>
-                    <orientation>horizontal</orientation>
-                    <itemgap>10</itemgap>
-                    <usecontrolcoords>true</usecontrolcoords>
-                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor1]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,1)</visible></control>
-                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor2]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,2)</visible></control>
-                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor3]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,3)</visible></control>
-                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor4]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,4)</visible></control>
-                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor5]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,5)</visible></control>
-                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor6]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,6)</visible></control>
-                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor7]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,7)</visible></control>
-                    <control type="image"><width>10</width><height>10</height><texture colordiffuse="$VAR[ATV_DotColor8]">atv/dot.png</texture><visible>Integer.IsGreaterOrEqual(Container(40).NumItems,8)</visible></control>
-                </control>
-            </control>
+            <!-- Page scroll, built from steps that add up rather than one absolute position per row.
+                 Moving one row toggles exactly ONE of these, so nothing overlaps: with absolute
+                 positions Kodi runs the old row's slide backwards while the new one plays forward and
+                 adds them, which overshot badly with ease-out and hesitated with a slow-start curve.
+                 There is no step for the last row, so the page stops with it at the bottom.
+                 Totals - Up Next present: 50 -710, 51 -1090, 52 -1490, 53/54 -1840.
+                          Up Next empty:            51 -710,  52 -1110, 53/54 -1460. -->
+            <animation effect="slide" end="0,-710" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="slide" end="0,-380" time="380" tween="sine" easing="inout" condition="!$EXP[ATV_UpNextEmpty] + [Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)]">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
+            <animation effect="slide" end="0,-350" time="380" tween="sine" easing="inout" condition="Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
 
             <!-- ===== ROWS ===== -->
             <include content="ATV_UpNextRow">
@@ -224,8 +223,8 @@
 
         <!-- ===================== TOP TAB BAR (tvOS capsule) ===================== -->
         <control type="group">
-            <animation effect="slide" end="0,-150" time="560" tween="quadratic" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
-            <animation effect="fade" start="100" end="0" time="400" tween="quadratic" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="slide" end="0,-150" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
 
             <!-- Glass capsule behind the tabs -->
             <control type="image">

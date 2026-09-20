@@ -22,7 +22,7 @@
             <texture colordiffuse="FF0B0B0D">white.png</texture>
         </control>
         <control type="group">
-            <animation effect="fade" start="100" end="30" time="400" tween="cubic" easing="out" condition="$EXP[ATV_DetailScrolled]">Conditional</animation>
+            <animation effect="fade" start="100" end="30" time="400" tween="sine" easing="inout" condition="$EXP[ATV_DetailScrolled]">Conditional</animation>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
@@ -40,117 +40,119 @@
             </control>
         </control>
 
-        <!-- ===================== SCROLLING PAGE ===================== -->
-        <control type="group" id="9700">
-            <!-- Focused section's first line settles near the top (TV has the season block first).
-                 In-out easing keeps overlapping reverse/forward slides from overshooting (see Home.xml). -->
-            <animation effect="slide" end="0,-760"  time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9610) | Control.HasFocus(9620)">Conditional</animation>
-            <animation effect="slide" end="0,-1250" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9630) + $EXP[ATV_DetailIsTV3]">Conditional</animation>
-            <animation effect="slide" end="0,-1650" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9640) + $EXP[ATV_DetailIsTV3]">Conditional</animation>
-            <animation effect="slide" end="0,-2050" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9650) + $EXP[ATV_DetailIsTV3]">Conditional</animation>
-            <animation effect="slide" end="0,-750"  time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9630) + !$EXP[ATV_DetailIsTV3]">Conditional</animation>
-            <animation effect="slide" end="0,-1150" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9640) + !$EXP[ATV_DetailIsTV3]">Conditional</animation>
-            <animation effect="slide" end="0,-1550" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(9650) + !$EXP[ATV_DetailIsTV3]">Conditional</animation>
+        <!-- ===== HERO =====
+             Stays put and dims while the rows slide up over it, like Home. -->
+        <control type="group">
+            <left>90</left><top>0</top>
+            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_DetailScrolled]">Conditional</animation>
 
-            <!-- ===== HERO ===== -->
-            <control type="group">
-                <left>90</left><top>0</top>
-                <animation effect="fade" start="100" end="0" time="300" tween="cubic" easing="out" condition="$EXP[ATV_DetailScrolled]">Conditional</animation>
+            <control type="image">
+                <left>0</left><top>250</top><width>700</width><height>230</height>
+                <aspectratio align="left" aligny="bottom">keep</aspectratio>
+                <fadetime>400</fadetime>
+                <texture background="true">$INFO[Container(9500).ListItem.Art(clearlogo)]</texture>
+                <visible>!String.IsEmpty(Container(9500).ListItem.Art(clearlogo))</visible>
+            </control>
+            <control type="textbox">
+                <left>0</left><top>290</top><width>1200</width><height>190</height>
+                <label>$INFO[Container(9500).ListItem.Title]</label>
+                <font>atv_hero</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <aligny>bottom</aligny>
+                <visible>String.IsEmpty(Container(9500).ListItem.Art(clearlogo))</visible>
+            </control>
 
-                <control type="image">
-                    <left>0</left><top>250</top><width>700</width><height>230</height>
-                    <aspectratio align="left" aligny="bottom">keep</aspectratio>
-                    <fadetime>400</fadetime>
-                    <texture background="true">$INFO[Container(9500).ListItem.Art(clearlogo)]</texture>
-                    <visible>!String.IsEmpty(Container(9500).ListItem.Art(clearlogo))</visible>
+            <!-- Info line, tagline (collapses when a title has none) and plot -->
+            <control type="grouplist">
+                <left>0</left><top>504</top><width>1000</width><height>210</height>
+                <orientation>vertical</orientation>
+                <itemgap>12</itemgap>
+                <usecontrolcoords>false</usecontrolcoords>
+                <control type="label">
+                    <width>1300</width><height>34</height>
+                    <label>$VAR[ATV_DetailMeta3]</label>
+                    <font>atv_meta</font>
+                    <textcolor>B3FFFFFF</textcolor>
+                </control>
+                <control type="label">
+                    <width>1000</width><height>36</height>
+                    <label>$INFO[Container(9500).ListItem.Tagline]</label>
+                    <font>atv_button</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <visible>!String.IsEmpty(Container(9500).ListItem.Tagline)</visible>
                 </control>
                 <control type="textbox">
-                    <left>0</left><top>290</top><width>1200</width><height>190</height>
-                    <label>$INFO[Container(9500).ListItem.Title]</label>
-                    <font>atv_hero</font>
-                    <textcolor>FFFFFFFF</textcolor>
-                    <aligny>bottom</aligny>
-                    <visible>String.IsEmpty(Container(9500).ListItem.Art(clearlogo))</visible>
-                </control>
-
-                <!-- Info line, tagline (collapses when a title has none) and plot -->
-                <control type="grouplist">
-                    <left>0</left><top>504</top><width>1000</width><height>210</height>
-                    <orientation>vertical</orientation>
-                    <itemgap>12</itemgap>
-                    <usecontrolcoords>false</usecontrolcoords>
-                    <control type="label">
-                        <width>1300</width><height>34</height>
-                        <label>$VAR[ATV_DetailMeta3]</label>
-                        <font>atv_meta</font>
-                        <textcolor>B3FFFFFF</textcolor>
-                    </control>
-                    <control type="label">
-                        <width>1000</width><height>36</height>
-                        <label>$INFO[Container(9500).ListItem.Tagline]</label>
-                        <font>atv_button</font>
-                        <textcolor>FFFFFFFF</textcolor>
-                        <visible>!String.IsEmpty(Container(9500).ListItem.Tagline)</visible>
-                    </control>
-                    <control type="textbox">
-                        <width>940</width><height>104</height>
-                        <label>$INFO[Container(9500).ListItem.Plot]</label>
-                        <font>atv_body</font>
-                        <textcolor>D9FFFFFF</textcolor>
-                    </control>
-                </control>
-
-                <!-- Play / Trailer -->
-                <control type="group">
-                    <left>0</left><top>730</top><width>290</width><height>68</height>
-                    <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(9601)">Conditional</animation>
-                    <include content="ATV_CapsuleButton">
-                        <param name="id" value="9601" />
-                        <param name="width" value="290" />
-                        <param name="label" value="$VAR[ATV_DetailPlayLabel3]" />
-                        <param name="icon" value="atv/icon_play.png" />
-                        <onclick condition="!$EXP[ATV_DetailIsTV3]">PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Skin.String(DetailID3)])</onclick>
-                        <onclick condition="$EXP[ATV_DetailIsTV3]">PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;season=$VAR[ATV_DetailSeason]&amp;episode=1)</onclick>
-                        <onright>9602</onright>
-                        <ondown>9610</ondown>
-                    </include>
-                </control>
-                <control type="group">
-                    <left>310</left><top>730</top><width>200</width><height>68</height>
-                    <visible>!String.IsEmpty(Container(9500).ListItem.Trailer)</visible>
-                    <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(9602)">Conditional</animation>
-                    <include content="ATV_CapsuleButton">
-                        <param name="id" value="9602" />
-                        <param name="width" value="200" />
-                        <param name="label" value="Trailer" />
-                        <param name="align" value="center" />
-                        <param name="textoffsetx" value="0" />
-                        <onclick>PlayMedia($INFO[Container(9500).ListItem.Trailer])</onclick>
-                        <onleft>9601</onleft>
-                        <ondown>9610</ondown>
-                    </include>
-                </control>
-
-                <!-- Credits, Apple style: small grey caption over the names -->
-                <control type="group">
-                    <left>1100</left><top>598</top>
-                    <control type="label">
-                        <left>0</left><top>0</top><width>640</width><height>30</height>
-                        <label>$INFO[Container(9500).ListItem.Director,[COLOR 80FFFFFF]Director[/COLOR]   ]</label>
-                        <font>atv_small</font><textcolor>E6FFFFFF</textcolor>
-                    </control>
-                    <control type="label">
-                        <left>0</left><top>36</top><width>640</width><height>30</height>
-                        <label>$INFO[Container(9500).ListItem.Writer,[COLOR 80FFFFFF]Writer[/COLOR]   ]</label>
-                        <font>atv_small</font><textcolor>E6FFFFFF</textcolor>
-                    </control>
-                    <control type="label">
-                        <left>0</left><top>72</top><width>640</width><height>30</height>
-                        <label>$INFO[Container(9500).ListItem.Studio,[COLOR 80FFFFFF]Studio[/COLOR]   ]</label>
-                        <font>atv_small</font><textcolor>E6FFFFFF</textcolor>
-                    </control>
+                    <width>940</width><height>104</height>
+                    <label>$INFO[Container(9500).ListItem.Plot]</label>
+                    <font>atv_body</font>
+                    <textcolor>D9FFFFFF</textcolor>
                 </control>
             </control>
+
+            <!-- Play / Trailer -->
+            <control type="group">
+                <left>0</left><top>730</top><width>290</width><height>68</height>
+                <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(9601)">Conditional</animation>
+                <include content="ATV_CapsuleButton">
+                    <param name="id" value="9601" />
+                    <param name="width" value="290" />
+                    <param name="label" value="$VAR[ATV_DetailPlayLabel3]" />
+                    <param name="icon" value="atv/icon_play.png" />
+                    <onclick condition="!$EXP[ATV_DetailIsTV3]">PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Skin.String(DetailID3)])</onclick>
+                    <onclick condition="$EXP[ATV_DetailIsTV3]">PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;season=$VAR[ATV_DetailSeason]&amp;episode=1)</onclick>
+                    <onright>9602</onright>
+                    <ondown>9610</ondown>
+                </include>
+            </control>
+            <control type="group">
+                <left>310</left><top>730</top><width>200</width><height>68</height>
+                <visible>!String.IsEmpty(Container(9500).ListItem.Trailer)</visible>
+                <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(9602)">Conditional</animation>
+                <include content="ATV_CapsuleButton">
+                    <param name="id" value="9602" />
+                    <param name="width" value="200" />
+                    <param name="label" value="Trailer" />
+                    <param name="align" value="center" />
+                    <param name="textoffsetx" value="0" />
+                    <onclick>PlayMedia($INFO[Container(9500).ListItem.Trailer])</onclick>
+                    <onleft>9601</onleft>
+                    <ondown>9610</ondown>
+                </include>
+            </control>
+
+            <!-- Credits, Apple style: small grey caption over the names -->
+            <control type="group">
+                <left>1100</left><top>598</top>
+                <control type="label">
+                    <left>0</left><top>0</top><width>640</width><height>30</height>
+                    <label>$INFO[Container(9500).ListItem.Director,[COLOR 80FFFFFF]Director[/COLOR]   ]</label>
+                    <font>atv_small</font><textcolor>E6FFFFFF</textcolor>
+                </control>
+                <control type="label">
+                    <left>0</left><top>36</top><width>640</width><height>30</height>
+                    <label>$INFO[Container(9500).ListItem.Writer,[COLOR 80FFFFFF]Writer[/COLOR]   ]</label>
+                    <font>atv_small</font><textcolor>E6FFFFFF</textcolor>
+                </control>
+                <control type="label">
+                    <left>0</left><top>72</top><width>640</width><height>30</height>
+                    <label>$INFO[Container(9500).ListItem.Studio,[COLOR 80FFFFFF]Studio[/COLOR]   ]</label>
+                    <font>atv_small</font><textcolor>E6FFFFFF</textcolor>
+                </control>
+            </control>
+        </control>
+
+        <!-- ===================== SCROLLING PAGE ===================== -->
+        <control type="group" id="9700">
+            <!-- Page scroll built from steps that add up (see Home.xml): moving one section toggles
+                 exactly one animation, so nothing overlaps and the motion stays even. The last row has
+                 no step, so the page stops with Cast & Crew at the bottom.
+                 Totals - TV:     seasons -760, You May Also Like -1250, last two -1450.
+                          Movies: You May Also Like -750, last two -960. -->
+            <animation effect="slide" end="0,-760" time="380" tween="sine" easing="inout" condition="$EXP[ATV_DetailScrolled] + $EXP[ATV_DetailIsTV3]">Conditional</animation>
+            <animation effect="slide" end="0,-490" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailIsTV3]">Conditional</animation>
+            <animation effect="slide" end="0,-200" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailIsTV3]">Conditional</animation>
+            <animation effect="slide" end="0,-750" time="380" tween="sine" easing="inout" condition="$EXP[ATV_DetailScrolled] + !$EXP[ATV_DetailIsTV3]">Conditional</animation>
+            <animation effect="slide" end="0,-210" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9640) | Control.HasFocus(9650)] + !$EXP[ATV_DetailIsTV3]">Conditional</animation>
 
             <!-- ===== TV: SEASON PICKER + EPISODES ===== -->
             <control type="group">
