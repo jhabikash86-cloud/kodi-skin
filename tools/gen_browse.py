@@ -24,7 +24,14 @@ HEADER_TOP = 150          # where the focused row's title settles
 # has no such list, so they use popularity limited to recent releases. Re-run this
 # generator now and then to move that window forward.
 RECENT_SINCE = (datetime.date.today() - datetime.timedelta(days=540)).isoformat()
+NEW_SINCE = (datetime.date.today() - datetime.timedelta(days=90)).isoformat()
+YEAR_SINCE = (datetime.date.today() - datetime.timedelta(days=365)).isoformat()
+TODAY = datetime.date.today().isoformat()
 
+# Every row should pull a different slice. Sorting everything by popularity made the same
+# half-dozen blockbusters fill the Top 10, Popular, In Cinemas and the genre rows, so the
+# page read as one list repeated. Now: what is hot, what is new, what is on, what is
+# coming, and the best of a genre by rating - which surfaces a completely different set.
 PAGES = {
     1140: {
         'file': 'Custom_1140_Movies.xml',
@@ -32,14 +39,21 @@ PAGES = {
         'rows': [
             ('rank', 'Top 10 Most Watched This Week',
              f'{PLUGIN}info=trakt_mostwatched&amp;tmdb_type=movie&amp;period=weekly&amp;nextpage=false'),
-            ('poster', 'Popular', f'{PLUGIN}info=popular&amp;tmdb_type=movie&amp;nextpage=false'),
+            ('poster', 'New Releases',
+             f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;sort_by=primary_release_date.desc'
+             f'&amp;primary_release_date.gte={NEW_SINCE}&amp;primary_release_date.lte={TODAY}'
+             f'&amp;vote_count.gte=10&amp;nextpage=false'),
             ('poster', 'In Cinemas Now', f'{PLUGIN}info=now_playing&amp;tmdb_type=movie&amp;nextpage=false'),
             ('rank', 'Top 10 Hindi Movies Right Now',
              f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc'
              f'&amp;primary_release_date.gte={RECENT_SINCE}&amp;nextpage=false'),
-            ('poster', 'Top Rated', f'{PLUGIN}info=top_rated&amp;tmdb_type=movie&amp;nextpage=false'),
-            ('poster', 'Action', f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false'),
-            ('poster', 'Comedy', f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_genres=35&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false'),
+            ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=movie&amp;nextpage=false'),
+            ('poster', 'Best of Action',
+             f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True'
+             f'&amp;sort_by=vote_average.desc&amp;vote_count.gte=500&amp;nextpage=false'),
+            ('poster', 'Best of Comedy',
+             f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_genres=35&amp;with_id=True'
+             f'&amp;sort_by=vote_average.desc&amp;vote_count.gte=400&amp;nextpage=false'),
         ],
     },
     1141: {
@@ -47,14 +61,21 @@ PAGES = {
         'title': 'TV Shows',
         'rows': [
             ('rank', 'Top 10 Shows Trending Now', f'{PLUGIN}info=trakt_trending&amp;tmdb_type=tv&amp;nextpage=false'),
-            ('poster', 'Popular', f'{PLUGIN}info=popular&amp;tmdb_type=tv&amp;nextpage=false'),
-            ('poster', 'Airing Today', f'{PLUGIN}info=airing_today&amp;tmdb_type=tv&amp;nextpage=false'),
+            ('poster', 'On TV Today', f'{PLUGIN}info=airing_today&amp;tmdb_type=tv&amp;nextpage=false'),
+            ('poster', 'New Shows',
+             f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;sort_by=first_air_date.desc'
+             f'&amp;first_air_date.gte={YEAR_SINCE}&amp;first_air_date.lte={TODAY}'
+             f'&amp;vote_count.gte=5&amp;nextpage=false'),
             ('rank', 'Top 10 Hindi Shows Right Now',
              f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc'
              f'&amp;first_air_date.gte={RECENT_SINCE}&amp;nextpage=false'),
-            ('poster', 'Top Rated', f'{PLUGIN}info=top_rated&amp;tmdb_type=tv&amp;nextpage=false'),
-            ('poster', 'Drama', f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_genres=18&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false'),
-            ('poster', 'Crime', f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_genres=80&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false'),
+            ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false'),
+            ('poster', 'Best of Drama',
+             f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_genres=18&amp;with_id=True'
+             f'&amp;sort_by=vote_average.desc&amp;vote_count.gte=200&amp;nextpage=false'),
+            ('poster', 'Best of Crime',
+             f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_genres=80&amp;with_id=True'
+             f'&amp;sort_by=vote_average.desc&amp;vote_count.gte=150&amp;nextpage=false'),
         ],
     },
 }

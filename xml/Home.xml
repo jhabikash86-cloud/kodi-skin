@@ -13,7 +13,7 @@
             <autoscroll time="9000">System.IdleTime(5)</autoscroll>
             <itemlayout width="1" height="1" />
             <focusedlayout width="1" height="1" />
-            <content limit="8">plugin://plugin.video.themoviedb.helper/?info=trending_day&amp;tmdb_type=movie&amp;nextpage=false</content>
+            <content limit="8">plugin://plugin.video.themoviedb.helper/?info=now_playing&amp;tmdb_type=movie&amp;nextpage=false</content>
         </control>
 
         <!-- ===================== FIXED BACKGROUND ===================== -->
@@ -193,25 +193,25 @@
                 <include content="ATV_PosterRow">
                     <param name="id" value="52" />
                     <param name="top" value="1640" />
-                    <param name="label" value="Top Thrillers" />
+                    <param name="label" value="Best Thrillers" />
                     <param name="onup" value="51" />
                     <param name="ondown" value="53" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=53&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=53&amp;with_id=True&amp;sort_by=vote_average.desc&amp;vote_count.gte=400&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="53" />
                     <param name="top" value="2040" />
-                    <param name="label" value="Top Dramas" />
+                    <param name="label" value="Best Dramas" />
                     <param name="onup" value="52" />
                     <param name="ondown" value="54" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=18&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=18&amp;with_id=True&amp;sort_by=vote_average.desc&amp;vote_count.gte=500&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="54" />
                     <param name="top" value="2440" />
-                    <param name="label" value="Top Action" />
+                    <param name="label" value="Best Action" />
                     <param name="onup" value="53" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True&amp;sort_by=vote_average.desc&amp;vote_count.gte=500&amp;nextpage=false" />
                 </include>
             </control>
         </control>

@@ -40,11 +40,11 @@
             <include content="ATV_PosterRow">
                 <param name="id" value="52" />
                 <param name="top" value="660" />
-                <param name="label" value="Popular" />
+                <param name="label" value="New Releases" />
                 <param name="onup" value="51" />
                 <param name="ondown" value="53" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=popular&amp;tmdb_type=movie&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;sort_by=primary_release_date.desc&amp;primary_release_date.gte=2026-06-23&amp;primary_release_date.lte=2026-09-21&amp;vote_count.gte=10&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="53" />
@@ -64,34 +64,34 @@
                 <param name="onup" value="53" />
                 <param name="ondown" value="55" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-29&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-30&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="55" />
                 <param name="top" value="1860" />
-                <param name="label" value="Top Rated" />
+                <param name="label" value="Coming Soon" />
                 <param name="onup" value="54" />
                 <param name="ondown" value="56" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=top_rated&amp;tmdb_type=movie&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_anticipated&amp;tmdb_type=movie&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="56" />
                 <param name="top" value="2260" />
-                <param name="label" value="Action" />
+                <param name="label" value="Best of Action" />
                 <param name="onup" value="55" />
                 <param name="ondown" value="57" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True&amp;sort_by=vote_average.desc&amp;vote_count.gte=500&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="57" />
                 <param name="top" value="2660" />
-                <param name="label" value="Comedy" />
+                <param name="label" value="Best of Comedy" />
                 <param name="onup" value="56" />
                 <param name="ondown" value="noop" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=35&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=35&amp;with_id=True&amp;sort_by=vote_average.desc&amp;vote_count.gte=400&amp;nextpage=false" />
             </include>
         </control>
 
