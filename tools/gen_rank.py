@@ -43,18 +43,26 @@ def tile(index):  # noqa: C901
     return f'''
 					<control type="group" id="$PARAM[idbase]{index}">
 						<width>{SLOT}</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="{POSTER_LEFT + POSTER_W // 2},175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus({index + 1})">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="{POSTER_LEFT + POSTER_W // 2},175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]{index}1)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[{index + 1}]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]{index}1)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[{index + 1}]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]{index}1)</visible>
 						</control>
 						<control type="image">
 							<left>{POSTER_LEFT - 24}</left><top>16</top><width>{POSTER_W + 48}</width><height>{POSTER_H + 48}</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus({index + 1})</visible>
+							<visible>Control.HasFocus($PARAM[idbase]{index}1)</visible>
 						</control>
 						<control type="image">
 							<left>{POSTER_LEFT}</left><top>40</top><width>{POSTER_W}</width><height>{POSTER_H}</height>

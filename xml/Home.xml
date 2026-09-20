@@ -185,10 +185,10 @@
                     <param name="idbase" value="61" />
                     <param name="data" value="6051" />
                     <param name="top" value="1240" />
-                    <param name="label" value="Top 10 Movies This Week" />
+                    <param name="label" value="Top 10 Movies Right Now" />
                     <param name="onup" value="50" />
                     <param name="ondown" value="52" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;tmdb_type=movie&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_trending&amp;tmdb_type=movie&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="52" />

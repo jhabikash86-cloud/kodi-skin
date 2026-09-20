@@ -31,11 +31,11 @@
                 <param name="idbase" value="70" />
                 <param name="data" value="6100" />
                 <param name="top" value="260" />
-                <param name="label" value="Top 10 Movies Today" />
+                <param name="label" value="Top 10 Most Watched This Week" />
                 <param name="onup" value="9000" />
                 <param name="ondown" value="52" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trending_day&amp;tmdb_type=movie&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_mostwatched&amp;tmdb_type=movie&amp;period=weekly&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="52" />
@@ -60,11 +60,11 @@
                 <param name="idbase" value="73" />
                 <param name="data" value="6103" />
                 <param name="top" value="1460" />
-                <param name="label" value="Top 10 Hindi Movies" />
+                <param name="label" value="Top 10 Hindi Movies Right Now" />
                 <param name="onup" value="53" />
                 <param name="ondown" value="55" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-29&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="55" />

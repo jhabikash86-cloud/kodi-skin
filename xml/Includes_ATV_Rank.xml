@@ -37,18 +37,26 @@
 					<onback>$PARAM[onback]</onback>
 					<control type="group" id="$PARAM[idbase]0">
 						<width>292</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(1)">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]01)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[1]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]01)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[1]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]01)</visible>
 						</control>
 						<control type="image">
 							<left>84</left><top>16</top><width>228</width><height>318</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(1)</visible>
+							<visible>Control.HasFocus($PARAM[idbase]01)</visible>
 						</control>
 						<control type="image">
 							<left>108</left><top>40</top><width>180</width><height>270</height>
@@ -71,18 +79,26 @@
 					</control>
 					<control type="group" id="$PARAM[idbase]1">
 						<width>292</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(2)">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]11)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[2]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]11)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[2]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]11)</visible>
 						</control>
 						<control type="image">
 							<left>84</left><top>16</top><width>228</width><height>318</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(2)</visible>
+							<visible>Control.HasFocus($PARAM[idbase]11)</visible>
 						</control>
 						<control type="image">
 							<left>108</left><top>40</top><width>180</width><height>270</height>
@@ -105,18 +121,26 @@
 					</control>
 					<control type="group" id="$PARAM[idbase]2">
 						<width>292</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(3)">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]21)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[3]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]21)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[3]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]21)</visible>
 						</control>
 						<control type="image">
 							<left>84</left><top>16</top><width>228</width><height>318</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(3)</visible>
+							<visible>Control.HasFocus($PARAM[idbase]21)</visible>
 						</control>
 						<control type="image">
 							<left>108</left><top>40</top><width>180</width><height>270</height>
@@ -139,18 +163,26 @@
 					</control>
 					<control type="group" id="$PARAM[idbase]3">
 						<width>292</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(4)">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]31)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[4]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]31)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[4]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]31)</visible>
 						</control>
 						<control type="image">
 							<left>84</left><top>16</top><width>228</width><height>318</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(4)</visible>
+							<visible>Control.HasFocus($PARAM[idbase]31)</visible>
 						</control>
 						<control type="image">
 							<left>108</left><top>40</top><width>180</width><height>270</height>
@@ -173,18 +205,26 @@
 					</control>
 					<control type="group" id="$PARAM[idbase]4">
 						<width>292</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(5)">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]41)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[5]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]41)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[5]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]41)</visible>
 						</control>
 						<control type="image">
 							<left>84</left><top>16</top><width>228</width><height>318</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(5)</visible>
+							<visible>Control.HasFocus($PARAM[idbase]41)</visible>
 						</control>
 						<control type="image">
 							<left>108</left><top>40</top><width>180</width><height>270</height>
@@ -207,18 +247,26 @@
 					</control>
 					<control type="group" id="$PARAM[idbase]5">
 						<width>292</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(6)">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]51)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[6]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]51)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[6]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]51)</visible>
 						</control>
 						<control type="image">
 							<left>84</left><top>16</top><width>228</width><height>318</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(6)</visible>
+							<visible>Control.HasFocus($PARAM[idbase]51)</visible>
 						</control>
 						<control type="image">
 							<left>108</left><top>40</top><width>180</width><height>270</height>
@@ -241,18 +289,26 @@
 					</control>
 					<control type="group" id="$PARAM[idbase]6">
 						<width>292</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(7)">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]61)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[7]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]61)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[7]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]61)</visible>
 						</control>
 						<control type="image">
 							<left>84</left><top>16</top><width>228</width><height>318</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(7)</visible>
+							<visible>Control.HasFocus($PARAM[idbase]61)</visible>
 						</control>
 						<control type="image">
 							<left>108</left><top>40</top><width>180</width><height>270</height>
@@ -275,18 +331,26 @@
 					</control>
 					<control type="group" id="$PARAM[idbase]7">
 						<width>292</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(8)">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]71)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[8]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]71)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[8]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]71)</visible>
 						</control>
 						<control type="image">
 							<left>84</left><top>16</top><width>228</width><height>318</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(8)</visible>
+							<visible>Control.HasFocus($PARAM[idbase]71)</visible>
 						</control>
 						<control type="image">
 							<left>108</left><top>40</top><width>180</width><height>270</height>
@@ -309,18 +373,26 @@
 					</control>
 					<control type="group" id="$PARAM[idbase]8">
 						<width>292</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(9)">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]81)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[9]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]81)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[9]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]81)</visible>
 						</control>
 						<control type="image">
 							<left>84</left><top>16</top><width>228</width><height>318</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(9)</visible>
+							<visible>Control.HasFocus($PARAM[idbase]81)</visible>
 						</control>
 						<control type="image">
 							<left>108</left><top>40</top><width>180</width><height>270</height>
@@ -343,18 +415,26 @@
 					</control>
 					<control type="group" id="$PARAM[idbase]9">
 						<width>292</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(10)">Conditional</animation>
+						<animation effect="zoom" start="100" end="108" center="198,175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]91)">Conditional</animation>
 						<control type="label">
 							<left>0</left><top>20</top><width>240</width><height>300</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[10]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
+							<visible>!Control.HasFocus($PARAM[idbase]91)</visible>
+						</control>
+						<control type="label">
+							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<label>$NUMBER[10]</label>
+							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
+							<align>left</align><aligny>bottom</aligny>
+							<visible>Control.HasFocus($PARAM[idbase]91)</visible>
 						</control>
 						<control type="image">
 							<left>84</left><top>16</top><width>228</width><height>318</height>
 							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[id]) + ControlGroup($PARAM[id]).HasFocus(10)</visible>
+							<visible>Control.HasFocus($PARAM[idbase]91)</visible>
 						</control>
 						<control type="image">
 							<left>108</left><top>40</top><width>180</width><height>270</height>

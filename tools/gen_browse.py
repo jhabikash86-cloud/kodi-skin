@@ -7,6 +7,7 @@ normal poster row or a numbered Top 10 row (tools/gen_rank.py). Geometry, the
 step-based page scroll and the bottom stop are all worked out from ROWS below, so
 adding a row is one line - the rest follows.
 """
+import datetime
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,16 +19,24 @@ ROW_HEIGHT = 380          # a row's content, used for the bottom stop
 SCREEN_BOTTOM = 1040      # leave a margin under the last row
 HEADER_TOP = 150          # where the focused row's title settles
 
+# Rows should show what is current, not all-time favourites. Trakt's trending and
+# most-watched lists are "what people are playing right now"; for the language rows TMDb
+# has no such list, so they use popularity limited to recent releases. Re-run this
+# generator now and then to move that window forward.
+RECENT_SINCE = (datetime.date.today() - datetime.timedelta(days=540)).isoformat()
+
 PAGES = {
     1140: {
         'file': 'Custom_1140_Movies.xml',
         'title': 'Movies',
         'rows': [
-            ('rank', 'Top 10 Movies Today', f'{PLUGIN}info=trending_day&amp;tmdb_type=movie&amp;nextpage=false'),
+            ('rank', 'Top 10 Most Watched This Week',
+             f'{PLUGIN}info=trakt_mostwatched&amp;tmdb_type=movie&amp;period=weekly&amp;nextpage=false'),
             ('poster', 'Popular', f'{PLUGIN}info=popular&amp;tmdb_type=movie&amp;nextpage=false'),
             ('poster', 'In Cinemas Now', f'{PLUGIN}info=now_playing&amp;tmdb_type=movie&amp;nextpage=false'),
-            ('rank', 'Top 10 Hindi Movies',
-             f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;nextpage=false'),
+            ('rank', 'Top 10 Hindi Movies Right Now',
+             f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc'
+             f'&amp;primary_release_date.gte={RECENT_SINCE}&amp;nextpage=false'),
             ('poster', 'Top Rated', f'{PLUGIN}info=top_rated&amp;tmdb_type=movie&amp;nextpage=false'),
             ('poster', 'Action', f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false'),
             ('poster', 'Comedy', f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_genres=35&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false'),
@@ -37,11 +46,12 @@ PAGES = {
         'file': 'Custom_1141_TVShows.xml',
         'title': 'TV Shows',
         'rows': [
-            ('rank', 'Top 10 Shows This Week', f'{PLUGIN}info=trending_week&amp;tmdb_type=tv&amp;nextpage=false'),
+            ('rank', 'Top 10 Shows Trending Now', f'{PLUGIN}info=trakt_trending&amp;tmdb_type=tv&amp;nextpage=false'),
             ('poster', 'Popular', f'{PLUGIN}info=popular&amp;tmdb_type=tv&amp;nextpage=false'),
             ('poster', 'Airing Today', f'{PLUGIN}info=airing_today&amp;tmdb_type=tv&amp;nextpage=false'),
-            ('rank', 'Top 10 Hindi Shows',
-             f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;nextpage=false'),
+            ('rank', 'Top 10 Hindi Shows Right Now',
+             f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc'
+             f'&amp;first_air_date.gte={RECENT_SINCE}&amp;nextpage=false'),
             ('poster', 'Top Rated', f'{PLUGIN}info=top_rated&amp;tmdb_type=tv&amp;nextpage=false'),
             ('poster', 'Drama', f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_genres=18&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false'),
             ('poster', 'Crime', f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_genres=80&amp;with_id=True&amp;sort_by=popularity.desc&amp;nextpage=false'),
