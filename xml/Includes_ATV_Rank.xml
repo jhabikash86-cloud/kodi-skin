@@ -20,6 +20,36 @@
 					<font>atv_row</font>
 					<textcolor>FFFFFFFF</textcolor>
 				</control>
+				<!-- Placeholders while the row loads, so it never sits empty -->
+				<control type="group">
+					<visible>Integer.IsEqual(Container($PARAM[data]).NumItems,0)</visible>
+					<animation effect="fade" start="100" end="45" time="900" pulse="true" condition="true">Conditional</animation>
+					<animation effect="fade" time="250">VisibleChange</animation>
+					<control type="image">
+						<left>190</left><top>80</top><width>180</width><height>270</height>
+						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
+					</control>
+					<control type="image">
+						<left>482</left><top>80</top><width>180</width><height>270</height>
+						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
+					</control>
+					<control type="image">
+						<left>774</left><top>80</top><width>180</width><height>270</height>
+						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
+					</control>
+					<control type="image">
+						<left>1066</left><top>80</top><width>180</width><height>270</height>
+						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
+					</control>
+					<control type="image">
+						<left>1358</left><top>80</top><width>180</width><height>270</height>
+						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
+					</control>
+					<control type="image">
+						<left>1650</left><top>80</top><width>180</width><height>270</height>
+						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
+					</control>
+				</control>
 				<!-- Hidden list: holds the ten items the tiles read by position -->
 				<control type="list" id="$PARAM[data]">
 					<left>0</left><top>1078</top><width>10</width><height>2</height>

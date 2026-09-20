@@ -26,7 +26,7 @@
 					<height>80</height>
 					<aspectratio>keep</aspectratio>
 					<animation effect="rotate" end="-45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true">Conditional</animation>
-					<texture colordiffuse="button_focus">spinner.png</texture>
+					<texture colordiffuse="E6FFFFFF">spinner.png</texture>
 				</control>
 				<control type="image">
 					<centerleft>50%</centerleft>
@@ -35,7 +35,7 @@
 					<height>50</height>
 					<aspectratio>keep</aspectratio>
 					<animation effect="rotate" end="45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true">Conditional</animation>
-					<texture flipx="true" colordiffuse="button_focus">spinner.png</texture>
+					<texture flipx="true" colordiffuse="E6FFFFFF">spinner.png</texture>
 				</control>
 				<control type="image">
 					<centerleft>50%</centerleft>

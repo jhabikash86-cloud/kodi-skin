@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.appletv.minimal"
-       version="0.2.0"
+       version="0.3.0"
        name="ATV Minimal"
        provider-name="Bikash">
     <requires>
@@ -28,9 +28,11 @@
         <source></source>
         <assets>
             <icon>resources/icon.png</icon>
-            <fanart>resources/fanart.jpg</fanart>
-            <screenshot>resources/screenshot-01.jpg</screenshot>
+            <fanart>resources/fanart.png</fanart>
+            <screenshot>resources/screenshot-01.png</screenshot>
+            <screenshot>resources/screenshot-02.png</screenshot>
+            <screenshot>resources/screenshot-03.png</screenshot>
         </assets>
-        <news lang="en_GB">0.2.0[CR]- Smooth Apple TV style page scrolling[CR]- Apple TV style player: bottom gradient, title, thin rounded scrubber, elapsed / ends at / remaining, round glass controls, info panel[CR]- Apple TV style title pages for movies and TV: hero, seasons and episodes, You May Also Like, More Like This (same genres), Cast &amp; Crew[CR]- Selecting any poster opens its title page; Back walks back through titles[CR]- Cast opens an actor search; search keeps your query when you come back[CR][CR]0.1.0[CR]- Apple TV style home: full-bleed hero, capsule tab bar, rounded tiles with lift and shadow, Up Next row[CR]- Live search with keyboard grid, people and filmography[CR]- Inter font family and neutral colour palette[CR][CR]0.0.2[CR]- Premium addon metadata and 1080p default[CR]- Debug overlay disabled[CR]- Font and colour system added</news>
+        <news lang="en_GB">0.3.0[CR]- Movies and TV Shows pages with Top 10 rows, shared tab bar[CR]- Numbered Top 10 rows fed by Trakt trending / most watched, plus language rows[CR]- Watched and part-watched marks on episodes[CR]- My List (Trakt watchlist) on the hero and title pages[CR]- Skin icon, fanart and screenshots[CR][CR]0.2.0[CR]- Smooth Apple TV style page scrolling[CR]- Apple TV style player: bottom gradient, title, thin rounded scrubber, elapsed / ends at / remaining, round glass controls, info panel[CR]- Apple TV style title pages for movies and TV: hero, seasons and episodes, You May Also Like, More Like This (same genres), Cast &amp; Crew[CR]- Selecting any poster opens its title page; Back walks back through titles[CR]- Cast opens an actor search; search keeps your query when you come back[CR][CR]0.1.0[CR]- Apple TV style home: full-bleed hero, capsule tab bar, rounded tiles with lift and shadow, Up Next row[CR]- Live search with keyboard grid, people and filmography[CR]- Inter font family and neutral colour palette[CR][CR]0.0.2[CR]- Premium addon metadata and 1080p default[CR]- Debug overlay disabled[CR]- Font and colour system added</news>
     </extension>
 </addon>
