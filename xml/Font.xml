@@ -210,6 +210,16 @@
 			<filename>Inter-SemiBold.ttf</filename>
 			<size>27</size>
 		</font>
+		<font>
+			<name>atv_rank</name>
+			<filename>Inter-Bold.ttf</filename>
+			<size>175</size>
+		</font>
+		<font>
+			<name>atv_pagetitle</name>
+			<filename>Inter-Bold.ttf</filename>
+			<size>54</size>
+		</font>
 	</fontset>
 	<fontset id="Arial" idloc="31053">
 		<!-- Arial Font better for non English -->
@@ -433,6 +443,16 @@
 			<filename>arial.ttf</filename>
 			<size>27</size>
 			<style>bold</style>
+		</font>
+		<font>
+			<name>atv_rank</name>
+			<filename>Inter-Bold.ttf</filename>
+			<size>175</size>
+		</font>
+		<font>
+			<name>atv_pagetitle</name>
+			<filename>Inter-Bold.ttf</filename>
+			<size>54</size>
 		</font>
 	</fontset>
 </fonts>

@@ -164,7 +164,7 @@
                  Totals - Up Next present: 50 -710, 51 -1090, 52 -1490, 53/54 -1840.
                           Up Next empty:            51 -710,  52 -1110, 53/54 -1460. -->
             <animation effect="slide" end="0,-710" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
-            <animation effect="slide" end="0,-380" time="380" tween="sine" easing="inout" condition="!$EXP[ATV_UpNextEmpty] + [Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)]">Conditional</animation>
+            <animation effect="slide" end="0,-380" time="380" tween="sine" easing="inout" condition="!$EXP[ATV_UpNextEmpty] + [ControlGroup(51).HasFocus(0) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)]">Conditional</animation>
             <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
             <animation effect="slide" end="0,-350" time="380" tween="sine" easing="inout" condition="Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
 
@@ -180,10 +180,12 @@
 
             <control type="group">
                 <animation effect="slide" end="0,-380" time="400" tween="quadratic" easing="inout" condition="$EXP[ATV_UpNextEmpty]">Conditional</animation>
-                <include content="ATV_PosterRow">
+                <include content="ATV_RankRow">
                     <param name="id" value="51" />
+                    <param name="idbase" value="61" />
+                    <param name="data" value="6051" />
                     <param name="top" value="1240" />
-                    <param name="label" value="Trending This Week" />
+                    <param name="label" value="Top 10 Movies This Week" />
                     <param name="onup" value="50" />
                     <param name="ondown" value="52" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;tmdb_type=movie&amp;nextpage=false" />
