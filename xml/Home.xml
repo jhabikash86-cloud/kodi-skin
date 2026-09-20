@@ -224,63 +224,10 @@
             <animation effect="fade" time="300">VisibleChange</animation>
         </control>
 
-        <!-- ===================== TOP TAB BAR (tvOS capsule) ===================== -->
-        <control type="group">
-            <animation effect="slide" end="0,-150" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
-            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
-
-            <!-- Glass capsule behind the tabs -->
-            <control type="image">
-                <left>589</left><top>40</top><width>742</width><height>72</height>
-                <texture border="36" colordiffuse="99000000">atv/pill_72.png</texture>
-            </control>
-            <control type="image">
-                <left>589</left><top>40</top><width>742</width><height>72</height>
-                <texture border="36" colordiffuse="24FFFFFF">atv/pill_72.png</texture>
-            </control>
-
-            <control type="grouplist" id="9000">
-                <left>597</left><top>48</top><width>726</width><height>56</height>
-                <orientation>horizontal</orientation>
-                <itemgap>4</itemgap>
-                <ondown>8001</ondown>
-                <include content="ATV_Tab">
-                    <param name="id" value="9001" /><param name="width" value="120" /><param name="label" value="Home" />
-                    <param name="textcolor" value="FFFFFFFF" />
-                    <param name="nofocus" value="26FFFFFF" />
-                    <param name="onclick" value="SetFocus(8001)" />
-                </include>
-                <include content="ATV_Tab">
-                    <param name="id" value="9002" /><param name="width" value="140" /><param name="label" value="Movies" />
-                    <param name="onclick" value="ActivateWindow(Videos,plugin://plugin.video.themoviedb.helper/?info=dir_movie,return)" />
-                </include>
-                <include content="ATV_Tab">
-                    <param name="id" value="9003" /><param name="width" value="164" /><param name="label" value="TV Shows" />
-                    <param name="onclick" value="ActivateWindow(Videos,plugin://plugin.video.themoviedb.helper/?info=dir_tv,return)" />
-                </include>
-                <include content="ATV_Tab">
-                    <param name="id" value="9004" /><param name="width" value="136" /><param name="label" value="Search" />
-                    <param name="onclick" value="Skin.Reset(SearchQuery)" />
-                    <!-- A fresh search each time you open it from the menu -->
-                    <onclick>Skin.Reset(SearchQueryURL)</onclick>
-                    <onclick>Skin.Reset(SearchPersonID)</onclick>
-                    <onclick>Skin.Reset(SearchPersonName)</onclick>
-                    <onclick>ActivateWindow(1120)</onclick>
-                </include>
-                <include content="ATV_Tab">
-                    <param name="id" value="9005" /><param name="width" value="150" /><param name="label" value="Settings" />
-                    <param name="onclick" value="ActivateWindow(Settings)" />
-                </include>
-            </control>
-
-            <control type="label">
-                <left>1480</left><top>40</top><width>350</width><height>72</height>
-                <label>$INFO[System.Time]</label>
-                <font>atv_clock</font>
-                <textcolor>CCFFFFFF</textcolor>
-                <align>right</align><aligny>center</aligny>
-            </control>
-        </control>
+        <include content="ATV_TabBar">
+            <param name="hidewhen" value="$EXP[ATV_RowsFocused]" />
+            <param name="ondown" value="8001" />
+        </include>
 
     </controls>
 </window>

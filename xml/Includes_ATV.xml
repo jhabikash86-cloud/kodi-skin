@@ -438,4 +438,81 @@
 		</definition>
 	</include>
 
+	<!-- ===================== TOP TAB BAR (shared by Home, Movies, TV Shows) =====================
+	     The active tab is worked out from the window, so the bar needs no parameters. -->
+	<variable name="ATV_TabColorHome"><value condition="Window.IsActive(home)">FFFFFFFF</value><value>B3FFFFFF</value></variable>
+	<variable name="ATV_TabPillHome"><value condition="Window.IsActive(home)">26FFFFFF</value><value>00FFFFFF</value></variable>
+	<variable name="ATV_TabColorMovies"><value condition="Window.IsActive(11140)">FFFFFFFF</value><value>B3FFFFFF</value></variable>
+	<variable name="ATV_TabPillMovies"><value condition="Window.IsActive(11140)">26FFFFFF</value><value>00FFFFFF</value></variable>
+	<variable name="ATV_TabColorTV"><value condition="Window.IsActive(11141)">FFFFFFFF</value><value>B3FFFFFF</value></variable>
+	<variable name="ATV_TabPillTV"><value condition="Window.IsActive(11141)">26FFFFFF</value><value>00FFFFFF</value></variable>
+	<variable name="ATV_TabColorSearch"><value condition="Window.IsActive(11120) | Window.IsActive(11121)">FFFFFFFF</value><value>B3FFFFFF</value></variable>
+	<variable name="ATV_TabPillSearch"><value condition="Window.IsActive(11120) | Window.IsActive(11121)">26FFFFFF</value><value>00FFFFFF</value></variable>
+
+	<include name="ATV_TabBar">
+		<param name="hidewhen">false</param>
+		<param name="ondown">noop</param>
+		<definition>
+			<control type="group">
+				<animation effect="slide" end="0,-150" time="380" tween="sine" easing="inout" condition="$PARAM[hidewhen]">Conditional</animation>
+				<animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$PARAM[hidewhen]">Conditional</animation>
+
+				<!-- Glass capsule behind the tabs -->
+				<control type="image">
+					<left>589</left><top>40</top><width>742</width><height>72</height>
+					<texture border="36" colordiffuse="99000000">atv/pill_72.png</texture>
+				</control>
+				<control type="image">
+					<left>589</left><top>40</top><width>742</width><height>72</height>
+					<texture border="36" colordiffuse="24FFFFFF">atv/pill_72.png</texture>
+				</control>
+
+				<control type="grouplist" id="9000">
+					<left>597</left><top>48</top><width>726</width><height>56</height>
+					<orientation>horizontal</orientation>
+					<itemgap>4</itemgap>
+					<ondown>$PARAM[ondown]</ondown>
+					<include content="ATV_Tab">
+						<param name="id" value="9001" /><param name="width" value="120" /><param name="label" value="Home" />
+						<param name="textcolor" value="$VAR[ATV_TabColorHome]" />
+						<param name="nofocus" value="$VAR[ATV_TabPillHome]" />
+						<param name="onclick" value="ReplaceWindow(home)" />
+					</include>
+					<include content="ATV_Tab">
+						<param name="id" value="9002" /><param name="width" value="140" /><param name="label" value="Movies" />
+						<param name="textcolor" value="$VAR[ATV_TabColorMovies]" />
+						<param name="nofocus" value="$VAR[ATV_TabPillMovies]" />
+						<param name="onclick" value="ReplaceWindow(1140)" />
+					</include>
+					<include content="ATV_Tab">
+						<param name="id" value="9003" /><param name="width" value="164" /><param name="label" value="TV Shows" />
+						<param name="textcolor" value="$VAR[ATV_TabColorTV]" />
+						<param name="nofocus" value="$VAR[ATV_TabPillTV]" />
+						<param name="onclick" value="ReplaceWindow(1141)" />
+					</include>
+					<include content="ATV_Tab">
+						<param name="id" value="9004" /><param name="width" value="136" /><param name="label" value="Search" />
+						<param name="textcolor" value="$VAR[ATV_TabColorSearch]" />
+						<param name="nofocus" value="$VAR[ATV_TabPillSearch]" />
+						<param name="onclick" value="Skin.Reset(SearchPersonID)" />
+						<onclick>Skin.Reset(SearchPersonName)</onclick>
+						<onclick>ActivateWindow(1120)</onclick>
+					</include>
+					<include content="ATV_Tab">
+						<param name="id" value="9005" /><param name="width" value="150" /><param name="label" value="Settings" />
+						<param name="onclick" value="ActivateWindow(Settings)" />
+					</include>
+				</control>
+
+				<control type="label">
+					<left>1480</left><top>40</top><width>350</width><height>72</height>
+					<label>$INFO[System.Time]</label>
+					<font>atv_clock</font>
+					<textcolor>CCFFFFFF</textcolor>
+					<align>right</align><aligny>center</aligny>
+				</control>
+			</control>
+		</definition>
+	</include>
+
 </includes>
