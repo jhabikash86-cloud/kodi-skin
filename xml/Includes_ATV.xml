@@ -5,7 +5,7 @@
 	<!-- ===================== EXPRESSIONS ===================== -->
 
 	<expression name="ATV_RowsFocused">Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54)</expression>
-	<expression name="ATV_UpNextEmpty">Integer.IsEqual(Container(50).NumItems,0) + !Container(50).IsUpdating</expression>
+	<expression name="ATV_UpNextEmpty">Integer.IsEqual(Container(50).NumItems,0)</expression>
 
 	<!-- ===================== VARIABLES ===================== -->
 

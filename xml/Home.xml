@@ -12,7 +12,7 @@
             <autoscroll time="10000">true</autoscroll>
             <itemlayout width="1" height="1" />
             <focusedlayout width="1" height="1" />
-            <content limit="8" target="videos">plugin://plugin.video.themoviedb.helper/?info=trending_day&amp;tmdb_type=movie</content>
+            <content limit="8">plugin://plugin.video.themoviedb.helper/?info=trending_day&amp;tmdb_type=movie</content>
         </control>
 
         <!-- ===================== FIXED BACKGROUND ===================== -->
@@ -24,7 +24,7 @@
 
         <!-- Hero backdrop: full bleed, slow Ken Burns drift, fades away when you move into the rows -->
         <control type="group">
-            <animation effect="fade" start="100" end="0" time="400" tween="cubic" easing="out" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="560" tween="quadratic" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
@@ -49,7 +49,7 @@
         <!-- Ambient backdrop for the rows: the focused tile's fanart, heavily dimmed -->
         <control type="group">
             <visible>$EXP[ATV_RowsFocused]</visible>
-            <animation effect="fade" start="0" end="100" time="400" tween="cubic" easing="out">VisibleChange</animation>
+            <animation effect="fade" start="0" end="100" time="560" tween="quadratic" easing="inout">VisibleChange</animation>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
@@ -67,24 +67,25 @@
         <control type="group" id="7000">
             <left>0</left><top>0</top>
 
-            <!-- Page offsets: the focused row's title settles at y=150.
+            <!-- Page offsets: the focused row's title settles at y=150, but the page stops once the
+                 last row sits at the bottom of the screen, so there is never empty space below it.
                  Kodi reverses the old row's slide while playing the new one and adds them, so the
                  easing must be symmetric (in-out); an ease-out curve overshoots by hundreds of px. -->
-            <animation effect="slide" end="0,-710"  time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(50)">Conditional</animation>
-            <animation effect="slide" end="0,-1090" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(51) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1490" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(52) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1890" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(53) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-2290" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(54) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <!-- Same targets when there's no Up Next (Trakt not connected) and the rows move up 380px -->
-            <animation effect="slide" end="0,-710"  time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(51) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1110" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(52) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1510" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(53) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
-            <animation effect="slide" end="0,-1910" time="520" tween="quadratic" easing="inout" condition="Control.HasFocus(54) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-710"  time="560" tween="quadratic" easing="inout" condition="Control.HasFocus(50)">Conditional</animation>
+            <animation effect="slide" end="0,-1090" time="560" tween="quadratic" easing="inout" condition="Control.HasFocus(51) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1490" time="560" tween="quadratic" easing="inout" condition="Control.HasFocus(52) + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1840" time="560" tween="quadratic" easing="inout" condition="[Control.HasFocus(53) | Control.HasFocus(54)] + !$EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <!-- Same, shifted up 380px, when there is no Up Next row (Trakt not connected) -->
+            <animation effect="slide" end="0,-710"  time="560" tween="quadratic" easing="inout" condition="Control.HasFocus(51) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1110" time="560" tween="quadratic" easing="inout" condition="Control.HasFocus(52) + $EXP[ATV_UpNextEmpty]">Conditional</animation>
+            <animation effect="slide" end="0,-1460" time="560" tween="quadratic" easing="inout" condition="[Control.HasFocus(53) | Control.HasFocus(54)] + $EXP[ATV_UpNextEmpty]">Conditional</animation>
 
             <!-- ===== HERO ===== -->
             <control type="group">
                 <left>90</left><top>0</top>
-                <animation effect="fade" start="100" end="0" time="300" tween="cubic" easing="out" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+                <!-- Moves up only ~300px while the page moves 710, so it drifts away instead of snapping -->
+                <animation effect="slide" end="0,400" time="560" tween="quadratic" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+                <animation effect="fade" start="100" end="0" time="560" tween="quadratic" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
 
                 <!-- Clear logo, or the title in bold if there's no logo -->
                 <control type="image">
@@ -178,7 +179,7 @@
             </include>
 
             <control type="group">
-                <animation effect="slide" end="0,-380" time="0" condition="$EXP[ATV_UpNextEmpty]">Conditional</animation>
+                <animation effect="slide" end="0,-380" time="400" tween="quadratic" easing="inout" condition="$EXP[ATV_UpNextEmpty]">Conditional</animation>
                 <include content="ATV_PosterRow">
                     <param name="id" value="51" />
                     <param name="top" value="1240" />
@@ -223,8 +224,8 @@
 
         <!-- ===================== TOP TAB BAR (tvOS capsule) ===================== -->
         <control type="group">
-            <animation effect="slide" end="0,-150" time="350" tween="cubic" easing="out" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
-            <animation effect="fade" start="100" end="0" time="250" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="slide" end="0,-150" time="560" tween="quadratic" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="400" tween="quadratic" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
 
             <!-- Glass capsule behind the tabs -->
             <control type="image">
