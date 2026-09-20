@@ -22,7 +22,8 @@
             <texture colordiffuse="FF0B0B0D">white.png</texture>
         </control>
         <control type="group">
-            <animation effect="fade" start="100" end="30" time="400" tween="sine" easing="inout" condition="$EXP[ATV_DetailScrolled]">Conditional</animation>
+            <!-- Backdrop clears completely once you scroll past the hero, leaving a plain dark page -->
+            <animation effect="fade" start="100" end="0" time="400" tween="sine" easing="inout" condition="$EXP[ATV_DetailScrolled]">Conditional</animation>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
@@ -100,12 +101,27 @@
                     <param name="icon" value="atv/icon_play.png" />
                     <onclick condition="!$EXP[ATV_DetailIsTV1]">PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Skin.String(DetailID1)])</onclick>
                     <onclick condition="$EXP[ATV_DetailIsTV1]">PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;season=$VAR[ATV_DetailSeason]&amp;episode=1)</onclick>
+                    <onright>9603</onright>
+                    <ondown>9610</ondown>
+                </include>
+            </control>
+            <control type="group">
+                <left>310</left><top>730</top><width>250</width><height>68</height>
+                <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(9603)">Conditional</animation>
+                <include content="ATV_CapsuleButton">
+                    <param name="id" value="9603" />
+                    <param name="width" value="250" />
+                    <param name="label" value="My List" />
+                    <param name="icon" value="atv/icon_plus.png" />
+                    <!-- Adds / removes this title on your Trakt watchlist -->
+                    <onclick>RunScript(plugin.video.themoviedb.helper,sync_trakt,tmdb_type=$INFO[Skin.String(DetailType1)],tmdb_id=$INFO[Skin.String(DetailID1)],sync_type=watchlist)</onclick>
+                    <onleft>9601</onleft>
                     <onright>9602</onright>
                     <ondown>9610</ondown>
                 </include>
             </control>
             <control type="group">
-                <left>310</left><top>730</top><width>200</width><height>68</height>
+                <left>580</left><top>730</top><width>200</width><height>68</height>
                 <visible>!String.IsEmpty(Container(9500).ListItem.Trailer)</visible>
                 <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(9602)">Conditional</animation>
                 <include content="ATV_CapsuleButton">
@@ -115,7 +131,7 @@
                     <param name="align" value="center" />
                     <param name="textoffsetx" value="0" />
                     <onclick>PlayMedia($INFO[Container(9500).ListItem.Trailer])</onclick>
-                    <onleft>9601</onleft>
+                    <onleft>9603</onleft>
                     <ondown>9610</ondown>
                 </include>
             </control>

@@ -71,9 +71,16 @@
             <animation effect="fade" start="100" end="0" time="550" pulse="true" condition="true">Conditional</animation>
         </control>
 
+        <control type="label">
+            <left>92</left><top>228</top><width>516</width><height>26</height>
+            <label>Press OK to type with a keyboard</label>
+            <font>atv_small</font><textcolor>73FFFFFF</textcolor>
+            <visible>Control.HasFocus(8100)</visible>
+        </control>
+
         <!-- Space / Delete / Clear -->
         <control type="group">
-            <left>90</left><top>250</top>
+            <left>90</left><top>264</top>
             <control type="button" id="8201">
                 <left>0</left><top>0</top><width>196</width><height>64</height>
                 <label>Space</label>
@@ -120,7 +127,7 @@
 
         <!-- A-Z 0-9 grid: every key updates the results immediately -->
         <control type="panel" id="8200">
-            <left>90</left><top>334</top><width>516</width><height>516</height>
+            <left>90</left><top>348</top><width>516</width><height>516</height>
             <orientation>vertical</orientation>
             <scrolltime>0</scrolltime>
             <onup>8201</onup>
@@ -424,7 +431,7 @@
         </control>
 
         <control type="group">
-            <left>90</left><top>866</top>
+            <left>90</left><top>872</top>
             <control type="button" id="8204">
                 <left>0</left><top>0</top><width>516</width><height>64</height>
                 <label>Type with keyboard</label>

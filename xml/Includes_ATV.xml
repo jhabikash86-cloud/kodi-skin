@@ -18,13 +18,6 @@
 	</variable>
 
 	<!-- Ambient backdrop behind the rows: fanart of whatever tile is focused -->
-	<variable name="ATV_RowFanart">
-		<value condition="Control.HasFocus(50)">$INFO[Container(50).ListItem.Art(fanart)]</value>
-		<value condition="Control.HasFocus(51)">$INFO[Container(51).ListItem.Art(fanart)]</value>
-		<value condition="Control.HasFocus(52)">$INFO[Container(52).ListItem.Art(fanart)]</value>
-		<value condition="Control.HasFocus(53)">$INFO[Container(53).ListItem.Art(fanart)]</value>
-		<value condition="Control.HasFocus(54)">$INFO[Container(54).ListItem.Art(fanart)]</value>
-	</variable>
 
 	<!-- TMDb Helper people carry their photo as profile/poster, not thumb -->
 	<variable name="ATV_PersonArt">

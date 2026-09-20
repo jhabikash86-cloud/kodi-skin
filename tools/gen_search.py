@@ -168,9 +168,16 @@ xml = f'''<?xml version="1.0" encoding="UTF-8"?>
             <animation effect="fade" start="100" end="0" time="550" pulse="true" condition="true">Conditional</animation>
         </control>
 
+        <control type="label">
+            <left>92</left><top>228</top><width>516</width><height>26</height>
+            <label>Press OK to type with a keyboard</label>
+            <font>atv_small</font><textcolor>73FFFFFF</textcolor>
+            <visible>Control.HasFocus(8100)</visible>
+        </control>
+
         <!-- Space / Delete / Clear -->
         <control type="group">
-            <left>90</left><top>250</top>
+            <left>90</left><top>264</top>
 {key_button(8201, 0, 196, "Space", "space", "                <onup>8100</onup><ondown>8200</ondown><onright>8202</onright>")}
 {key_button(8202, 204, 160, "Delete", "delete", "                <onup>8100</onup><ondown>8200</ondown><onleft>8201</onleft><onright>8203</onright>")}
 {key_button(8203, 372, 144, "Clear", "clear", "                <onup>8100</onup><ondown>8200</ondown><onleft>8202</onleft><onright>8120</onright>")}
@@ -178,7 +185,7 @@ xml = f'''<?xml version="1.0" encoding="UTF-8"?>
 
         <!-- A-Z 0-9 grid: every key updates the results immediately -->
         <control type="panel" id="8200">
-            <left>90</left><top>334</top><width>516</width><height>516</height>
+            <left>90</left><top>348</top><width>516</width><height>516</height>
             <orientation>vertical</orientation>
             <scrolltime>0</scrolltime>
             <onup>8201</onup>
@@ -231,7 +238,7 @@ xml = f'''<?xml version="1.0" encoding="UTF-8"?>
         </control>
 
         <control type="group">
-            <left>90</left><top>866</top>
+            <left>90</left><top>872</top>
 {key_button(8204, 0, 516, "Type with keyboard", "keyboard", "                <onup>8200</onup><onright>8130</onright>")}
         </control>
 
@@ -334,9 +341,10 @@ xml = f'''<?xml version="1.0" encoding="UTF-8"?>
 # Kodi's Back returns to that title (Kodi rewinds history if a window is already in it).
 # Each keeps its own skin strings (suffix '' / 'B') so they never overwrite each other.
 WINDOWS = {
-    1120: {'suffix': '', 'default': 8200,
-           # Fresh from the Search tab: start on the keyboard (Back from a title keeps your place)
-           'onload': '    <onload condition="Window.Previous(home)">SetFocus(8200)</onload>'},
+    1120: {'suffix': '', 'default': 8100,
+           # Fresh from the Search tab: start on the text field, so one OK opens Kodi's keyboard and a
+           # real keyboard can type. Back from a title keeps your place instead.
+           'onload': '    <onload condition="Window.Previous(home)">SetFocus(8100)</onload>'},
     1121: {'suffix': 'B', 'default': 8120, 'onload': ''},
 }
 STRINGS = r'(Skin\.(?:String|SetString|Reset)\()(SearchQueryURL|SearchQuery|SearchPersonID|SearchPersonName)\b'

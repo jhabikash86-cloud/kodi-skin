@@ -9,7 +9,8 @@
         <control type="list" id="40">
             <left>0</left><top>1078</top><width>1740</width><height>2</height>
             <orientation>horizontal</orientation>
-            <autoscroll time="10000">true</autoscroll>
+            <!-- Only rotates while you are idle, so the title never changes under your hands -->
+            <autoscroll time="9000">System.IdleTime(5)</autoscroll>
             <itemlayout width="1" height="1" />
             <focusedlayout width="1" height="1" />
             <content limit="8">plugin://plugin.video.themoviedb.helper/?info=trending_day&amp;tmdb_type=movie&amp;nextpage=false</content>
@@ -43,23 +44,6 @@
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>240</height>
                 <texture colordiffuse="B3FFFFFF">atv/grad_top.png</texture>
-            </control>
-        </control>
-
-        <!-- Ambient backdrop for the rows: the focused tile's fanart, heavily dimmed -->
-        <control type="group">
-            <visible>$EXP[ATV_RowsFocused]</visible>
-            <animation effect="fade" start="0" end="100" time="400" tween="sine" easing="inout">VisibleChange</animation>
-            <control type="image">
-                <left>0</left><top>0</top><width>1920</width><height>1080</height>
-                <aspectratio align="center" aligny="top">scale</aspectratio>
-                <fadetime>500</fadetime>
-                <colordiffuse>40FFFFFF</colordiffuse>
-                <texture background="true">$VAR[ATV_RowFanart]</texture>
-            </control>
-            <control type="image">
-                <left>0</left><top>360</top><width>1920</width><height>720</height>
-                <texture colordiffuse="FF0B0B0D">atv/grad_bottom.png</texture>
             </control>
         </control>
 
@@ -114,22 +98,39 @@
                     <onup>9000</onup>
                     <ondown>50</ondown>
                     <onleft>Control.Move(40,-1)</onleft>
+                    <onright>8003</onright>
+                </include>
+            </control>
+            <control type="group">
+                <left>226</left><top>722</top><width>250</width><height>68</height>
+                <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8003)">Conditional</animation>
+                <include content="ATV_CapsuleButton">
+                    <param name="id" value="8003" />
+                    <param name="width" value="250" />
+                    <param name="label" value="My List" />
+                    <param name="icon" value="atv/icon_plus.png" />
+                    <!-- Adds / removes the title on your Trakt watchlist -->
+                    <onclick>RunScript(plugin.video.themoviedb.helper,sync_trakt,tmdb_type=movie,tmdb_id=$INFO[Container(40).ListItem.UniqueID(tmdb)],sync_type=watchlist)</onclick>
+                    <onup>9000</onup>
+                    <ondown>50</ondown>
+                    <onleft>8001</onleft>
                     <onright>8002</onright>
                 </include>
             </control>
             <control type="group">
-                <left>226</left><top>722</top><width>270</width><height>68</height>
+                <left>496</left><top>722</top><width>270</width><height>68</height>
                 <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8002)">Conditional</animation>
                 <include content="ATV_CapsuleButton">
                     <param name="id" value="8002" />
                     <param name="width" value="270" />
                     <param name="label" value="More Info" />
-                    <param name="icon" value="atv/icon_plus.png" />
-                    <!-- Opens the Apple TV style title page for the hero item -->
+                    <param name="align" value="center" />
+                    <param name="textoffsetx" value="0" />
+                                        <!-- Opens the Apple TV style title page for the hero item -->
                     <onclick>RunScript(special://skin/extras/details.py,open,40)</onclick>
                     <onup>9000</onup>
                     <ondown>50</ondown>
-                    <onleft>8001</onleft>
+                    <onleft>8003</onleft>
                     <onright>Control.Move(40,1)</onright>
                 </include>
             </control>
