@@ -204,7 +204,7 @@
                             <visible>!Control.HasFocus(9610)</visible>
                         </control>
                     </focusedlayout>
-                    <content target="videos">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq</content>
+                    <content target="videos">$VAR[ATV_SeasonsPath1]</content>
                 </control>
 
                 <!-- Episodes: still, "EPISODE 3 · 47 min", title, two lines of plot. Select plays it. -->
@@ -231,7 +231,7 @@
                             <include content="ATV_EpisodeTile" />
                         </control>
                     </focusedlayout>
-                    <content target="videos">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;season=$VAR[ATV_DetailSeason]</content>
+                    <content target="videos">$VAR[ATV_EpisodesPath1]</content>
                 </control>
             </control>
 
@@ -246,7 +246,7 @@
                     <param name="onup" value="9620" />
                     <param name="ondown" value="9640" />
                     <param name="onback" value="noop" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="9640" />
@@ -287,7 +287,7 @@
                                 <include content="ATV_CastTile"><param name="focused" value="true" /></include>
                             </control>
                         </focusedlayout>
-                        <content target="videos" limit="30">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]</content>
+                        <content target="videos" limit="30">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;nextpage=false</content>
                     </control>
                 </control>
             </control>

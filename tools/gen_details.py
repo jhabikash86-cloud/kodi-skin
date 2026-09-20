@@ -18,13 +18,21 @@ VARIABLES = '''
 	<!-- ===== Title page {n} (window 113{n}) ===== -->
 	<expression name="ATV_DetailIsTV{n}">String.IsEqual(Skin.String(DetailType{n}),tv)</expression>
 	<variable name="ATV_DetailPath{n}">
-		<value>plugin://plugin.video.themoviedb.helper/?info=details&amp;tmdb_type=$INFO[Skin.String(DetailType{n})]&amp;tmdb_id=$INFO[Skin.String(DetailID{n})]</value>
+		<value>plugin://plugin.video.themoviedb.helper/?info=details&amp;tmdb_type=$INFO[Skin.String(DetailType{n})]&amp;tmdb_id=$INFO[Skin.String(DetailID{n})]&amp;nextpage=false</value>
 	</variable>
-	<!-- Titles sharing all of this title's genres (minus the title itself). TV genres such as
-	     "Action & Adventure" would break the URL, so those shows use TMDb's similar list. -->
+	<!-- Titles sharing all of this title's genres (minus the title itself). extras/details.py
+	     stores the genre ids, because TMDb Helper 6 only translates genre names shared by
+	     movies and TV. Falls back to TMDb's "similar" list when we have no ids. -->
 	<variable name="ATV_DetailGenrePath{n}">
-		<value condition="$EXP[ATV_DetailIsTV{n}] + String.Contains(Container(9500).ListItem.Genre,&amp;)">plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID{n})]</value>
-		<value condition="!String.IsEmpty(Container(9500).ListItem.Genre)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType{n})]&amp;with_genres=$INFO[Container(9500).ListItem.Genre]&amp;sort_by=popularity.desc&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID{n})]&amp;exclude_operator=eq</value>
+		<value condition="!String.IsEmpty(Skin.String(DetailGenres{n}))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType{n})]&amp;with_genres=$INFO[Skin.String(DetailGenres{n})]&amp;with_id=True&amp;sort_by=popularity.desc&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID{n})]&amp;exclude_operator=eq&amp;nextpage=false</value>
+		<value>plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType{n})]&amp;tmdb_id=$INFO[Skin.String(DetailID{n})]&amp;nextpage=false</value>
+	</variable>
+	<!-- Empty for movies so the hidden season/episode rows never fire a request -->
+	<variable name="ATV_SeasonsPath{n}">
+		<value condition="$EXP[ATV_DetailIsTV{n}]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID{n})]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_EpisodesPath{n}">
+		<value condition="$EXP[ATV_DetailIsTV{n}]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID{n})]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
 	</variable>
 	<variable name="ATV_DetailMeta{n}">
 		<value condition="$EXP[ATV_DetailIsTV{n}]">TV Show$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
