@@ -337,6 +337,34 @@
 				<aspectratio scalediffuse="false">scale</aspectratio>
 				<texture background="true" diffuse="atv/mask_landscape.png">$VAR[ATV_EpisodeArt]</texture>
 			</control>
+			<!-- Watched / part-watched state, straight from Trakt -->
+			<control type="image">
+				<left>20</left><top>30</top><width>384</width><height>216</height>
+				<texture colordiffuse="66000000" diffuse="atv/mask_landscape.png">white.png</texture>
+				<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+			</control>
+			<control type="image">
+				<left>340</left><top>44</top><width>50</width><height>50</height>
+				<texture colordiffuse="E6000000" diffuse="atv/mask_circle.png">white.png</texture>
+				<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+			</control>
+			<control type="image">
+				<left>351</left><top>55</top><width>28</width><height>28</height>
+				<texture colordiffuse="FFFFFFFF">atv/icon_check.png</texture>
+				<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+			</control>
+			<control type="image">
+				<left>20</left><top>138</top><width>384</width><height>108</height>
+				<texture diffuse="atv/mask_landscape.png" colordiffuse="B3FFFFFF">atv/grad_bottom.png</texture>
+				<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
+			</control>
+			<control type="progress">
+				<left>40</left><top>222</top><width>344</width><height>6</height>
+				<info>ListItem.PercentPlayed</info>
+				<texturebg border="3,0,3,0" colordiffuse="4DFFFFFF">atv/bar6.png</texturebg>
+				<midtexture border="3,0,3,0" colordiffuse="FFFFFFFF">atv/bar6.png</midtexture>
+				<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
+			</control>
 			<control type="label">
 				<left>20</left><top>262</top><width>384</width><height>28</height>
 				<label>EPISODE $INFO[ListItem.Episode]$INFO[ListItem.Duration(mins),  ·  , MIN]</label>

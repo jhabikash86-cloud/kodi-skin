@@ -148,3 +148,32 @@ circle(f'{M}/nib.png', 64)                        # scrubber playhead
 # Progress bars at their real height, so the rounded ends never get stretched
 rrect(f'{M}/bar8.png', 16, 8, 4)                  # player scrubber      border="4,0,4,0"
 rrect(f'{M}/bar6.png', 12, 6, 3)                  # Up Next progress     border="3,0,3,0"
+
+
+def check_icon(path, s):
+    """Tick mark, drawn as two thick strokes with round-ish ends (supersampled)."""
+    ss = 4
+    pts = [((0.22 * s, 0.53 * s), (0.42 * s, 0.72 * s)), ((0.42 * s, 0.72 * s), (0.78 * s, 0.30 * s))]
+    t = s * 0.085
+
+    def near(x, y, a, b):
+        (x1, y1), (x2, y2) = a, b
+        dx, dy = x2 - x1, y2 - y1
+        L = dx * dx + dy * dy
+        u = max(0, min(1, ((x - x1) * dx + (y - y1) * dy) / L))
+        px, py = x1 + u * dx, y1 + u * dy
+        return math.hypot(x - px, y - py) <= t
+
+    def px(x, y):
+        n = 0
+        for i in range(ss):
+            for j in range(ss):
+                sx, sy = x + (i + 0.5) / ss, y + (j + 0.5) / ss
+                if any(near(sx, sy, a, b) for a, b in pts):
+                    n += 1
+        return 255, 255, 255, 255 * n / (ss * ss)
+    write_png(path, s, s, px)
+
+
+check_icon(f'{M}/icon_check.png', 48)
+print('check ok')
