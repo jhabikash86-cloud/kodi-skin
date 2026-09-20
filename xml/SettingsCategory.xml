@@ -1,49 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Every settings page (Interface, Player, System, ...) is this one window. Estuary
+     framed it in panels over a fanart wash; here it is flat dark with a hairline
+     divider, categories on the left and the settings themselves on the right.
+     The control ids are fixed by Kodi - only the styling is the skin's. -->
 <window>
 	<defaultcontrol>3</defaultcontrol>
-	<backgroundcolor>background</backgroundcolor>
+	<backgroundcolor>FF0B0B0D</backgroundcolor>
 	<controls>
-		<include>DefaultBackground</include>
-		<control type="multiimage">
-			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
-			<aspectratio>scale</aspectratio>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-			<animation effect="fade" start="0" end="100" time="400" reversible="true" condition="!Window.Previous(Settings)">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="300" reversible="true" condition="!Window.Next(Settings)">WindowClose</animation>
-			<animation effect="fade" time="400">VisibleChange</animation>
-			<imagepath colordiffuse="35FFFFFF">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
-			<visible>!Player.HasMedia + !String.IsEmpty(Skin.String(HomeFanart.path))</visible>
+
+		<control type="image">
+			<left>0</left><top>0</top><width>1920</width><height>1080</height>
+			<texture colordiffuse="FF0B0B0D">white.png</texture>
 		</control>
+
 		<control type="group">
-			<include>OpenClose_Right</include>
+			<animation effect="fade" start="0" end="100" time="220">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="160">WindowClose</animation>
+
+			<!-- Breadcrumb, in the same place and weight as a page title elsewhere -->
+			<control type="label">
+				<left>90</left><top>56</top><width>1500</width><height>72</height>
+				<label>$LOCALIZE[5]$INFO[Control.GetLabel(2), / ]</label>
+				<font>atv_title</font><textcolor>FFFFFFFF</textcolor>
+				<aligny>center</aligny>
+			</control>
+			<control type="label">
+				<left>1480</left><top>56</top><width>350</width><height>72</height>
+				<label>$INFO[System.Time]</label>
+				<font>atv_clock</font><textcolor>80FFFFFF</textcolor>
+				<align>right</align><aligny>center</aligny>
+			</control>
+
+			<!-- Hairline between the two columns -->
+			<control type="image">
+				<left>546</left><top>170</top><width>2</width><height>760</height>
+				<texture colordiffuse="14FFFFFF">white.png</texture>
+			</control>
+
+			<control type="grouplist" id="3">
+				<description>button area</description>
+				<left>76</left><top>172</top><width>450</width><height>700</height>
+				<usecontrolcoords>true</usecontrolcoords>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>20</ondown>
+			</control>
+
+			<control type="button" id="10">
+				<description>Default Category Button</description>
+				<left>0</left>
+				<height>78</height>
+				<width>450</width>
+				<textoffsetx>28</textoffsetx>
+				<aligny>center</aligny>
+				<font>atv_button</font>
+				<textcolor>B3FFFFFF</textcolor>
+				<focusedcolor>FF0B0B0D</focusedcolor>
+				<texturefocus border="16" colordiffuse="FFFFFFFF">atv/rounded16.png</texturefocus>
+				<texturenofocus />
+			</control>
+
+			<!-- Settings level (Basic / Standard / Advanced / Expert) -->
+			<control type="radiobutton" id="20">
+				<left>76</left><bottom>72</bottom><width>450</width><height>72</height>
+				<aligny>center</aligny>
+				<onclick>SettingsLevelChange</onclick>
+				<font>atv_meta</font>
+				<textcolor>99FFFFFF</textcolor>
+				<focusedcolor>FF0B0B0D</focusedcolor>
+				<textoffsetx>76</textoffsetx>
+				<textoffsety>0</textoffsety>
+				<texturefocus border="16" colordiffuse="FFFFFFFF">atv/rounded16.png</texturefocus>
+				<texturenofocus />
+				<radioposx>28</radioposx>
+				<radioposy>20</radioposy>
+				<radiowidth>32</radiowidth>
+				<radioheight>32</radioheight>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<textureradioonfocus colordiffuse="FF0B0B0D">icons/settings.png</textureradioonfocus>
+				<textureradioonnofocus colordiffuse="99FFFFFF">icons/settings.png</textureradioonnofocus>
+				<textureradioofffocus colordiffuse="FF0B0B0D">icons/settings.png</textureradioofffocus>
+				<textureradiooffnofocus colordiffuse="99FFFFFF">icons/settings.png</textureradiooffnofocus>
+			</control>
+
 			<control type="grouplist" id="5">
 				<description>control area</description>
-				<top>133</top>
-				<left>470</left>
+				<left>600</left><top>172</top><width>1230</width><height>700</height>
 				<pagecontrol>60</pagecontrol>
-				<right>0</right>
-				<bottom>137</bottom>
 				<onleft>3</onleft>
 				<onright>60</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
 			</control>
-			<control type="image">
-				<left>470</left>
-				<top>130</top>
-				<right>0</right>
-				<height>2</height>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+
+			<control type="scrollbar" id="60">
+				<right>52</right><top>172</top><height>700</height><width>6</width>
+				<orientation>vertical</orientation>
+				<texturesliderbackground colordiffuse="0DFFFFFF" border="3,0,3,0">atv/bar6.png</texturesliderbackground>
+				<texturesliderbar colordiffuse="59FFFFFF" border="3,0,3,0">atv/bar6.png</texturesliderbar>
+				<texturesliderbarfocus colordiffuse="FFFFFFFF" border="3,0,3,0">atv/bar6.png</texturesliderbarfocus>
+				<showonepage>false</showonepage>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<hitrect x="0" y="0" w="60" h="100%" />
 			</control>
+
+			<!-- Help text for whatever is focused -->
 			<control type="image">
-				<left>470</left>
-				<bottom>135</bottom>
-				<right>0</right>
-				<height>2</height>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+				<left>600</left><bottom>152</bottom><width>1230</width><height>2</height>
+				<texture colordiffuse="14FFFFFF">white.png</texture>
+			</control>
+			<control type="textbox" id="6">
+				<description>description area</description>
+				<left>600</left><bottom>48</bottom><width>1180</width><height>88</height>
+				<font>atv_small</font>
+				<align>left</align>
+				<textcolor>99FFFFFF</textcolor>
+				<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
 			</control>
 		</control>
+
+		<!-- Kodi templates: it clones these for each setting on the page -->
 		<control type="button" id="7">
 			<description>Default Button</description>
 			<include>DefaultSettingButton</include>
@@ -62,129 +143,25 @@
 			<include>DefaultSettingButton</include>
 			<aligny>center</aligny>
 		</control>
-		<control type="image" id="11">
-			<description>separator image</description>
-			<height>3</height>
-			<texture colordiffuse="AAAAAAAA" border="3">dialogs/separator-grey.png</texture>
-		</control>
-		<control type="label" id="14">
-			<description>Default Label</description>
-			<width>1450</width>
-			<textoffsetx>45</textoffsetx>
-			<top>0</top>
-			<height>50</height>
-			<label></label>
-			<align>center</align>
-			<aligny>center</aligny>
-			<font>font25_title</font>
-			<textcolor>grey</textcolor>
-			<shadowcolor>black</shadowcolor>
-		</control>
 		<control type="colorbutton" id="15">
 			<description>Default ColorButton</description>
 			<include>DefaultSettingButton</include>
 		</control>
-		<control type="group">
-			<depth>DepthContentPanel</depth>
-			<include>OpenClose_Left</include>
-			<include content="ContentPanel">
-				<param name="width" value="530" />
-			</include>
-			<control type="grouplist" id="3">
-				<description>button area</description>
-				<left>0</left>
-				<top>130</top>
-				<width>470</width>
-				<height>810</height>
-				<usecontrolcoords>true</usecontrolcoords>
-				<onleft>5</onleft>
-				<onright>5</onright>
-				<onup>3</onup>
-				<ondown>20</ondown>
-			</control>
-			<control type="button" id="10">
-				<description>Default Category Button</description>
-				<left>0</left>
-				<height>85</height>
-				<width>470</width>
-				<textoffsetx>40</textoffsetx>
-				<aligny>center</aligny>
-				<font>font37</font>
-				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-				<texturenofocus />
-			</control>
+		<control type="image" id="11">
+			<description>separator image</description>
+			<height>2</height>
+			<texture colordiffuse="0FFFFFFF">white.png</texture>
 		</control>
-		<control type="group">
-			<right>0</right>
-			<top>133</top>
-			<bottom>137</bottom>
-			<width>60</width>
-			<control type="scrollbar" id="60">
-				<right>0</right>
-				<top>0</top>
-				<bottom>0</bottom>
-				<width>12</width>
-				<orientation>vertical</orientation>
-				<texturesliderbackground />
-				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
-				<onleft>5</onleft>
-				<onright>5</onright>
-				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
-				<hitrect x="0" y="0" w="60" h="100%" />
-			</control>
+		<control type="label" id="14">
+			<description>group header</description>
+			<width>1230</width>
+			<include>DefaultSettingLabel</include>
 		</control>
-		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[5]$INFO[Control.GetLabel(2), / ]" />
-		</include>
-		<include>BottomBar</include>
-		<control type="group">
-			<depth>DepthContentPanel</depth>
-			<include>OpenClose_Left</include>
-			<control type="radiobutton" id="20">
-				<width>470</width>
-				<left>0</left>
-				<bottom>70</bottom>
-				<height>90</height>
-				<aligny>center</aligny>
-				<onclick>SettingsLevelChange</onclick>
-				<textoffsetx>100</textoffsetx>
-				<textoffsety>0</textoffsety>
-				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
-				<texturenofocus />
-				<radioposx>40</radioposx>
-				<radioposy>0</radioposy>
-				<radiowidth>40</radiowidth>
-				<radioheight>40</radioheight>
-				<onleft>5</onleft>
-				<onright>5</onright>
-				<onup>3</onup>
-				<ondown>3</ondown>
-				<textureradioonfocus>icons/settings.png</textureradioonfocus>
-				<textureradioonnofocus>icons/settings.png</textureradioonnofocus>
-				<textureradioofffocus>icons/settings.png</textureradioofffocus>
-				<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
-			</control>
-		</control>
-		<control type="group">
-			<include>OpenClose_Right</include>
-			<control type="textbox" id="6">
-				<description>description area</description>
-				<left>510</left>
-				<bottom>25</bottom>
-				<right>60</right>
-				<height>104</height>
-				<font>font12</font>
-				<align>justify</align>
-				<textcolor>button_focus</textcolor>
-				<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
-			</control>
-		</control>
+
 		<control type="label" id="2">
 			<description>breadcrumbs label</description>
 			<visible>False</visible>
 		</control>
+
 	</controls>
 </window>

@@ -212,9 +212,9 @@
 	</include>
 	<include name="DefaultSimpleListLayout">
 		<param name="align">left</param>
-		<param name="height">70</param>
-		<param name="font">font13</param>
-		<param name="fontcolor">grey</param>
+		<param name="height">76</param>
+		<param name="font">atv_body</param>
+		<param name="fontcolor">B3FFFFFF</param>
 		<definition>
 			<itemlayout width="$PARAM[width]" height="$PARAM[height]">
 				<control type="group">
@@ -268,8 +268,8 @@
 					<top>0</top>
 					<right>0</right>
 					<bottom>0</bottom>
-					<texture colordiffuse="button_focus">lists/focus.png</texture>
-					<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
+					<texture border="12" colordiffuse="FFFFFFFF">atv/rounded12.png</texture>
+					<animation effect="fade" start="100" end="45" time="0">UnFocus</animation>
 				</control>
 				<control type="group">
 					<visible>ListItem.Property(PVR.IsRecordingTimer) | ListItem.Property(PVR.IsRemindingTimer)</visible>
@@ -298,6 +298,8 @@
 						<font>$PARAM[font]</font>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
+						<textcolor>FF0B0B0D</textcolor>
+						<selectedcolor>FF0A84FF</selectedcolor>
 						<scroll>true</scroll>
 					</control>
 				</control>
@@ -312,6 +314,8 @@
 						<font>$PARAM[font]</font>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
+						<textcolor>FF0B0B0D</textcolor>
+						<selectedcolor>FF0A84FF</selectedcolor>
 						<scroll>true</scroll>
 					</control>
 				</control>
@@ -891,6 +895,9 @@
 			</control>
 		</definition>
 	</include>
+	<!-- The chrome behind every Kodi dialog in the skin: a rounded dark card that lifts
+	     off a dimmed backdrop, with a hairline under the title. Estuary drew a square
+	     grey panel with a coloured header bar and the Kodi logo in the corner. -->
 	<include name="DialogBackgroundCommons">
 		<control type="image">
 			<left>-2000</left>
@@ -900,7 +907,7 @@
 			<animation effect="fade" time="300">VisibleChange</animation>
 			<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-			<texture colordiffuse="80FFFFFF">colors/black.png</texture>
+			<texture colordiffuse="B3000000">colors/black.png</texture>
 			<visible>$PARAM[darken_bg]</visible>
 		</control>
 		<control type="button">
@@ -915,29 +922,38 @@
 		<control type="group">
 			<width>$PARAM[width]</width>
 			<height>$PARAM[height]</height>
+			<animation effect="zoom" start="97" end="100" center="auto" time="220" tween="cubic" easing="out">WindowOpen</animation>
+			<!-- Negative right/bottom push the shadow past the card's edges -->
 			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<right>0</right>
-				<bottom>0</bottom>
-				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+				<left>-56</left>
+				<top>-48</top>
+				<right>-56</right>
+				<bottom>-64</bottom>
+				<texture border="64">atv/shadow.png</texture>
 			</control>
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<right>0</right>
-				<height>70</height>
-				<texture colordiffuse="button_focus" border="2">colors/white70.png</texture>
+				<bottom>0</bottom>
+				<texture border="24" colordiffuse="FA17171A">atv/rounded24.png</texture>
+			</control>
+			<control type="image">
+				<left>40</left>
+				<top>70</top>
+				<right>40</right>
+				<height>2</height>
+				<texture colordiffuse="1AFFFFFF">colors/white.png</texture>
 			</control>
 			<control type="label" id="$PARAM[header_id]">
 				<left>40</left>
 				<top>0</top>
 				<right>100</right>
 				<height>70</height>
-				<font>font32_title</font>
+				<font>atv_row</font>
+				<textcolor>FFFFFFFF</textcolor>
 				<label>$PARAM[header_label]</label>
 				<aligny>center</aligny>
-				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="button" id="22002">
 				<description>button overlay to avoid closing in dialog area</description>
@@ -950,29 +966,29 @@
 				<onclick>noop</onclick>
 			</control>
 			<control type="radiobutton">
-				<right>10</right>
-				<top>11</top>
-				<width>48</width>
-				<height>48</height>
-				<radiowidth>48</radiowidth>
-				<radioheight>48</radioheight>
+				<right>24</right>
+				<top>16</top>
+				<width>38</width>
+				<height>38</height>
+				<radiowidth>38</radiowidth>
+				<radioheight>38</radioheight>
 				<texturefocus />
 				<texturenofocus />
 				<label></label>
-				<textureradioofffocus colordiffuse="EEFFFFFF">dialogs/close.png</textureradioofffocus>
-				<textureradiooffnofocus colordiffuse="EEFFFFFF">special://xbmc/media/vendor_icon.png</textureradiooffnofocus>
-				<textureradioonfocus colordiffuse="EEFFFFFF">dialogs/close.png</textureradioonfocus>
-				<textureradioonnofocus colordiffuse="EEFFFFFF">special://xbmc/media/vendor_icon.png</textureradioonnofocus>
+				<textureradioofffocus colordiffuse="FFFFFFFF">dialogs/close.png</textureradioofffocus>
+				<textureradiooffnofocus colordiffuse="4DFFFFFF">dialogs/close.png</textureradiooffnofocus>
+				<textureradioonfocus colordiffuse="FFFFFFFF">dialogs/close.png</textureradioonfocus>
+				<textureradioonnofocus colordiffuse="4DFFFFFF">dialogs/close.png</textureradioonnofocus>
 				<onclick>Action(close)</onclick>
 				<visible>!Skin.HasSetting(touchmode)</visible>
 			</control>
 			<control type="button">
-				<right>10</right>
-				<top>11</top>
-				<width>48</width>
-				<height>48</height>
-				<texturefocus>dialogs/close.png</texturefocus>
-				<texturenofocus>dialogs/close.png</texturenofocus>
+				<right>24</right>
+				<top>16</top>
+				<width>38</width>
+				<height>38</height>
+				<texturefocus colordiffuse="FFFFFFFF">dialogs/close.png</texturefocus>
+				<texturenofocus colordiffuse="4DFFFFFF">dialogs/close.png</texturenofocus>
 				<onclick>Action(close)</onclick>
 				<visible>Skin.HasSetting(touchmode)</visible>
 			</control>

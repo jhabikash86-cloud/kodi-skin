@@ -45,17 +45,23 @@
 			</control>
 		</definition>
 	</include>
+	<!-- Every settings row in the skin. Focus is the white capsule with dark text used
+	     by the hero buttons and the keyboard, so settings feel part of the same app. -->
 	<include name="DefaultSettingButton">
-		<param name="height">70</param>
-		<param name="textoffsetx">40</param>
+		<param name="height">78</param>
+		<param name="textoffsetx">28</param>
 		<definition>
 			<textoffsetx>$PARAM[textoffsetx]</textoffsetx>
 			<top>0</top>
 			<height>$PARAM[height]</height>
 			<aligny>center</aligny>
+			<font>atv_body</font>
+			<textcolor>FFFFFFFF</textcolor>
+			<focusedcolor>FF0B0B0D</focusedcolor>
+			<disabledcolor>40FFFFFF</disabledcolor>
 			<invalidcolor>invalid</invalidcolor>
 			<selectedcolor>selected</selectedcolor>
-			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+			<texturefocus border="16" colordiffuse="FFFFFFFF">atv/rounded16.png</texturefocus>
 			<texturenofocus />
 		</definition>
 	</include>
@@ -76,12 +82,13 @@
 	<include name="DefaultSettingLabel">
 		<left>0</left>
 		<top>0</top>
-		<height>75</height>
+		<height>78</height>
 		<label></label>
-		<align>center</align>
-		<aligny>center</aligny>
-		<font>font25_title</font>
-		<textcolor>grey</textcolor>
+		<align>left</align>
+		<aligny>bottom</aligny>
+		<textoffsetx>28</textoffsetx>
+		<font>atv_caption</font>
+		<textcolor>80FFFFFF</textcolor>
 	</include>
 	<include name="SettingsItemCommon">
 		<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>

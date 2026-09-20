@@ -547,6 +547,10 @@
 	<variable name="ATV_TabColorSearch"><value condition="Window.IsActive(11120) | Window.IsActive(11121)">FFFFFFFF</value><value>B3FFFFFF</value></variable>
 	<variable name="ATV_TabPillSearch"><value condition="Window.IsActive(11120) | Window.IsActive(11121)">26FFFFFF</value><value>00FFFFFF</value></variable>
 
+	<!-- Settings is a family of windows, so the tab stays lit in all of them. -->
+	<variable name="ATV_TabColorSettings"><value condition="Window.IsActive(settings) | Window.IsActive(interfacesettings) | Window.IsActive(playersettings) | Window.IsActive(mediasettings) | Window.IsActive(servicesettings) | Window.IsActive(systemsettings) | Window.IsActive(pvrsettings) | Window.IsActive(gamesettings) | Window.IsActive(skinsettings) | Window.IsActive(profiles) | Window.IsActive(systeminfo) | Window.IsActive(addonbrowser) | Window.IsActive(filemanager) | Window.IsActive(eventlog)">FFFFFFFF</value><value>B3FFFFFF</value></variable>
+	<variable name="ATV_TabPillSettings"><value condition="Window.IsActive(settings) | Window.IsActive(interfacesettings) | Window.IsActive(playersettings) | Window.IsActive(mediasettings) | Window.IsActive(servicesettings) | Window.IsActive(systemsettings) | Window.IsActive(pvrsettings) | Window.IsActive(gamesettings) | Window.IsActive(skinsettings) | Window.IsActive(profiles) | Window.IsActive(systeminfo) | Window.IsActive(addonbrowser) | Window.IsActive(filemanager) | Window.IsActive(eventlog)">26FFFFFF</value><value>00FFFFFF</value></variable>
+
 	<include name="ATV_TabBar">
 		<param name="hidewhen">false</param>
 		<param name="ondown">noop</param>
@@ -598,6 +602,8 @@
 					</include>
 					<include content="ATV_Tab">
 						<param name="id" value="9005" /><param name="width" value="150" /><param name="label" value="Settings" />
+						<param name="textcolor" value="$VAR[ATV_TabColorSettings]" />
+						<param name="nofocus" value="$VAR[ATV_TabPillSettings]" />
 						<param name="onclick" value="ActivateWindow(Settings)" />
 					</include>
 				</control>
@@ -611,6 +617,57 @@
 				</control>
 			</control>
 		</definition>
+	</include>
+
+	<!-- One row of the Settings hub: icon, label, chevron. Focus is the skin's white
+	     capsule with dark text, the same idiom as the hero buttons and keyboard keys. -->
+	<include name="ATV_SettingsRow">
+		<itemlayout width="1240" height="88">
+			<control type="image">
+				<left>24</left><top>16</top><width>56</width><height>56</height>
+				<texture border="12" colordiffuse="1FFFFFFF">atv/rounded12.png</texture>
+			</control>
+			<control type="image">
+				<left>26</left><top>18</top><width>52</width><height>52</height>
+				<texture colordiffuse="E6FFFFFF">$INFO[ListItem.Icon]</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<left>104</left><top>0</top><width>1056</width><height>88</height>
+				<label>$INFO[ListItem.Label]</label>
+				<font>atv_button</font><textcolor>FFFFFFFF</textcolor>
+				<aligny>center</aligny>
+			</control>
+			<control type="image">
+				<left>1186</left><top>33</top><width>22</width><height>22</height>
+				<texture colordiffuse="59FFFFFF">atv/icon_chevron.png</texture>
+			</control>
+		</itemlayout>
+		<focusedlayout width="1240" height="88">
+			<control type="image">
+				<left>0</left><top>2</top><width>1240</width><height>84</height>
+				<texture border="16" colordiffuse="FFFFFFFF">atv/rounded16.png</texture>
+			</control>
+			<control type="image">
+				<left>24</left><top>16</top><width>56</width><height>56</height>
+				<texture border="12" colordiffuse="1F000000">atv/rounded12.png</texture>
+			</control>
+			<control type="image">
+				<left>26</left><top>18</top><width>52</width><height>52</height>
+				<texture colordiffuse="FF0B0B0D">$INFO[ListItem.Icon]</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<left>104</left><top>0</top><width>1056</width><height>88</height>
+				<label>$INFO[ListItem.Label]</label>
+				<font>atv_button</font><textcolor>FF0B0B0D</textcolor>
+				<aligny>center</aligny>
+			</control>
+			<control type="image">
+				<left>1186</left><top>33</top><width>22</width><height>22</height>
+				<texture colordiffuse="8C000000">atv/icon_chevron.png</texture>
+			</control>
+		</focusedlayout>
 	</include>
 
 </includes>

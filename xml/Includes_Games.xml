@@ -34,7 +34,7 @@
 					<bottom>-20</bottom>
 					<left>-20</left>
 					<right>0</right>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					<texture border="16" colordiffuse="0AFFFFFF">atv/rounded16.png</texture>
 				</control>
 				<control type="grouplist" id="3">
 					<description>Controller profiles grouplist</description>
@@ -89,7 +89,7 @@
 					<bottom>-20</bottom>
 					<left>-20</left>
 					<right>0</right>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					<texture border="16" colordiffuse="0AFFFFFF">atv/rounded16.png</texture>
 				</control>
 				<control type="grouplist" id="5">
 					<description>Features grouplist</description>
@@ -185,7 +185,7 @@
 					<bottom>-20</bottom>
 					<left>-20</left>
 					<right>-20</right>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					<texture border="16" colordiffuse="0AFFFFFF">atv/rounded16.png</texture>
 				</control>
 				<control type="textbox" id="32">
 					<top>5</top>
@@ -226,7 +226,7 @@
 						<bottom>-20</bottom>
 						<left>-20</left>
 						<right>-20</right>
-						<texture border="40">buttons/dialogbutton-nofo.png</texture>
+						<texture border="16" colordiffuse="0AFFFFFF">atv/rounded16.png</texture>
 					</control>
 					<control type="list" id="3">
 						<description>Port item list</description>
@@ -442,7 +442,7 @@
 						<bottom>-20</bottom>
 						<left>-20</left>
 						<right>-20</right>
-						<texture border="40">buttons/dialogbutton-nofo.png</texture>
+						<texture border="16" colordiffuse="0AFFFFFF">atv/rounded16.png</texture>
 					</control>
 					<control type="list" id="7">
 						<description>Controller list</description>

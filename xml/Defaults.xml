@@ -78,39 +78,41 @@
 		<pulseonselect>no</pulseonselect>
 	</default>
 	<default type="spincontrolex">
-		<spinwidth>32</spinwidth>
-		<spinheight>60</spinheight>
-		<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-		<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
-		<textureup colordiffuse="disabled">buttons/spinctrl/arrow-light-up.png</textureup>
-		<texturedown colordiffuse="disabled">buttons/spinctrl/arrow-light-down.png</texturedown>
-		<textureupfocus>buttons/spinctrl/arrow-light-up.png</textureupfocus>
-		<texturedownfocus>buttons/spinctrl/arrow-light-down.png</texturedownfocus>
+		<spinwidth>36</spinwidth>
+		<spinheight>56</spinheight>
+		<texturefocus border="16" colordiffuse="FFFFFFFF">atv/rounded16.png</texturefocus>
+		<texturenofocus />
+		<textureup colordiffuse="FF8E8E93">buttons/spinctrl/arrow-light-up.png</textureup>
+		<texturedown colordiffuse="FF8E8E93">buttons/spinctrl/arrow-light-down.png</texturedown>
+		<textureupfocus colordiffuse="FF0B0B0D">buttons/spinctrl/arrow-light-up.png</textureupfocus>
+		<texturedownfocus colordiffuse="FF0B0B0D">buttons/spinctrl/arrow-light-down.png</texturedownfocus>
 		<textureupdisabled colordiffuse="disabled">buttons/spinctrl/arrow-light-up.png</textureupdisabled>
 		<texturedowndisabled colordiffuse="disabled">buttons/spinctrl/arrow-light-down.png</texturedowndisabled>
-		<font>font13</font>
-		<textcolor>white</textcolor>
+		<font>atv_body</font>
+		<textcolor>FFFFFFFF</textcolor>
+		<focusedcolor>FF0B0B0D</focusedcolor>
 		<disabledcolor>disabled</disabledcolor>
-		<textoffsetx>7</textoffsetx>
+		<textoffsetx>28</textoffsetx>
 		<aligny>center</aligny>
 		<reverse>yes</reverse>
 		<pulseonselect>no</pulseonselect>
 	</default>
 	<default type="radiobutton">
-		<radiowidth>120</radiowidth>
-		<radioheight>76</radioheight>
-		<textureradioonfocus>buttons/radio-button-on.png</textureradioonfocus>
-		<textureradioonnofocus>buttons/radio-button-on.png</textureradioonnofocus>
-		<textureradioofffocus>buttons/radio-button-off.png</textureradioofffocus>
-		<textureradiooffnofocus>buttons/radio-button-off.png</textureradiooffnofocus>
-		<textureradioondisabled colordiffuse="disabled">buttons/radio-button-on.png</textureradioondisabled>
-		<textureradiooffdisabled colordiffuse="disabled">buttons/radio-button-off.png</textureradiooffdisabled>
-		<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-		<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
-		<font>font13</font>
-		<textcolor>white</textcolor>
+		<radiowidth>76</radiowidth>
+		<radioheight>44</radioheight>
+		<textureradioonfocus colordiffuse="FF0A84FF">atv/switch_on.png</textureradioonfocus>
+		<textureradioonnofocus colordiffuse="FF0A84FF">atv/switch_on.png</textureradioonnofocus>
+		<textureradioofffocus colordiffuse="4D000000">atv/switch_off.png</textureradioofffocus>
+		<textureradiooffnofocus colordiffuse="3DFFFFFF">atv/switch_off.png</textureradiooffnofocus>
+		<textureradioondisabled colordiffuse="40FFFFFF">atv/switch_on.png</textureradioondisabled>
+		<textureradiooffdisabled colordiffuse="26FFFFFF">atv/switch_off.png</textureradiooffdisabled>
+		<texturefocus border="16" colordiffuse="FFFFFFFF">atv/rounded16.png</texturefocus>
+		<texturenofocus />
+		<font>atv_body</font>
+		<textcolor>FFFFFFFF</textcolor>
+		<focusedcolor>FF0B0B0D</focusedcolor>
 		<disabledcolor>disabled</disabledcolor>
-		<textoffsetx>7</textoffsetx>
+		<textoffsetx>28</textoffsetx>
 		<align>left</align>
 		<aligny>center</aligny>
 		<pulseonselect>no</pulseonselect>
@@ -150,19 +152,20 @@
 		<orientation>horizontal</orientation>
 	</default>
 	<default type="sliderex">
-		<textoffsetx>7</textoffsetx>
+		<textoffsetx>28</textoffsetx>
 		<aligny>center</aligny>
-		<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-		<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
-		<sliderwidth>150</sliderwidth>
-		<sliderheight>28</sliderheight>
-		<texturesliderbar>buttons/slider-back.png</texturesliderbar>
-		<texturesliderbardisabled colordiffuse="disabled">buttons/slider-back.png</texturesliderbardisabled>
-		<textureslidernib>buttons/slider-nib.png</textureslidernib>
-		<textureslidernibfocus colordiffuse="button_focus">buttons/slider-nib.png</textureslidernibfocus>
-		<textureslidernibdisabled colordiffuse="disabled">buttons/slider-nib.png</textureslidernibdisabled>
-		<font>font13</font>
-		<textcolor>white</textcolor>
+		<texturefocus border="16" colordiffuse="FFFFFFFF">atv/rounded16.png</texturefocus>
+		<texturenofocus />
+		<sliderwidth>220</sliderwidth>
+		<sliderheight>6</sliderheight>
+		<texturesliderbar border="3,0,3,0" colordiffuse="66808080">atv/bar6.png</texturesliderbar>
+		<texturesliderbardisabled border="3,0,3,0" colordiffuse="33808080">atv/bar6.png</texturesliderbardisabled>
+		<textureslidernib colordiffuse="FF8E8E93">atv/nib.png</textureslidernib>
+		<textureslidernibfocus colordiffuse="FF0B0B0D">atv/nib.png</textureslidernibfocus>
+		<textureslidernibdisabled colordiffuse="disabled">atv/nib.png</textureslidernibdisabled>
+		<font>atv_body</font>
+		<textcolor>FFFFFFFF</textcolor>
+		<focusedcolor>FF0B0B0D</focusedcolor>
 		<disabledcolor>disabled</disabledcolor>
 	</default>
 	<default type="mover">

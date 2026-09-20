@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Context menu. Kodi positions the card itself (control 999 sets its size), so the
+     styling here is the rounded dark card, a shadow under it and the skin's white
+     capsule on the focused row. -->
 <window>
 	<defaultcontrol>996</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
@@ -14,7 +17,7 @@
 			<height>3240</height>
 			<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-			<texture colordiffuse="B0FFFFFF">colors/black.png</texture>
+			<texture colordiffuse="B3000000">colors/black.png</texture>
 		</control>
 		<control type="button">
 			<left>-1920</left>
@@ -27,25 +30,33 @@
 		</control>
 		<control type="group">
 			<animation effect="slide" end="0,175" time="0" condition="Window.IsActive(home)">conditional</animation>
+			<control type="image">
+				<description>shadow, sized off the card below it</description>
+				<left>-56</left>
+				<top>-48</top>
+				<width>592</width>
+				<height>892</height>
+				<texture border="64">atv/shadow.png</texture>
+			</control>
 			<control type="image" id="999">
 				<description>background image</description>
 				<left>0</left>
 				<top>0</top>
-				<width>450</width>
+				<width>480</width>
 				<height>780</height>
-				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+				<texture border="24" colordiffuse="FA17171A">atv/rounded24.png</texture>
 			</control>
 			<control type="grouplist" id="996">
 				<description>grouplist for context buttons</description>
-				<left>0</left>
-				<top>0</top>
-				<width>450</width>
-				<height max="780">auto</height>
+				<left>12</left>
+				<top>14</top>
+				<width>456</width>
+				<height max="752">auto</height>
 				<usecontrolcoords>true</usecontrolcoords>
 			</control>
 			<include content="UpDownArrows">
 				<param name="container_id" value="996" />
-				<param name="posx" value="201" />
+				<param name="posx" value="216" />
 				<param name="up_posy" value="-40" />
 				<param name="down_posy" value="798" />
 			</include>
@@ -54,11 +65,17 @@
 			<description>button template</description>
 			<left>0</left>
 			<top></top>
-			<width>450</width>
-			<height>65</height>
-			<align>center</align>
-			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+			<width>456</width>
+			<height>66</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<textoffsetx>24</textoffsetx>
+			<font>atv_body</font>
+			<textcolor>E6FFFFFF</textcolor>
+			<focusedcolor>FF0B0B0D</focusedcolor>
+			<texturefocus border="12" colordiffuse="FFFFFFFF">atv/rounded12.png</texturefocus>
 			<texturenofocus />
+			<pulseonselect>false</pulseonselect>
 		</control>
 	</controls>
 </window>

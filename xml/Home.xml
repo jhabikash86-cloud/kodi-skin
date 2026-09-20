@@ -169,13 +169,15 @@
             <animation effect="slide" end="0,-350" time="380" tween="sine" easing="inout" condition="Control.HasFocus(53) | Control.HasFocus(54)">Conditional</animation>
 
             <!-- ===== ROWS ===== -->
+            <!-- trakt_nextepisodes, not trakt_ondeck: on deck returns every unwatched episode,
+                 so a show you are part-way through appeared two or three times in a row. -->
             <include content="ATV_UpNextRow">
                 <param name="id" value="50" />
                 <param name="top" value="860" />
                 <param name="label" value="Up Next" />
                 <param name="onup" value="8001" />
                 <param name="ondown" value="51" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=tv&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_nextepisodes&amp;tmdb_type=tv&amp;nextpage=false" />
             </include>
 
             <control type="group">

@@ -127,6 +127,7 @@ circle(f'{M}/mask_circle.png', 256)               # people / avatars
 # 9-slice fills (use border="N" so corners never stretch)
 rrect(f'{M}/rounded16.png', 64, 64, 16)           # border="16"
 rrect(f'{M}/rounded12.png', 48, 48, 12)           # border="12"
+rrect(f'{M}/rounded24.png', 96, 96, 24)           # dialog panels   border="24"
 # Focus shadow (9-slice, border="64")
 shadow(f'{M}/shadow.png', 192, 40, 18, 40, 0.75)
 # Icons
@@ -177,3 +178,54 @@ def check_icon(path, s):
 
 check_icon(f'{M}/icon_check.png', 48)
 print('check ok')
+
+
+def switch(path, on, w=76, h=44, knob=15):
+    """Toggle pill with the knob punched out as a hole.
+
+    The knob is transparent rather than painted, so one texture works on any
+    background: colordiffuse the pill white on a dark row and dark on a focused
+    (white) row, and the knob always shows the surface behind it.
+    """
+    r = h / 2
+    kx = w - r if on else r
+    ss = 3
+
+    def px(x, y):
+        a = 0.0
+        for i in range(ss):
+            for j in range(ss):
+                sx, sy = x + (i + 0.5) / ss, y + (j + 0.5) / ss
+                inside = rrect_sdf(sx, sy, w, h, r) <= 0
+                in_knob = math.hypot(sx - kx, sy - r) <= knob
+                if inside and not in_knob:
+                    a += 1
+        return 255, 255, 255, 255 * a / (ss * ss)
+    write_png(path, w, h, px)
+
+
+def chevron(path, s=48, t=None):
+    """A '>' disclosure mark, two strokes meeting at a point."""
+    t = t or s * 0.075
+    x0, x1 = s * 0.36, s * 0.64
+    pts = [((x0, s * 0.24), (x1, s * 0.50)), ((x1, s * 0.50), (x0, s * 0.76))]
+    ss = 4
+
+    def near(x, y, a, b):
+        (x1_, y1), (x2, y2) = a, b
+        dx, dy = x2 - x1_, y2 - y1
+        L = dx * dx + dy * dy
+        u = max(0, min(1, ((x - x1_) * dx + (y - y1) * dy) / L))
+        return math.hypot(x - (x1_ + u * dx), y - (y1 + u * dy)) <= t
+
+    def px(x, y):
+        n = sum(1 for i in range(ss) for j in range(ss)
+                if any(near(x + (i + 0.5) / ss, y + (j + 0.5) / ss, a, b) for a, b in pts))
+        return 255, 255, 255, 255 * n / (ss * ss)
+    write_png(path, s, s, px)
+
+
+switch(f'{M}/switch_on.png', True)
+switch(f'{M}/switch_off.png', False)
+chevron(f'{M}/icon_chevron.png')
+print('switches ok')
