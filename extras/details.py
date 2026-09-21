@@ -10,8 +10,12 @@ Opening a title from page N fills page N+1 and opens it, so Kodi's normal Back
 returns to the previous title. The last page is reused in place.
 
 Usage:
-    RunScript(special://skin/extras/details.py,open,<containerid>)
+    RunScript(special://skin/extras/details.py,open,<containerid>[,<index>])
     RunScript(special://skin/extras/details.py,person,<containerid>)
+
+The optional index is for the numbered Top 10 rows: their tiles are fixed controls bound
+to absolute positions of a hidden list that never moves its own focus, so without it every
+tile read position 0 and opened the same title.
 
 Cast members open the search screen's twin (1121) pre-filled with that person, so Back
 returns to the title page they came from.
@@ -62,15 +66,22 @@ GENRE_IDS = {
 }
 
 
-def genre_ids(container):
-    """Comma separated TMDb genre ids (= all of them) for the focused item."""
-    names = info(f'Container({container}).ListItem.Genre')
+def list_prefix(container, index=None):
+    """Container info prefix: the focused item, or a fixed position when index is given."""
+    if index is None:
+        return f'Container({container}).ListItem'
+    return f'Container({container}).ListItemAbsolute({index})'
+
+
+def genre_ids(container, index=None):
+    """Comma separated TMDb genre ids (= all of them) for the item."""
+    names = info(f'{list_prefix(container, index)}.Genre')
     ids = [str(GENRE_IDS[n.strip().lower()]) for n in names.split('/') if n.strip().lower() in GENRE_IDS]
     return ','.join(ids)
 
 
-def item_type_and_id(container):
-    prefix = f'Container({container}).ListItem'
+def item_type_and_id(container, index=None):
+    prefix = list_prefix(container, index)
     dbtype = info(f'{prefix}.DBType')
     if dbtype in ('episode', 'season'):
         tmdb_id = info(f'{prefix}.Property(tvshow.tmdb_id)') or info(f'{prefix}.UniqueID(tmdb)')
@@ -79,8 +90,8 @@ def item_type_and_id(container):
     return ('tv' if dbtype == 'tvshow' else 'movie'), tmdb_id
 
 
-def open_details(container):
-    item_type, tmdb_id = item_type_and_id(container)
+def open_details(container, index=None):
+    item_type, tmdb_id = item_type_and_id(container, index)
     if not tmdb_id:
         return
     window = xbmcgui.getCurrentWindowId() - 10000
@@ -93,7 +104,7 @@ def open_details(container):
     else:
         page = 0
     set_string(f'DetailType{page}', item_type)
-    set_string(f'DetailGenres{page}', genre_ids(container))
+    set_string(f'DetailGenres{page}', genre_ids(container, index))
     set_string(f'DetailID{page}', tmdb_id)
     if on_page and page == current:  # deepest page: show the new title in place
         xbmc.executebuiltin('SetFocus(9601)')
@@ -122,7 +133,7 @@ def main():
     args = sys.argv[1:]
     action = args[0] if args else ''
     if action == 'open' and len(args) > 1:
-        open_details(args[1])
+        open_details(args[1], args[2] if len(args) > 2 else None)
     elif action == 'person' and len(args) > 1:
         open_person(args[1])
 
