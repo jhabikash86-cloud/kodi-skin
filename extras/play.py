@@ -25,7 +25,6 @@ import json
 import sys
 
 import xbmc
-import xbmcgui
 
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 RESUME_FLOOR = 60      # ignore a resume point this small - it is a false start
@@ -135,11 +134,7 @@ def play_item(container):
 def play_show(tmdb_id):
     if not tmdb_id:
         return
-    xbmcgui.Window(10000).setProperty('ATVResolving', '1')
-    try:
-        season, episode, resume = next_episode(tmdb_id)
-    finally:
-        xbmcgui.Window(10000).clearProperty('ATVResolving')
+    season, episode, resume = next_episode(tmdb_id)
     play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}', resume)
 
 

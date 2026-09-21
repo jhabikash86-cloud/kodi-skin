@@ -26,6 +26,11 @@ HEADER_TOP = 150          # where the focused row's title settles
 RECENT_SINCE = (datetime.date.today() - datetime.timedelta(days=540)).isoformat()
 NEW_SINCE = (datetime.date.today() - datetime.timedelta(days=90)).isoformat()
 YEAR_SINCE = (datetime.date.today() - datetime.timedelta(days=365)).isoformat()
+THREE_YEARS = (datetime.date.today() - datetime.timedelta(days=1095)).isoformat()
+
+# TMDb genre ids for the formats that dominate Indian popularity but are not what anyone
+# means by a "top 10": soap, news, talk, reality, kids.
+NOT_SERIALS = '10766,10763,10767,10764,10762'
 TODAY = datetime.date.today().isoformat()
 
 # Every row should pull a different slice. Sorting everything by popularity made the same
@@ -46,7 +51,7 @@ PAGES = {
             ('poster', 'In Cinemas Now', f'{PLUGIN}info=now_playing&amp;tmdb_type=movie&amp;nextpage=false'),
             ('rank', 'Top 10 Hindi Movies Right Now',
              f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc'
-             f'&amp;primary_release_date.gte={RECENT_SINCE}&amp;nextpage=false'),
+             f'&amp;primary_release_date.gte={RECENT_SINCE}&amp;vote_count.gte=15&amp;nextpage=false'),
             ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=movie&amp;nextpage=false'),
             ('poster', 'Best of Action',
              f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True'
@@ -66,9 +71,10 @@ PAGES = {
              f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;sort_by=first_air_date.desc'
              f'&amp;first_air_date.gte={YEAR_SINCE}&amp;first_air_date.lte={TODAY}'
              f'&amp;vote_count.gte=5&amp;nextpage=false'),
-            ('rank', 'Top 10 Hindi Shows Right Now',
+            ('rank', 'Top 10 Hindi Series Right Now',
              f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc'
-             f'&amp;first_air_date.gte={RECENT_SINCE}&amp;nextpage=false'),
+             f'&amp;first_air_date.gte={THREE_YEARS}&amp;without_genres={NOT_SERIALS}&amp;with_id=True'
+             f'&amp;vote_count.gte=10&amp;nextpage=false'),
             ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false'),
             ('poster', 'Best of Drama',
              f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_genres=18&amp;with_id=True'

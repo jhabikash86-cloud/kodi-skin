@@ -1006,7 +1006,7 @@
 					<top>0</top>
 					<width>110%</width>
 					<height>130</height>
-					<texture>frame/InfoBar.png</texture>
+					<texture>atv/grad_top.png</texture>
 					<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
 				</control>
 				<control type="grouplist">
@@ -1202,7 +1202,7 @@
 		</definition>
 	</include>
 	<include name="TopBarLabels">
-		<left>35</left>
+		<left>76</left>
 		<description>Left side of top bar</description>
 		<top>-7</top>
 		<height>100</height>
@@ -1245,8 +1245,8 @@
 		</control>
 	</include>
 	<include name="BreadcrumbsLabel">
-		<font>font45</font>
-		<shadowcolor>text_shadow</shadowcolor>
+		<font>atv_title</font>
+		<textcolor>FFFFFFFF</textcolor>
 		<top>7</top>
 		<height>100</height>
 		<width>auto</width>
@@ -1330,7 +1330,7 @@
 					<bottom>0</bottom>
 					<width>110%</width>
 					<height>115</height>
-					<texture flipy="true">frame/InfoBar.png</texture>
+					<texture>atv/grad_bottom.png</texture>
 				</control>
 				<control type="group">
 					<visible>$PARAM[info_visible]</visible>

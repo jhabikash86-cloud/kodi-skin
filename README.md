@@ -69,6 +69,20 @@ Vision stream is found and whether it plays well:
   already sitting in your Real-Debrid cloud ends the search immediately, so a 720p
   copy you grabbed once wins over the 4K releases that were never looked for.
 
+**Sound, and what Dolby Vision actually does here.** Kodi only offers the audio
+options the current output device supports. On a Mac driving its own speakers there
+is no passthrough setting at all and 2.0 is correct - a 5.1 track is decoded in full
+and downmixed. Connected to a TV or receiver over HDMI, pick that device under
+*Settings > System > Audio*, set *Number of channels* to match it, and enable
+passthrough for the formats it handles; only then does a DTS-HD MA or TrueHD track
+leave the machine intact.
+
+Dolby Vision is decoded here, not output. VideoToolbox handles the HEVC base layer,
+so a DV release plays hardware-accelerated and looks right, but Kodi on macOS does
+not emit DV metadata - that needs a player whose video path carries it end to end.
+`VideoPlayer.HdrType` reporting `dolbyvision` means the file is DV, not that the
+display is receiving it.
+
 Source coverage is cocoscrapers' provider list. The debrid-cache aggregators
 (torrentio, mediafusion, comet) matter most, because only cached torrents play
 instantly; the big public indexers (knaben, 1337x, torrentgalaxy, piratebay) widen

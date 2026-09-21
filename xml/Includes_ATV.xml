@@ -62,6 +62,18 @@
 					<font>atv_row</font>
 					<textcolor>FFFFFFFF</textcolor>
 				</control>
+				<!-- What is focused, on the row's own header line. There is no room for a
+				     caption under a poster without pushing the rows apart, and the artwork
+				     already carries the title - this is for the year and the rating. -->
+				<control type="label">
+					<left>1020</left><top>0</top><width>810</width><height>44</height>
+					<label>$INFO[Container($PARAM[id]).ListItem.Title]$INFO[Container($PARAM[id]).ListItem.Year,  ·  ]$INFO[Container($PARAM[id]).ListItem.Rating,  ·  ★ ]</label>
+					<font>atv_meta</font>
+					<textcolor>99FFFFFF</textcolor>
+					<align>right</align><aligny>center</aligny>
+					<visible>Control.HasFocus($PARAM[id])</visible>
+					<animation effect="fade" time="200">VisibleChange</animation>
+				</control>
 								<!-- Placeholders while the row loads, so it never sits empty -->
 				<control type="group">
 					<visible>Integer.IsEqual(Container($PARAM[id]).NumItems,0)</visible>

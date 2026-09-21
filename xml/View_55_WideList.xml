@@ -27,7 +27,7 @@
 							<left>0</left>
 							<right>0</right>
 							<bottom>0</bottom>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<texture border="12" colordiffuse="FFFFFFFF">atv/rounded12.png</texture>
 							<visible>Control.HasFocus(55)</visible>
 						</control>
 						<control type="image">
@@ -35,7 +35,7 @@
 							<centertop>50%</centertop>
 							<width>32</width>
 							<height>32</height>
-							<texture>$VAR[ListWatchedIconVar]</texture>
+							<texture colordiffuse="FF0B0B0D">$VAR[ListWatchedIconVar]</texture>
 						</control>
 						<control type="label">
 							<left>105</left>
@@ -45,8 +45,9 @@
 							<aligny>center</aligny>
 							<scroll>true</scroll>
 							<label>$VAR[ListLabelVar]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
+							
+						<textcolor>FF0B0B0D</textcolor>
+							</control>
 						<control type="label">
 							<left>105</left>
 							<top>0</top>
@@ -55,8 +56,9 @@
 							<align>right</align>
 							<aligny>center</aligny>
 							<label>$VAR[ListLabel2Var]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
+							
+						<textcolor>FF0B0B0D</textcolor>
+							</control>
 					</focusedlayout>
 					<itemlayout height="list_item_height" condition="Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(musicvideos) | Container.Content(videos) | Container.Content(games) | Window.IsActive(videoplaylist) | Window.IsActive(musicplaylist)">
 						<control type="image">
@@ -91,7 +93,7 @@
 							<left>0</left>
 							<right>0</right>
 							<bottom>0</bottom>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<texture border="12" colordiffuse="FFFFFFFF">atv/rounded12.png</texture>
 							<visible>Control.HasFocus(55)</visible>
 						</control>
 						<control type="image">
@@ -99,7 +101,7 @@
 							<centertop>50%</centertop>
 							<width>32</width>
 							<height>32</height>
-							<texture>$VAR[ListWatchedIconVar]</texture>
+							<texture colordiffuse="FF0B0B0D">$VAR[ListWatchedIconVar]</texture>
 						</control>
 						<control type="label">
 							<left>105</left>
@@ -109,8 +111,9 @@
 							<aligny>center</aligny>
 							<scroll>true</scroll>
 							<label>$INFO[ListItem.Label]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
+							
+						<textcolor>FF0B0B0D</textcolor>
+							</control>
 						<control type="label">
 							<left>105</left>
 							<top>0</top>
@@ -119,8 +122,9 @@
 							<align>right</align>
 							<aligny>center</aligny>
 							<label>$VAR[ListLabel2Var]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
+							
+						<textcolor>FF0B0B0D</textcolor>
+							</control>
 					</focusedlayout>
 					<itemlayout height="list_item_height" condition="!Container.Content(songs) + !Container.Content(addons) + !Container.Content(playlists) + !Container.Content() + !Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies) + !Container.Content(musicvideos) + !Container.Content(videos) + !Container.Content(favourites)">
 						<control type="image">
@@ -155,7 +159,7 @@
 							<left>0</left>
 							<right>0</right>
 							<bottom>0</bottom>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<texture border="12" colordiffuse="FFFFFFFF">atv/rounded12.png</texture>
 							<visible>Control.HasFocus(55)</visible>
 						</control>
 						<control type="image">
@@ -174,8 +178,9 @@
 							<aligny>center</aligny>
 							<scroll>true</scroll>
 							<label>$INFO[ListItem.Label]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
+							
+						<textcolor>FF0B0B0D</textcolor>
+							</control>
 					</focusedlayout>
 					<itemlayout height="list_item_height" condition="Container.Content(playlists) | Container.Content(favourites) | Container.Content()">
 						<control type="image">
@@ -207,7 +212,7 @@
 			<control type="image">
 				<left>0</left>
 				<right>0</right>
-				<texture colordiffuse="button_focus">lists/focus.png</texture>
+				<texture border="12" colordiffuse="FFFFFFFF">atv/rounded12.png</texture>
 				<visible>Control.hasFocus(55)</visible>
 			</control>
 			<control type="label">
@@ -216,16 +221,18 @@
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<label>$VAR[ListLabelVar]</label>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
+				
+			<textcolor>FF0B0B0D</textcolor>
+							</control>
 			<control type="label">
 				<left>35</left>
 				<right>40</right>
 				<align>right</align>
 				<aligny>center</aligny>
 				<label>$VAR[ListLabel2Var]</label>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
+				
+			<textcolor>FF0B0B0D</textcolor>
+							</control>
 		</focusedlayout>
 		<itemlayout height="list_item_height" condition="Container.Content(songs)">
 			<control type="label">
@@ -251,7 +258,7 @@
 			<control type="image">
 				<left>0</left>
 				<right>0</right>
-				<texture colordiffuse="button_focus">lists/focus.png</texture>
+				<texture border="12" colordiffuse="FFFFFFFF">atv/rounded12.png</texture>
 				<visible>Control.hasFocus(55)</visible>
 			</control>
 			<control type="image">
@@ -267,7 +274,8 @@
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<label>$INFO[ListItem.Label]</label>
-			</control>
+			<textcolor>FF0B0B0D</textcolor>
+							</control>
 			<control type="label">
 				<left>75</left>
 				<right>90</right>
@@ -276,13 +284,14 @@
 				<font>font27</font>
 				<label>$VAR[AddonsLabel2Var]</label>
 				<scroll>true</scroll>
-			</control>
+			<textcolor>FF0B0B0D</textcolor>
+							</control>
 			<control type="image">
 				<right>40</right>
 				<top>25</top>
 				<width>32</width>
 				<height>32</height>
-				<texture>$VAR[AddonsOriginVar]</texture>
+				<texture colordiffuse="FF0B0B0D">$VAR[AddonsOriginVar]</texture>
 				<visible>!ListItem.IsFolder</visible>
 			</control>
 		</focusedlayout>
