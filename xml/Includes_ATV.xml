@@ -262,7 +262,9 @@
 					<onup>$PARAM[onup]</onup>
 					<ondown>$PARAM[ondown]</ondown>
 					<onback>SetFocus(8001)</onback>
-					<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[id])</onclick>
+					<!-- This row exists to pick something back up, so clicking resumes it.
+					     The show's page is still a context-menu away. -->
+					<onclick>RunScript(special://skin/extras/play.py,item,$PARAM[id])</onclick>
 					<itemlayout width="416" height="340">
 						<include content="ATV_UpNextTile" />
 					</itemlayout>

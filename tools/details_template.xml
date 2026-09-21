@@ -92,21 +92,22 @@
 
             <!-- Play / Trailer -->
             <control type="group">
-                <left>0</left><top>730</top><width>290</width><height>68</height>
+                <left>0</left><top>730</top><width>360</width><height>68</height>
                 <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(9601)">Conditional</animation>
                 <include content="ATV_CapsuleButton">
                     <param name="id" value="9601" />
-                    <param name="width" value="290" />
+                    <param name="width" value="360" />
                     <param name="label" value="$VAR[ATV_DetailPlayLabel§]" />
                     <param name="icon" value="atv/icon_play.png" />
-                    <onclick condition="!$EXP[ATV_DetailIsTV§]">PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Skin.String(DetailID§)])</onclick>
-                    <onclick condition="$EXP[ATV_DetailIsTV§]">PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID§)]&amp;season=$VAR[ATV_DetailSeason]&amp;episode=1)</onclick>
+                    <!-- extras/play.py works out which episode is next and where to resume it -->
+                    <onclick condition="!$EXP[ATV_DetailIsTV§]">RunScript(special://skin/extras/play.py,movie,$INFO[Skin.String(DetailID§)])</onclick>
+                    <onclick condition="$EXP[ATV_DetailIsTV§]">RunScript(special://skin/extras/play.py,show,$INFO[Skin.String(DetailID§)])</onclick>
                     <onright>9603</onright>
                     <ondown>9610</ondown>
                 </include>
             </control>
             <control type="group">
-                <left>310</left><top>730</top><width>250</width><height>68</height>
+                <left>380</left><top>730</top><width>250</width><height>68</height>
                 <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(9603)">Conditional</animation>
                 <include content="ATV_CapsuleButton">
                     <param name="id" value="9603" />
@@ -121,7 +122,7 @@
                 </include>
             </control>
             <control type="group">
-                <left>580</left><top>730</top><width>200</width><height>68</height>
+                <left>650</left><top>730</top><width>200</width><height>68</height>
                 <visible>!String.IsEmpty(Container(9500).ListItem.Trailer)</visible>
                 <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(9602)">Conditional</animation>
                 <include content="ATV_CapsuleButton">
@@ -231,7 +232,7 @@
                     <preloaditems>2</preloaditems>
                     <onup>9610</onup>
                     <ondown>9630</ondown>
-                    <onclick>PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID§)]&amp;season=$INFO[Container(9620).ListItem.Season]&amp;episode=$INFO[Container(9620).ListItem.Episode])</onclick>
+                    <onclick>RunScript(special://skin/extras/play.py,item,9620)</onclick>
                     <itemlayout width="416" height="420">
                         <include content="ATV_EpisodeTile" />
                     </itemlayout>

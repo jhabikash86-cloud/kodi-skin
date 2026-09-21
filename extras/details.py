@@ -26,6 +26,8 @@ from urllib.parse import quote_plus
 import xbmc
 import xbmcgui
 
+import play  # same folder; Kodi puts a RunScript's directory on sys.path
+
 FIRST_PAGE = 1130  # Custom_1130..1134; Kodi reports them as 11130..11134
 PAGES = 5
 ACTOR_SEARCH = 1121  # copy of the search screen used for cast members
@@ -106,10 +108,17 @@ def open_details(container, index=None):
     set_string(f'DetailType{page}', item_type)
     set_string(f'DetailGenres{page}', genre_ids(container, index))
     set_string(f'DetailID{page}', tmdb_id)
+    set_string(f'DetailNext{page}', '')  # clear the previous title's episode first
     if on_page and page == current:  # deepest page: show the new title in place
         xbmc.executebuiltin('SetFocus(9601)')
     else:
         xbmc.executebuiltin(f'ActivateWindow({FIRST_PAGE + page})')
+    if item_type == 'tv':
+        # After the window is up: these are two Trakt list reads, and the page should not
+        # wait on them. The Play button reads "Play" until this lands a moment later.
+        season, episode, resume = play.next_episode(tmdb_id)
+        verb = 'Resume' if resume else 'Play'
+        set_string(f'DetailNext{page}', f'{verb} S{season} E{episode}')
 
 
 def open_person(container):

@@ -94,7 +94,7 @@
                     <param name="width" value="206" />
                     <param name="label" value="Play" />
                     <param name="icon" value="atv/icon_play.png" />
-                    <onclick>PlayMedia(plugin://plugin.video.themoviedb.helper/?info=play&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
+                    <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
                     <onup>9000</onup>
                     <ondown>50</ondown>
                     <onleft>Control.Move(40,-1)</onleft>

@@ -38,9 +38,11 @@ VARIABLES = '''
 		<value condition="$EXP[ATV_DetailIsTV{n}]">TV Show$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
 		<value>Movie$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.Duration(mins),  ·  , min]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
 	</variable>
+	<!-- extras/details.py fills DetailNext{n} just after the page opens ("Play S1 E4" or
+	     "Resume S1 E3"), so the button names the episode Play will actually start. Until
+	     that lands - and for films - it just says Play. -->
 	<variable name="ATV_DetailPlayLabel{n}">
-		<value condition="$EXP[ATV_DetailIsTV{n}] + Integer.IsGreater(Container(9610).ListItem.Season,0)">Play S$INFO[Container(9610).ListItem.Season] E1</value>
-		<value condition="$EXP[ATV_DetailIsTV{n}]">Play S1 E1</value>
+		<value condition="!String.IsEmpty(Skin.String(DetailNext{n}))">$INFO[Skin.String(DetailNext{n})]</value>
 		<value>Play</value>
 	</variable>
 '''
