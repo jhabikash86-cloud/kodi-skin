@@ -133,6 +133,26 @@
                     <param name="textoffsetx" value="0" />
                     <onclick>PlayMedia($INFO[Container(9500).ListItem.Trailer])</onclick>
                     <onleft>9603</onleft>
+                    <onright>9604</onright>
+                    <ondown>9610</ondown>
+                </include>
+            </control>
+
+            <!-- Escape hatch for when autoplay picked a poor source: ignore_default makes
+                 TMDb Helper ask which player to use, and the "select" players list every
+                 source that was scraped so a 4K one can be chosen by hand. -->
+            <control type="group">
+                <left>870</left><top>730</top><width>230</width><height>68</height>
+                <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(9604)">Conditional</animation>
+                <include content="ATV_CapsuleButton">
+                    <param name="id" value="9604" />
+                    <param name="width" value="230" />
+                    <param name="label" value="Sources" />
+                    <param name="align" value="center" />
+                    <param name="textoffsetx" value="0" />
+                    <onclick condition="!$EXP[ATV_DetailIsTV2]">RunScript(plugin.video.themoviedb.helper,play=movie,tmdb_id=$INFO[Skin.String(DetailID2)],ignore_default=True)</onclick>
+                    <onclick condition="$EXP[ATV_DetailIsTV2]">RunScript(plugin.video.themoviedb.helper,play=tv,tmdb_id=$INFO[Skin.String(DetailID2)],season=$VAR[ATV_DetailSeason],episode=1,ignore_default=True)</onclick>
+                    <onleft>9602</onleft>
                     <ondown>9610</ondown>
                 </include>
             </control>

@@ -57,6 +57,31 @@ TMDb Helper's own *Artwork quality* setting can stay on the default: it already
 requests `w780` posters and `original` backdrops and logos, and the largest poster
 this skin draws is 200x300 in a 1920x1080 coordinate space.
 
+**Playback.** Two Kodi settings and one add-on setting decide whether a 4K Dolby
+Vision stream is found and whether it plays well:
+
+- *Settings > Player > Videos > Allow hardware acceleration - VTBDecoder* must be
+  on, or 4K HEVC is decoded in software. It is on by default; check it if playback
+  drops frames. With it on, `Player.Process(videodecoder)` reads `ff-hevc-vtb`.
+- *Adjust display refresh rate* set to "On start/stop" matches the display to 24p
+  content, the way an Apple TV does. It only does anything full-screen.
+- Umbrella's *Terminate on Cloud Sources* should be **off**. With it on, a file
+  already sitting in your Real-Debrid cloud ends the search immediately, so a 720p
+  copy you grabbed once wins over the 4K releases that were never looked for.
+
+Source coverage is cocoscrapers' provider list. The debrid-cache aggregators
+(torrentio, mediafusion, comet) matter most, because only cached torrents play
+instantly; the big public indexers (knaben, 1337x, torrentgalaxy, piratebay) widen
+what is found. Each one adds to the scrape, so a full scrape takes 20-30 seconds
+against about 6 for a cached one.
+
+A title that has already been played keeps the source it used. The **Sources**
+button on a title page re-asks, and the "select" players list everything that was
+scraped so a 4K release can be picked by hand.
+
+The `<cache>` block in `advancedsettings.xml` is what keeps a 14GB stream from
+stalling; Kodi's default read-ahead is sized for local files.
+
 ## Testing
 
 Kodi's JSON-RPC server on port 9090 drives the UI without touching the keyboard,
