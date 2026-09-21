@@ -44,7 +44,7 @@
                 <param name="onup" value="51" />
                 <param name="ondown" value="53" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;sort_by=primary_release_date.desc&amp;primary_release_date.gte=2026-06-23&amp;primary_release_date.lte=2026-09-21&amp;vote_count.gte=10&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;sort_by=primary_release_date.desc&amp;primary_release_date.gte=2026-06-24&amp;primary_release_date.lte=2026-09-22&amp;vote_count.gte=10&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="53" />
@@ -64,7 +64,7 @@
                 <param name="onup" value="53" />
                 <param name="ondown" value="55" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-30&amp;vote_count.gte=15&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=15&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="55" />

@@ -31,6 +31,13 @@ THREE_YEARS = (datetime.date.today() - datetime.timedelta(days=1095)).isoformat(
 # TMDb genre ids for the formats that dominate Indian popularity but are not what anyone
 # means by a "top 10": soap, news, talk, reality, kids.
 NOT_SERIALS = '10766,10763,10767,10764,10762'
+
+
+def network(network_id, votes=20):
+    """A network's chart: recent titles it originated, most popular first."""
+    return (f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_networks={network_id}'
+            f'&amp;sort_by=popularity.desc&amp;first_air_date.gte={THREE_YEARS}'
+            f'&amp;vote_count.gte={votes}&amp;nextpage=false')
 TODAY = datetime.date.today().isoformat()
 
 # Every row should pull a different slice. Sorting everything by popularity made the same
@@ -64,24 +71,23 @@ PAGES = {
     1141: {
         'file': 'Custom_1141_TVShows.xml',
         'title': 'TV Shows',
+        # One numbered chart per network. A show has one originating network, so
+        # with_networks partitions them: checked across all six plus the Hindi row and
+        # no title appeared in two charts. Held to recent titles with real vote counts,
+        # because raw popularity returns whatever airs every weekday.
         'rows': [
-            ('rank', 'Top 10 Shows Trending Now', f'{PLUGIN}info=trakt_trending&amp;tmdb_type=tv&amp;nextpage=false'),
-            ('poster', 'On TV Today', f'{PLUGIN}info=airing_today&amp;tmdb_type=tv&amp;nextpage=false'),
-            ('poster', 'New Shows',
-             f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;sort_by=first_air_date.desc'
-             f'&amp;first_air_date.gte={YEAR_SINCE}&amp;first_air_date.lte={TODAY}'
-             f'&amp;vote_count.gte=5&amp;nextpage=false'),
+            ('rank', 'Top 10 on Netflix', network(213)),
+            ('rank', 'Top 10 on Prime Video', network(1024)),
+            ('rank', 'Top 10 on HBO', network(49)),
+            ('rank', 'Top 10 on Apple TV+', network(2552)),
+            ('rank', 'Top 10 on Hulu', network(453)),
+            ('rank', 'Top 10 on the BBC', network(4)),
             ('rank', 'Top 10 Hindi Series Right Now',
              f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc'
              f'&amp;first_air_date.gte={THREE_YEARS}&amp;without_genres={NOT_SERIALS}&amp;with_id=True'
              f'&amp;vote_count.gte=10&amp;nextpage=false'),
+            ('poster', 'On TV Today', f'{PLUGIN}info=airing_today&amp;tmdb_type=tv&amp;nextpage=false'),
             ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false'),
-            ('poster', 'Best of Drama',
-             f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_genres=18&amp;with_id=True'
-             f'&amp;sort_by=vote_average.desc&amp;vote_count.gte=200&amp;nextpage=false'),
-            ('poster', 'Best of Crime',
-             f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_genres=80&amp;with_id=True'
-             f'&amp;sort_by=vote_average.desc&amp;vote_count.gte=150&amp;nextpage=false'),
         ],
     },
 }

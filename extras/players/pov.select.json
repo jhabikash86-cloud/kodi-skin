@@ -1,0 +1,12 @@
+{
+    "name": "POV (Source Select)",
+    "plugin": "plugin.video.pov",
+    "priority": 91,
+    "is_resolvable": "true",
+    "assert": {
+        "play_movie": ["tmdb"],
+        "play_episode": ["tmdb", "season", "episode"]
+    },
+    "play_movie": "plugin://plugin.video.pov/?mode=play_media&mediatype=movie&tmdb_id={tmdb}&autoplay=false",
+    "play_episode": "plugin://plugin.video.pov/?mode=play_media&mediatype=episode&tmdb_id={tmdb}&season={season}&episode={episode}&autoplay=false"
+}
