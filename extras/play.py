@@ -201,12 +201,12 @@ def rescrape(kind, tmdb_id):
         pass  # a locked or missing cache just means this play reuses it
 
 
-def play(path, resume=0, on_blocked=None, title=''):
-    """Start `path`, then put it right: skip a takedown clip, and resume where asked.
+def play(path, resume=0, title=''):
+    """Start `path`, then put it right: report a dead source, and resume where asked.
 
-    `on_blocked` is a builtin run when the stream turns out to be a takedown clip - the
-    source picker, so the next source can be chosen instead of being left with a
-    30-second notice playing as though it were the film.
+    Failures say what happened and stop there. Throwing the source picker up by itself
+    is the one thing a play button should never do - it is the interruption this skin
+    exists to avoid. The Sources button is a deliberate act.
     """
     home = xbmcgui.Window(10000)
     home.setProperty(RESOLVING, '1')
@@ -228,11 +228,8 @@ def play(path, resume=0, on_blocked=None, title=''):
             # the debrid service never actually had: the stream hits EOF at once. Left
             # alone it looks as though nothing happened at all.
             xbmcgui.Dialog().notification(
-                'Source would not play', 'Nothing was cached for it - pick another',
+                'Source would not play', 'Nothing was cached for it - try Sources',
                 xbmcgui.NOTIFICATION_INFO, 4000)
-            if on_blocked:
-                xbmc.sleep(500)
-                xbmc.executebuiltin(on_blocked)
             return
         if title and looks_like_another_film(xbmc.getInfoLabel('Player.Filenameandpath'), title):
             # Only a warning. Getting this wrong must never cost a film that would play.
@@ -242,11 +239,8 @@ def play(path, resume=0, on_blocked=None, title=''):
         if blocked_stream():
             player.stop()
             xbmcgui.Dialog().notification(
-                'Source blocked', 'That release was taken down - pick another',
+                'Source blocked', 'That release was taken down - try Sources',
                 xbmcgui.NOTIFICATION_INFO, 4000)
-            if on_blocked:
-                xbmc.sleep(500)
-                xbmc.executebuiltin(on_blocked)
             return
         if not resume:
             return
@@ -278,7 +272,27 @@ def play_item(container):
     resume = int(duration * percent / 100)
     if resume < RESUME_FLOOR or percent > NEARLY_DONE * 100:
         resume = 0
+    show = re.search(r'tmdb_id=(\d+).*?season=(\d+).*?episode=(\d+)', path)
+    if show:
+        watch_for_next(*show.groups())
     play(path, resume)
+
+
+def watch_for_next(tmdb_id, season, episode):
+    """Hand the closing minutes to extras/upnext.py, which offers the following episode."""
+    xbmc.executebuiltin(
+        f'RunScript(special://skin/extras/upnext.py,{tmdb_id},{season},{episode})')
+
+
+def play_episode(tmdb_id, season, episode, lang=None):
+    """A named episode - used by the Up Next card, which knows exactly what comes next."""
+    if not (tmdb_id and season and episode):
+        return
+    prefer_language(lang)
+    show_title = expected_title('tv', tmdb_id)
+    watch_for_next(tmdb_id, season, episode)
+    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}',
+         title=show_title)
 
 
 def play_show(tmdb_id, lang=None):
@@ -288,10 +302,9 @@ def play_show(tmdb_id, lang=None):
     prefer_language(lang)
     rescrape('episode', tmdb_id)
     show_title = expected_title('tv', tmdb_id)
-    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}', resume,
-         title=show_title,
-         on_blocked=(f'RunScript(plugin.video.themoviedb.helper,play=tv,tmdb_id={tmdb_id},'
-                     f'season={season},episode={episode},ignore_default=True)'))
+    watch_for_next(tmdb_id, season, episode)
+    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}',
+         resume, title=show_title)
 
 
 def play_movie(tmdb_id, lang=None):
@@ -301,9 +314,7 @@ def play_movie(tmdb_id, lang=None):
     rescrape('movie', tmdb_id)
     film_title = expected_title('movie', tmdb_id)
     play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}', movie_resume(tmdb_id),
-         title=film_title,
-         on_blocked=(f'RunScript(plugin.video.themoviedb.helper,play=movie,'
-                     f'tmdb_id={tmdb_id},ignore_default=True)'))
+         title=film_title)
 
 
 def main():
@@ -317,6 +328,8 @@ def main():
         play_show(target, lang)
     elif action == 'movie':
         play_movie(target, lang)
+    elif action == 'episode' and len(args) > 3:
+        play_episode(target, args[2], args[3], args[4] if len(args) > 4 else None)
 
 
 if __name__ == '__main__':

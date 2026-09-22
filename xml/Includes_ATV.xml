@@ -635,6 +635,23 @@
 
 	<!-- One row of the Settings hub: icon, label, chevron. Focus is the skin's white
 	     capsule with dark text, the same idiom as the hero buttons and keyboard keys. -->
+	<!-- What is actually playing, for the OSD. Kodi reports the resolution bare ("4K",
+	     "1080") and the HDR flavour in lower case, so both are spelled out here. The
+	     separators live inside the values, because $INFO's prefix argument does not
+	     work on a $VAR. -->
+	<variable name="ATV_PlayingRes">
+		<value condition="String.IsEqual(VideoPlayer.VideoResolution,4K)">4K</value>
+		<value condition="String.IsEmpty(VideoPlayer.VideoResolution)"></value>
+		<value>$INFO[VideoPlayer.VideoResolution]p</value>
+	</variable>
+	<variable name="ATV_PlayingHDR">
+		<value condition="String.IsEqual(VideoPlayer.HdrType,dolbyvision)">  ·  Dolby Vision</value>
+		<value condition="String.IsEqual(VideoPlayer.HdrType,hdr10+)">  ·  HDR10+</value>
+		<value condition="String.IsEqual(VideoPlayer.HdrType,hdr10)">  ·  HDR10</value>
+		<value condition="String.IsEqual(VideoPlayer.HdrType,hlg)">  ·  HLG</value>
+		<value></value>
+	</variable>
+
 	<include name="ATV_SettingsRow">
 		<itemlayout width="1240" height="88">
 			<control type="image">

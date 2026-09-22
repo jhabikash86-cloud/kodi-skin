@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The "next episode" card, shown over the closing minute of the one you are watching.
+     extras/upnext.py fills the properties and opens it; the countdown it writes is the
+     seconds left in the current episode, so the card always agrees with the picture
+     behind it. Deliberately a corner card and not a dialog: nothing is dimmed, nothing
+     is modal, and the episode keeps playing underneath. -->
+<window id="1150">
+	<defaultcontrol always="true">9150</defaultcontrol>
+	<animation effect="slide" start="0,220" end="0,0" time="320" tween="cubic" easing="out">WindowOpen</animation>
+	<animation effect="slide" start="0,0" end="0,220" time="220" tween="cubic" easing="in">WindowClose</animation>
+	<animation effect="fade" start="0" end="100" time="260">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="180">WindowClose</animation>
+	<controls>
+
+		<control type="group">
+			<left>1160</left><top>742</top><width>700</width><height>260</height>
+
+			<control type="image">
+				<left>-40</left><top>-32</top><width>780</width><height>340</height>
+				<texture border="64">atv/shadow.png</texture>
+			</control>
+			<control type="image">
+				<left>0</left><top>0</top><width>700</width><height>260</height>
+				<texture border="24" colordiffuse="FA17171A">atv/rounded24.png</texture>
+			</control>
+
+			<control type="image">
+				<left>20</left><top>20</top><width>220</width><height>124</height>
+				<aspectratio scalediffuse="false">scale</aspectratio>
+				<texture background="true" diffuse="atv/mask_landscape.png">$INFO[Window(home).Property(UpNextThumb)]</texture>
+			</control>
+
+			<control type="label">
+				<left>260</left><top>18</top><width>420</width><height>30</height>
+				<label>Up Next  ·  $INFO[Window(home).Property(UpNextNumber)]</label>
+				<font>atv_caption</font><textcolor>80FFFFFF</textcolor>
+			</control>
+			<control type="label">
+				<left>260</left><top>48</top><width>420</width><height>36</height>
+				<label>$INFO[Window(home).Property(UpNextTitle)]</label>
+				<font>atv_row</font><textcolor>FFFFFFFF</textcolor>
+			</control>
+			<control type="textbox">
+				<left>260</left><top>88</top><width>420</width><height>58</height>
+				<label>$INFO[Window(home).Property(UpNextPlot)]</label>
+				<font>atv_small</font><textcolor>99FFFFFF</textcolor>
+			</control>
+
+			<control type="group">
+				<left>20</left><top>168</top><width>320</width><height>68</height>
+				<include content="ATV_CapsuleButton">
+					<param name="id" value="9150" />
+					<param name="width" value="320" />
+					<param name="label" value="Play in $INFO[Window(home).Property(UpNextCountdown)]s" />
+					<param name="icon" value="atv/icon_play.png" />
+					<onclick>Dialog.Close(1150,true)</onclick>
+					<onclick>RunScript(special://skin/extras/play.py,episode,$INFO[Window(home).Property(UpNextTmdb)],$INFO[Window(home).Property(UpNextSeason)],$INFO[Window(home).Property(UpNextEpisode)])</onclick>
+					<onright>9151</onright>
+				</include>
+			</control>
+			<control type="group">
+				<left>360</left><top>168</top><width>320</width><height>68</height>
+				<include content="ATV_CapsuleButton">
+					<param name="id" value="9151" />
+					<param name="width" value="320" />
+					<param name="label" value="Keep Watching" />
+					<param name="align" value="center" />
+					<param name="textoffsetx" value="0" />
+					<!-- upnext.py watches this and stands down for the rest of the episode -->
+					<onclick>SetProperty(UpNextDismissed,1,home)</onclick>
+					<onclick>Dialog.Close(1150,true)</onclick>
+					<onleft>9150</onleft>
+				</include>
+			</control>
+		</control>
+
+	</controls>
+</window>

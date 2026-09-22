@@ -23,6 +23,14 @@
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(1110) | Window.IsVisible(osdaudiosettings) | Window.IsVisible(osdvideosettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(playerprocessinfo) | Window.IsVisible(osdcmssettings) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(pvrchannelguide)]</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 
+			<!-- What is playing, opposite the help text -->
+			<control type="label">
+				<left>90</left><top>782</top><width>800</width><height>36</height>
+				<aligny>center</aligny>
+				<label>$VAR[ATV_PlayingRes]$VAR[ATV_PlayingHDR]$INFO[VideoPlayer.VideoCodec,  ·  ]$INFO[VideoPlayer.AudioCodec,  ·  ]$INFO[VideoPlayer.AudioChannels,  ·  ,ch]</label>
+				<font>atv_small</font><textcolor>B3FFFFFF</textcolor>
+			</control>
+
 			<!-- What the focused button does -->
 			<control type="label">
 				<left>930</left><top>782</top><width>900</width><height>36</height>
