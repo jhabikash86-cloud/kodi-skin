@@ -2,7 +2,7 @@
     "name": "POV (Auto Play)",
     "plugin": "plugin.video.pov",
     "priority": 90,
-    "is_resolvable": "true",
+    "is_resolvable": "false",
     "assert": {
         "play_movie": ["tmdb"],
         "play_episode": ["tmdb", "season", "episode"]

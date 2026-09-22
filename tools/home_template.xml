@@ -4,6 +4,8 @@
 <window>
     <defaultcontrol>8001</defaultcontrol>
     <menucontrol>9000</menucontrol>
+    <onload>RunScript(special://skin/extras/trailer.py,watch)</onload>
+    <onunload>Action(Stop)</onunload>
     <controls>
 
         <!-- Hidden data list that feeds the hero ("top shelf"). Rotates every 10s. -->
@@ -11,7 +13,9 @@
             <left>0</left><top>1078</top><width>1740</width><height>2</height>
             <orientation>horizontal</orientation>
             <!-- Only rotates while you are idle, so the title never changes under your hands -->
-            <autoscroll time="9000">System.IdleTime(5)</autoscroll>
+            <!-- Holds still while a trailer is previewing, or the hero would rotate out from
+			     under it a few seconds in and cut the trailer off. -->
+			<autoscroll time="9000">System.IdleTime(5) + String.IsEmpty(Window(home).Property(ATVPreview))</autoscroll>
             <itemlayout width="1" height="1" />
             <focusedlayout width="1" height="1" />
             <content limit="8">plugin://plugin.video.themoviedb.helper/?info=now_playing&amp;tmdb_type=movie&amp;nextpage=false</content>
@@ -27,6 +31,15 @@
         <!-- Hero backdrop: full bleed, slow Ken Burns drift, fades away when you move into the rows -->
         <control type="group">
             <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <!-- Trailer preview. extras/trailer.py starts it after a couple of seconds of
+                 stillness on the hero and stops it the moment you move; the still
+                 backdrop underneath stays put so there is no gap while it loads. -->
+            <control type="videowindow">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <visible>!String.IsEmpty(Window(home).Property(ATVPreview)) + Player.HasVideo</visible>
+                <animation effect="fade" start="0" end="100" time="500">Visible</animation>
+                <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+            </control>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
@@ -92,6 +105,7 @@
                 <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8001)">Conditional</animation>
                 <include content="ATV_CapsuleButton">
                     <param name="id" value="8001" />
+                    <onfocus>RunScript(special://skin/extras/trailer.py,watch)</onfocus>
                     <param name="width" value="206" />
                     <param name="label" value="Play" />
                     <param name="icon" value="atv/icon_play.png" />

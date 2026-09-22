@@ -25,12 +25,22 @@ import json
 import sys
 
 import xbmc
+import xbmcgui
 
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 RESUME_FLOOR = 60      # ignore a resume point this small - it is a false start
 NEARLY_DONE = 0.92     # past this much of the runtime, treat the episode as finished
 START_TIMEOUT = 180    # seconds to wait for the player add-on to resolve a stream
 SETTLE = 2             # let the player settle before seeking
+
+# When a debrid service refuses a torrent - usually a rights holder's takedown - Torrentio
+# hands back a short explainer clip instead of the film, and it plays like any other
+# stream. Left alone it looks as though the title itself is broken.
+BLOCKED_MARKER = '/videos/failed_'
+
+# Resolving a stream can take fifteen seconds, during which nothing is playing and the
+# remote is idle - exactly what extras/trailer.py waits for. This tells it to hold off.
+RESOLVING = 'ATVResolving'
 
 
 def jsonrpc(method, **params):
@@ -86,20 +96,45 @@ def movie_resume(tmdb_id):
     return 0
 
 
-def play(path, resume=0):
-    xbmc.executebuiltin(f'PlayMedia({path})')
-    if not resume:
-        return
-    player = xbmc.Player()
-    for _ in range(START_TIMEOUT * 4):
-        if player.isPlayingVideo():
-            break
-        xbmc.sleep(250)
-    else:
-        return  # the user backed out, or nothing could be resolved
+def blocked_stream():
+    """True when what is playing is a "this source was taken down" clip, not the title."""
+    return BLOCKED_MARKER in (xbmc.getInfoLabel('Player.Filenameandpath') or '').lower()
+
+
+def play(path, resume=0, on_blocked=None):
+    """Start `path`, then put it right: skip a takedown clip, and resume where asked.
+
+    `on_blocked` is a builtin run when the stream turns out to be a takedown clip - the
+    source picker, so the next source can be chosen instead of being left with a
+    30-second notice playing as though it were the film.
+    """
+    home = xbmcgui.Window(10000)
+    home.setProperty(RESOLVING, '1')
+    try:
+        xbmc.executebuiltin(f'PlayMedia({path})')
+        player = xbmc.Player()
+        for _ in range(START_TIMEOUT * 4):
+            if player.isPlayingVideo():
+                break
+            xbmc.sleep(250)
+        else:
+            return  # the user backed out, or nothing could be resolved
+    finally:
+        home.clearProperty(RESOLVING)
     xbmc.sleep(SETTLE * 1000)
     try:
         if not player.isPlayingVideo():
+            return
+        if blocked_stream():
+            player.stop()
+            xbmcgui.Dialog().notification(
+                'Source blocked', 'That release was taken down - pick another',
+                xbmcgui.NOTIFICATION_INFO, 4000)
+            if on_blocked:
+                xbmc.sleep(500)
+                xbmc.executebuiltin(on_blocked)
+            return
+        if not resume:
             return
         if player.getTime() > resume - 30:
             return  # the player add-on resumed it for us
@@ -135,13 +170,17 @@ def play_show(tmdb_id):
     if not tmdb_id:
         return
     season, episode, resume = next_episode(tmdb_id)
-    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}', resume)
+    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}', resume,
+         on_blocked=(f'RunScript(plugin.video.themoviedb.helper,play=tv,tmdb_id={tmdb_id},'
+                     f'season={season},episode={episode},ignore_default=True)'))
 
 
 def play_movie(tmdb_id):
     if not tmdb_id:
         return
-    play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}', movie_resume(tmdb_id))
+    play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}', movie_resume(tmdb_id),
+         on_blocked=(f'RunScript(plugin.video.themoviedb.helper,play=movie,'
+                     f'tmdb_id={tmdb_id},ignore_default=True)'))
 
 
 def main():
