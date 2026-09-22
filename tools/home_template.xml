@@ -21,6 +21,15 @@
             <content limit="8">plugin://plugin.video.themoviedb.helper/?info=now_playing&amp;tmdb_type=movie&amp;nextpage=false</content>
         </control>
 
+        <!-- Seed for "Because You Watched": the most recent film in your Trakt history.
+             The row below reads its title and id, so the row follows what you watch. -->
+        <control type="list" id="6070">
+            <left>0</left><top>1078</top><width>10</width><height>2</height>
+            <itemlayout width="1" height="1" />
+            <focusedlayout width="1" height="1" />
+            <content limit="1">plugin://plugin.video.themoviedb.helper/?info=trakt_history&amp;tmdb_type=movie&amp;nextpage=false</content>
+        </control>
+
         <!-- ===================== FIXED BACKGROUND ===================== -->
 
         <control type="image">

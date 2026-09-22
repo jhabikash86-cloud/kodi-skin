@@ -73,6 +73,10 @@ ROWS = [
      f'{PLUGIN}info=trakt_trending&tmdb_type=tv&nextpage=false'),
     ('poster', 'Recommended for You',
      f'{PLUGIN}info=trakt_recommendations&tmdb_type=movie&nextpage=false'),
+    # Follows the last film you finished - the row's own label names it.
+    ('poster', 'Because You Watched $INFO[Container(6070).ListItem.Title]',
+     f'{PLUGIN}info=recommendations&tmdb_type=movie'
+     f'&tmdb_id=$INFO[Container(6070).ListItem.UniqueID(tmdb)]&nextpage=false'),
     ('rank', 'Top 10 on Netflix', provider_chart(PROVIDERS['Netflix'])),
     ('rank', 'Top 10 on Prime Video', provider_chart(PROVIDERS['Prime Video'])),
     ('rank', 'Top 10 on JioHotstar', provider_chart(PROVIDERS['JioHotstar'])),

@@ -22,6 +22,7 @@ later and any offset set beforehand is lost. If whatever resolved the stream has
 already resumed it (some debrid players do), the seek is skipped.
 """
 import json
+import re
 import sqlite3
 import sys
 
@@ -40,6 +41,14 @@ SETTLE = 2             # let the player settle before seeking
 # hands back a short explainer clip instead of the film, and it plays like any other
 # stream. Left alone it looks as though the title itself is broken.
 BLOCKED_MARKER = '/videos/failed_'
+
+# Six films are called "Animal". POV matches on the release name, so the Hindi Animal
+# (2023) also turns up the French "Le Regne Animal" (2023) - and that one wins the sort,
+# being a 55GB cached 4K remux. A release name reads <title>.<year>.<tags>, so the part
+# before the year should be the title, give or take a site or group prefix. This only
+# warns: a release it misreads costs a notification, never a film that would have played.
+SITEISH = re.compile(r'\d|^www$|^(?:com|net|org|info|world|me|to|cc|io|tv)$')
+YEAR = re.compile(r'\b(19|20)\d{2}\b')
 
 # Resolving a stream can take fifteen seconds, during which nothing is playing and the
 # remote is idle - exactly what extras/trailer.py waits for. This tells it to hold off.
@@ -121,6 +130,49 @@ def movie_resume(tmdb_id):
     return 0
 
 
+def normalise(text):
+    return re.sub(r'[^a-z0-9]+', '.', (text or '').lower()).strip('.')
+
+
+def release_name(path):
+    """The release name out of whatever the debrid service handed back."""
+    path = path or ''
+    match = re.search(r'torrent_name=([^&]+)', path)
+    if match:
+        from urllib.parse import unquote_plus
+        return unquote_plus(match.group(1))
+    return path.rsplit('/', 1)[-1].split('?')[0]
+
+
+def expected_title(kind, tmdb_id):
+    items = directory(f'{PLUGIN}info=details&tmdb_type={kind}&tmdb_id={tmdb_id}&nextpage=false')
+    if not items:
+        return ''
+    return items[0].get('label') or ''
+
+
+def looks_like_another_film(path, title):
+    """True when the release name reads like a different film.
+
+    Two signs, either of which is enough: the words before the year are not the title
+    (so "the.animal.kingdom.2024" is not "Animal"), or more than one real word sits in
+    front of the title (so "le.regne.animal" is not "animal", while a lone group tag or
+    a site prefix like "www.1tamilmv.world" is fine).
+    """
+    name = normalise(release_name(path))
+    wanted = normalise(title)
+    if not name or not wanted:
+        return False
+    position = name.find(wanted)
+    if position < 0:
+        return True
+    year = YEAR.search(name)
+    if year and not name[:year.start()].strip('.').endswith(wanted):
+        return True
+    extra = [t for t in name[:position].split('.') if t and not SITEISH.search(t) and len(t) > 1]
+    return len(extra) > 1
+
+
 def blocked_stream():
     """True when what is playing is a "this source was taken down" clip, not the title."""
     return BLOCKED_MARKER in (xbmc.getInfoLabel('Player.Filenameandpath') or '').lower()
@@ -149,7 +201,7 @@ def rescrape(kind, tmdb_id):
         pass  # a locked or missing cache just means this play reuses it
 
 
-def play(path, resume=0, on_blocked=None):
+def play(path, resume=0, on_blocked=None, title=''):
     """Start `path`, then put it right: skip a takedown clip, and resume where asked.
 
     `on_blocked` is a builtin run when the stream turns out to be a takedown clip - the
@@ -182,6 +234,11 @@ def play(path, resume=0, on_blocked=None):
                 xbmc.sleep(500)
                 xbmc.executebuiltin(on_blocked)
             return
+        if title and looks_like_another_film(xbmc.getInfoLabel('Player.Filenameandpath'), title):
+            # Only a warning. Getting this wrong must never cost a film that would play.
+            xbmcgui.Dialog().notification(
+                'This may not be ' + title, 'Use Sources to pick another release',
+                xbmcgui.NOTIFICATION_INFO, 6000)
         if blocked_stream():
             player.stop()
             xbmcgui.Dialog().notification(
@@ -230,7 +287,9 @@ def play_show(tmdb_id, lang=None):
     season, episode, resume = next_episode(tmdb_id)
     prefer_language(lang)
     rescrape('episode', tmdb_id)
+    show_title = expected_title('tv', tmdb_id)
     play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}', resume,
+         title=show_title,
          on_blocked=(f'RunScript(plugin.video.themoviedb.helper,play=tv,tmdb_id={tmdb_id},'
                      f'season={season},episode={episode},ignore_default=True)'))
 
@@ -240,7 +299,9 @@ def play_movie(tmdb_id, lang=None):
         return
     prefer_language(lang)
     rescrape('movie', tmdb_id)
+    film_title = expected_title('movie', tmdb_id)
     play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}', movie_resume(tmdb_id),
+         title=film_title,
          on_blocked=(f'RunScript(plugin.video.themoviedb.helper,play=movie,'
                      f'tmdb_id={tmdb_id},ignore_default=True)'))
 
