@@ -29,32 +29,56 @@ HEADER_TOP = 150        # where the focused row's title settles
 # Top of the Pops - so the network rows are held to recent titles with real vote counts,
 # and the "best of" rows are sorted by rating instead.
 RECENT = (datetime.date.today() - datetime.timedelta(days=540)).isoformat()
+
+# Genre ids for the formats that dominate popularity in some countries but are not what
+# anyone means by a chart: soap, news, talk, reality, kids.
+NOT_SERIALS = '10766,10763,10767,10764,10762'
+
+# TMDb has no "language is not English" filter, so world cinema is done by origin country.
+WORLD_CINEMA = (f'{PLUGIN}info=discover&tmdb_type=movie&with_origin_country=KR%7CJP%7CFR%7CES%7CIT'
+                f'&sort_by=popularity.desc&primary_release_date.gte={RECENT}'
+                f'&vote_count.gte=30&nextpage=false')
 THREE_YEARS = (datetime.date.today() - datetime.timedelta(days=1095)).isoformat()
 
 # Netflix's catalogue differs by country; this is the one row that is region-specific.
 WATCH_REGION = 'IN'
+
+# India is the watch region: Netflix, Prime and JioHotstar catalogues differ by country,
+# and these are the services that carry content here. HBO, Hulu and the BBC have no
+# Indian movie catalogue, so their charts live on the TV page where they are networks.
+WATCH_REGION = 'IN'
+PROVIDERS = {'Netflix': 8, 'Prime Video': 119, 'JioHotstar': 2336}
+
+
+def provider_chart(provider_id, votes=20):
+    return (f'{PLUGIN}info=discover&tmdb_type=movie&with_watch_providers={provider_id}'
+            f'&watch_region={WATCH_REGION}&sort_by=popularity.desc'
+            f'&primary_release_date.gte={RECENT}&vote_count.gte={votes}&nextpage=false')
+
+
+def language_row(code, media='movie', votes=15):
+    date_key = 'primary_release_date' if media == 'movie' else 'first_air_date'
+    extra = '' if media == 'movie' else f'&without_genres={NOT_SERIALS}&with_id=True'
+    return (f'{PLUGIN}info=discover&tmdb_type={media}&with_original_language={code}'
+            f'&sort_by=popularity.desc&{date_key}.gte={RECENT}{extra}'
+            f'&vote_count.gte={votes}&nextpage=false')
+
 
 ROWS = [
     ('upnext', 'Continue Watching',
      f'{PLUGIN}info=trakt_ondeck&tmdb_type=tv&nextpage=false'),
     ('rank', 'Top 10 Movies Right Now',
      f'{PLUGIN}info=trakt_trending&tmdb_type=movie&nextpage=false'),
-    ('poster', 'Recommended for You',
-     f'{PLUGIN}info=trakt_recommendations&tmdb_type=movie&nextpage=false'),
     ('rank', 'Top 10 Shows Right Now',
      f'{PLUGIN}info=trakt_trending&tmdb_type=tv&nextpage=false'),
-    ('poster', 'New on Apple TV+',
-     f'{PLUGIN}info=discover&tmdb_type=tv&with_networks=2552&sort_by=popularity.desc'
-     f'&first_air_date.gte={THREE_YEARS}&vote_count.gte=20&nextpage=false'),
-    ('poster', 'Popular on Netflix',
-     f'{PLUGIN}info=discover&tmdb_type=movie&with_watch_providers=8&watch_region={WATCH_REGION}'
-     f'&sort_by=popularity.desc&primary_release_date.gte={RECENT}&vote_count.gte=30&nextpage=false'),
-    ('poster', 'Acclaimed on HBO',
-     f'{PLUGIN}info=discover&tmdb_type=tv&with_networks=49&sort_by=vote_average.desc'
-     f'&vote_count.gte=300&nextpage=false'),
-    ('poster', 'Best of the BBC',
-     f'{PLUGIN}info=discover&tmdb_type=tv&with_networks=4&sort_by=popularity.desc'
-     f'&first_air_date.gte={THREE_YEARS}&vote_count.gte=15&nextpage=false'),
+    ('poster', 'Recommended for You',
+     f'{PLUGIN}info=trakt_recommendations&tmdb_type=movie&nextpage=false'),
+    ('rank', 'Top 10 on Netflix', provider_chart(PROVIDERS['Netflix'])),
+    ('rank', 'Top 10 on Prime Video', provider_chart(PROVIDERS['Prime Video'])),
+    ('rank', 'Top 10 on JioHotstar', provider_chart(PROVIDERS['JioHotstar'])),
+    ('poster', 'Trending in Hindi', language_row('hi')),
+    ('poster', 'Trending in Tamil', language_row('ta', votes=10)),
+    ('poster', 'World Cinema', WORLD_CINEMA),
 ]
 
 RANK_IDBASE = {}  # filled in below: one distinct tile-id base per numbered row

@@ -16,17 +16,19 @@
             <left>90</left><top>142</top><width>900</width><height>70</height>
             <label>TV Shows</label>
             <font>atv_pagetitle</font><textcolor>FFFFFFFF</textcolor>
-            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)">Conditional</animation>
         </control>
 
         <control type="group">
-            <animation effect="slide" end="0,-510" time="380" tween="sine" easing="inout" condition="ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(53).HasFocus(0) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-290" time="380" tween="sine" easing="inout" condition="Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-510" time="380" tween="sine" easing="inout" condition="ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(53).HasFocus(0) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)">Conditional</animation>
+            <animation effect="slide" end="0,-290" time="380" tween="sine" easing="inout" condition="Control.HasFocus(60) | Control.HasFocus(61)">Conditional</animation>
 
             <include content="ATV_RankRow">
                 <param name="id" value="51" />
@@ -105,20 +107,40 @@
                 <param name="onback" value="noop" />
                 <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;first_air_date.gte=2023-09-23&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=10&amp;nextpage=false" />
             </include>
-            <include content="ATV_PosterRow">
+            <include content="ATV_RankRow">
                 <param name="id" value="58" />
+                <param name="idbase" value="77" />
+                <param name="data" value="6107" />
                 <param name="top" value="3060" />
-                <param name="label" value="On TV Today" />
+                <param name="label" value="Top 10 Tamil Series Right Now" />
                 <param name="onup" value="57" />
                 <param name="ondown" value="59" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=airing_today&amp;tmdb_type=tv&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;first_air_date.gte=2023-09-23&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=5&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="59" />
                 <param name="top" value="3460" />
-                <param name="label" value="Coming Soon" />
+                <param name="label" value="World Series" />
                 <param name="onup" value="58" />
+                <param name="ondown" value="60" />
+                <param name="onback" value="noop" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CJP%7CFR%7CES&amp;sort_by=popularity.desc&amp;first_air_date.gte=2023-09-23&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=30&amp;nextpage=false" />
+            </include>
+            <include content="ATV_PosterRow">
+                <param name="id" value="60" />
+                <param name="top" value="3860" />
+                <param name="label" value="On TV Today" />
+                <param name="onup" value="59" />
+                <param name="ondown" value="61" />
+                <param name="onback" value="noop" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=airing_today&amp;tmdb_type=tv&amp;nextpage=false" />
+            </include>
+            <include content="ATV_PosterRow">
+                <param name="id" value="61" />
+                <param name="top" value="4260" />
+                <param name="label" value="Coming Soon" />
+                <param name="onup" value="60" />
                 <param name="ondown" value="noop" />
                 <param name="onback" value="noop" />
                 <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false" />
@@ -129,12 +151,12 @@
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>190</height>
             <texture>atv/grad_top.png</texture>
-            <visible>ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59)</visible>
+            <visible>ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)</visible>
             <animation effect="fade" time="300">VisibleChange</animation>
         </control>
 
         <include content="ATV_TabBar">
-            <param name="hidewhen" value="ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59)" />
+            <param name="hidewhen" value="ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)" />
             <param name="ondown" value="51" />
         </include>
 

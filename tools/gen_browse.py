@@ -32,6 +32,44 @@ THREE_YEARS = (datetime.date.today() - datetime.timedelta(days=1095)).isoformat(
 # means by a "top 10": soap, news, talk, reality, kids.
 NOT_SERIALS = '10766,10763,10767,10764,10762'
 
+DECADE = '2015-01-01'   # "of the decade" rows look back from here
+TODAY_ISO = datetime.date.today().isoformat()
+
+# TMDb records nothing about release resolution, so there is no way to ask it for 4K
+# titles. This row is the closest honest proxy - big, heavily voted, already released -
+# and in practice those all have UHD releases. It is not called a 4K row because the
+# query cannot actually promise that; the resolution of what you get is decided by the
+# source POV picks, and it shows it.
+BLOCKBUSTERS = (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;sort_by=popularity.desc'
+                f'&amp;primary_release_date.gte={DECADE}&amp;primary_release_date.lte={TODAY_ISO}'
+                f'&amp;vote_count.gte=2000&amp;nextpage=false')
+
+WORLD_MOVIES = (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT'
+                f'&amp;sort_by=popularity.desc&amp;primary_release_date.gte={RECENT_SINCE}'
+                f'&amp;vote_count.gte=30&amp;nextpage=false')
+
+WORLD_SHOWS = (f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CJP%7CFR%7CES'
+               f'&amp;sort_by=popularity.desc&amp;first_air_date.gte={THREE_YEARS}'
+               f'&amp;without_genres={NOT_SERIALS}&amp;with_id=True&amp;vote_count.gte=30&amp;nextpage=false')
+
+
+def language_chart(code, media='movie', votes=15):
+    """A language's current chart."""
+    date_key = 'primary_release_date' if media == 'movie' else 'first_air_date'
+    since = RECENT_SINCE if media == 'movie' else THREE_YEARS
+    extra = '' if media == 'movie' else f'&amp;without_genres={NOT_SERIALS}&amp;with_id=True'
+    return (f'{PLUGIN}info=discover&amp;tmdb_type={media}&amp;with_original_language={code}'
+            f'&amp;sort_by=popularity.desc&amp;{date_key}.gte={since}{extra}'
+            f'&amp;vote_count.gte={votes}&amp;nextpage=false')
+
+
+def best_of_language(code, media='movie', votes=120):
+    """Highest rated of a language since DECADE - the "of the decade" rows."""
+    date_key = 'primary_release_date' if media == 'movie' else 'first_air_date'
+    return (f'{PLUGIN}info=discover&amp;tmdb_type={media}&amp;with_original_language={code}'
+            f'&amp;sort_by=vote_average.desc&amp;{date_key}.gte={DECADE}'
+            f'&amp;vote_count.gte={votes}&amp;nextpage=false')
+
 
 def network(network_id, votes=20):
     """A network's chart: recent titles it originated, most popular first."""
@@ -51,21 +89,18 @@ PAGES = {
         'rows': [
             ('rank', 'Top 10 Most Watched This Week',
              f'{PLUGIN}info=trakt_mostwatched&amp;tmdb_type=movie&amp;period=weekly&amp;nextpage=false'),
+            ('poster', 'In Cinemas Now', f'{PLUGIN}info=now_playing&amp;tmdb_type=movie&amp;nextpage=false'),
             ('poster', 'New Releases',
              f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;sort_by=primary_release_date.desc'
              f'&amp;primary_release_date.gte={NEW_SINCE}&amp;primary_release_date.lte={TODAY}'
              f'&amp;vote_count.gte=10&amp;nextpage=false'),
-            ('poster', 'In Cinemas Now', f'{PLUGIN}info=now_playing&amp;tmdb_type=movie&amp;nextpage=false'),
-            ('rank', 'Top 10 Hindi Movies Right Now',
-             f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc'
-             f'&amp;primary_release_date.gte={RECENT_SINCE}&amp;vote_count.gte=15&amp;nextpage=false'),
+            ('poster', 'Blockbusters', BLOCKBUSTERS),
+            ('rank', 'Top 10 Hindi Movies Right Now', language_chart('hi')),
+            ('poster', 'Hindi Films of the Decade', best_of_language('hi', votes=120)),
+            ('rank', 'Top 10 Tamil Movies Right Now', language_chart('ta', votes=10)),
+            ('poster', 'Tamil Films of the Decade', best_of_language('ta', votes=60)),
+            ('poster', 'World Cinema', WORLD_MOVIES),
             ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=movie&amp;nextpage=false'),
-            ('poster', 'Best of Action',
-             f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_genres=28&amp;with_id=True'
-             f'&amp;sort_by=vote_average.desc&amp;vote_count.gte=500&amp;nextpage=false'),
-            ('poster', 'Best of Comedy',
-             f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_genres=35&amp;with_id=True'
-             f'&amp;sort_by=vote_average.desc&amp;vote_count.gte=400&amp;nextpage=false'),
         ],
     },
     1141: {
@@ -82,10 +117,9 @@ PAGES = {
             ('rank', 'Top 10 on Apple TV+', network(2552)),
             ('rank', 'Top 10 on Hulu', network(453)),
             ('rank', 'Top 10 on the BBC', network(4)),
-            ('rank', 'Top 10 Hindi Series Right Now',
-             f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc'
-             f'&amp;first_air_date.gte={THREE_YEARS}&amp;without_genres={NOT_SERIALS}&amp;with_id=True'
-             f'&amp;vote_count.gte=10&amp;nextpage=false'),
+            ('rank', 'Top 10 Hindi Series Right Now', language_chart('hi', media='tv', votes=10)),
+            ('rank', 'Top 10 Tamil Series Right Now', language_chart('ta', media='tv', votes=5)),
+            ('poster', 'World Series', WORLD_SHOWS),
             ('poster', 'On TV Today', f'{PLUGIN}info=airing_today&amp;tmdb_type=tv&amp;nextpage=false'),
             ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false'),
         ],

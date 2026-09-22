@@ -163,14 +163,16 @@
                  one plays forward and adds them, which overshot badly with ease-out and
                  hesitated with a slow-start curve. The last rows share an offset, so the page
                  stops with the final row at the bottom.
-                 Totals: 50 -710, 51 -1090, 52 -1490, 53 -1890, 54 -2290, 55 -2690, 56 -3040, 57 -3040 -->
-            <animation effect="slide" end="0,-710" time="380" tween="sine" easing="inout" condition="Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | Control.HasFocus(52) | ControlGroup(53).HasFocus(0) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57)">Conditional</animation>
-            <animation effect="slide" end="0,-380" time="380" tween="sine" easing="inout" condition="!$EXP[ATV_UpNextEmpty] + [ControlGroup(51).HasFocus(0) | Control.HasFocus(52) | ControlGroup(53).HasFocus(0) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57)]">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | ControlGroup(53).HasFocus(0) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(53).HasFocus(0) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57)">Conditional</animation>
-            <animation effect="slide" end="0,-350" time="380" tween="sine" easing="inout" condition="Control.HasFocus(56) | Control.HasFocus(57)">Conditional</animation>
+                 Totals: 50 -710, 51 -1090, 52 -1490, 53 -1890, 54 -2290, 55 -2690, 56 -3090, 57 -3490, 58 -3840, 59 -3840 -->
+            <animation effect="slide" end="0,-710" time="380" tween="sine" easing="inout" condition="Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-380" time="380" tween="sine" easing="inout" condition="!$EXP[ATV_UpNextEmpty] + [ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)]">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-350" time="380" tween="sine" easing="inout" condition="Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
 
             <!-- ===== ROWS ===== -->
             <!-- trakt_ondeck is "continue watching": the episodes you actually paused, newest
@@ -197,54 +199,76 @@
                     <param name="ondown" value="52" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_trending&amp;tmdb_type=movie&amp;nextpage=false" />
                 </include>
-                <include content="ATV_PosterRow">
+                <include content="ATV_RankRow">
                     <param name="id" value="52" />
+                    <param name="idbase" value="62" />
+                    <param name="data" value="6052" />
                     <param name="top" value="1640" />
-                    <param name="label" value="Recommended for You" />
+                    <param name="label" value="Top 10 Shows Right Now" />
                     <param name="onup" value="51" />
                     <param name="ondown" value="53" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_recommendations&amp;tmdb_type=movie&amp;nextpage=false" />
-                </include>
-                <include content="ATV_RankRow">
-                    <param name="id" value="53" />
-                    <param name="idbase" value="62" />
-                    <param name="data" value="6053" />
-                    <param name="top" value="2040" />
-                    <param name="label" value="Top 10 Shows Right Now" />
-                    <param name="onup" value="52" />
-                    <param name="ondown" value="54" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_trending&amp;tmdb_type=tv&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
+                    <param name="id" value="53" />
+                    <param name="top" value="2040" />
+                    <param name="label" value="Recommended for You" />
+                    <param name="onup" value="52" />
+                    <param name="ondown" value="54" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_recommendations&amp;tmdb_type=movie&amp;nextpage=false" />
+                </include>
+                <include content="ATV_RankRow">
                     <param name="id" value="54" />
+                    <param name="idbase" value="63" />
+                    <param name="data" value="6054" />
                     <param name="top" value="2440" />
-                    <param name="label" value="New on Apple TV+" />
+                    <param name="label" value="Top 10 on Netflix" />
                     <param name="onup" value="53" />
                     <param name="ondown" value="55" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=2552&amp;sort_by=popularity.desc&amp;first_air_date.gte=2023-09-22&amp;vote_count.gte=20&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=8&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=20&amp;nextpage=false" />
                 </include>
-                <include content="ATV_PosterRow">
+                <include content="ATV_RankRow">
                     <param name="id" value="55" />
+                    <param name="idbase" value="64" />
+                    <param name="data" value="6055" />
                     <param name="top" value="2840" />
-                    <param name="label" value="Popular on Netflix" />
+                    <param name="label" value="Top 10 on Prime Video" />
                     <param name="onup" value="54" />
                     <param name="ondown" value="56" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=8&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-30&amp;vote_count.gte=30&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=119&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=20&amp;nextpage=false" />
                 </include>
-                <include content="ATV_PosterRow">
+                <include content="ATV_RankRow">
                     <param name="id" value="56" />
+                    <param name="idbase" value="65" />
+                    <param name="data" value="6056" />
                     <param name="top" value="3240" />
-                    <param name="label" value="Acclaimed on HBO" />
+                    <param name="label" value="Top 10 on JioHotstar" />
                     <param name="onup" value="55" />
                     <param name="ondown" value="57" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=49&amp;sort_by=vote_average.desc&amp;vote_count.gte=300&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=2336&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=20&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="57" />
                     <param name="top" value="3640" />
-                    <param name="label" value="Best of the BBC" />
+                    <param name="label" value="Trending in Hindi" />
                     <param name="onup" value="56" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=4&amp;sort_by=popularity.desc&amp;first_air_date.gte=2023-09-22&amp;vote_count.gte=15&amp;nextpage=false" />
+                    <param name="ondown" value="58" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=15&amp;nextpage=false" />
+                </include>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="58" />
+                    <param name="top" value="4040" />
+                    <param name="label" value="Trending in Tamil" />
+                    <param name="onup" value="57" />
+                    <param name="ondown" value="59" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=10&amp;nextpage=false" />
+                </include>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="59" />
+                    <param name="top" value="4440" />
+                    <param name="label" value="World Cinema" />
+                    <param name="onup" value="58" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=30&amp;nextpage=false" />
                 </include>
             </control>
         </control>
