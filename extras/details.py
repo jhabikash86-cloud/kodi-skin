@@ -133,6 +133,7 @@ def open_details(container, index=None):
         page = 0
     set_string(f'DetailType{page}', item_type)
     set_string(f'DetailDiscover{page}', discover_filter(container, index))
+    set_string(f'DetailLang{page}', language(container, index))
     set_string(f'DetailID{page}', tmdb_id)
     set_string(f'DetailNext{page}', '')  # clear the previous title's episode first
     if on_page and page == current:  # deepest page: show the new title in place

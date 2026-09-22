@@ -109,7 +109,7 @@
                     <param name="label" value="Play" />
                     <param name="icon" value="atv/icon_play.png" />
                     <onfocus>RunScript(special://skin/extras/trailer.py,watch)</onfocus>
-                    <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
+                    <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)],$INFO[Container(40).ListItem.Property(original_language)])</onclick>
                     <onup>9000</onup>
                     <ondown>50</ondown>
                     <onleft>Control.Move(40,-1)</onleft>

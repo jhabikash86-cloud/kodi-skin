@@ -26,6 +26,7 @@ import sqlite3
 import sys
 
 import xbmc
+import xbmcaddon
 import xbmcgui
 import xbmcvfs
 
@@ -50,6 +51,21 @@ RESOLVING = 'ATVResolving'
 # again and take the best that resolves now. POV does the same thing in its own
 # "clear and rescrape" action; this is that delete, from the skin.
 POV_CACHE = 'special://profile/addon_data/plugin.video.pov/providerscache.db'
+
+# Release names are all POV has to go on, and a lot of titles share a name: searching for
+# the Hindi "Animal" (2023) also turns up the French "Le Regne Animal" (2023), which wins
+# on sorting because it happens to be a 55GB cached 4K remux. POV can push sources whose
+# name carries a language tag to the front - it keeps the quality order inside that group,
+# so the best Hindi release still wins - but only for one language at a time, set here per
+# play. Names must match POV's own table (modules/meta_lists.py); languages missing from
+# it, Malayalam and Kannada among them, simply leave the ordering alone.
+POV_ADDON = 'plugin.video.pov'
+POV_LANGUAGES = {
+    'en': 'English', 'hi': 'Hindi', 'ta': 'Tamil', 'te': 'Telugu', 'bn': 'Bengali',
+    'fr': 'French', 'es': 'Spanish', 'de': 'German', 'it': 'Italian', 'ja': 'Japanese',
+    'ko': 'Korean', 'zh': 'Chinese', 'ru': 'Russian', 'pt': 'Portuguese', 'ar': 'Arabic',
+    'nl': 'Dutch', 'sv': 'Swedish', 'pl': 'Polish', 'tr': 'Turkish',
+}
 
 
 def jsonrpc(method, **params):
@@ -108,6 +124,18 @@ def movie_resume(tmdb_id):
 def blocked_stream():
     """True when what is playing is a "this source was taken down" clip, not the title."""
     return BLOCKED_MARKER in (xbmc.getInfoLabel('Player.Filenameandpath') or '').lower()
+
+
+def prefer_language(code):
+    """Ask POV to sort releases in this language to the top for the coming play."""
+    name = POV_LANGUAGES.get((code or '').lower())
+    try:
+        pov = xbmcaddon.Addon(POV_ADDON)
+        pov.setSetting('results.language_filter', 'true' if name else 'false')
+        if name:
+            pov.setSetting('results.language', name)
+    except Exception:
+        pass  # POV not installed, or settings locked - ordering just stays as it was
 
 
 def rescrape(kind, tmdb_id):
@@ -184,6 +212,7 @@ def play_item(container):
     path = xbmc.getInfoLabel(f'{prefix}.FileNameAndPath')
     if not path:
         return
+    prefer_language(xbmc.getInfoLabel(f'{prefix}.Property(original_language)'))
     try:
         percent = int(xbmc.getInfoLabel(f'{prefix}.PercentPlayed') or 0)
         duration = int(xbmc.getInfoLabel(f'{prefix}.Duration(secs)') or 0)
@@ -195,19 +224,21 @@ def play_item(container):
     play(path, resume)
 
 
-def play_show(tmdb_id):
+def play_show(tmdb_id, lang=None):
     if not tmdb_id:
         return
     season, episode, resume = next_episode(tmdb_id)
+    prefer_language(lang)
     rescrape('episode', tmdb_id)
     play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}', resume,
          on_blocked=(f'RunScript(plugin.video.themoviedb.helper,play=tv,tmdb_id={tmdb_id},'
                      f'season={season},episode={episode},ignore_default=True)'))
 
 
-def play_movie(tmdb_id):
+def play_movie(tmdb_id, lang=None):
     if not tmdb_id:
         return
+    prefer_language(lang)
     rescrape('movie', tmdb_id)
     play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}', movie_resume(tmdb_id),
          on_blocked=(f'RunScript(plugin.video.themoviedb.helper,play=movie,'
@@ -218,12 +249,13 @@ def main():
     args = sys.argv[1:]
     action = args[0] if args else ''
     target = args[1] if len(args) > 1 else ''
+    lang = args[2] if len(args) > 2 else None
     if action == 'item':
         play_item(target)
     elif action == 'show':
-        play_show(target)
+        play_show(target, lang)
     elif action == 'movie':
-        play_movie(target)
+        play_movie(target, lang)
 
 
 if __name__ == '__main__':

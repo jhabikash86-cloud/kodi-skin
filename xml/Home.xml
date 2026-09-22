@@ -109,7 +109,7 @@
                     <param name="label" value="Play" />
                     <param name="icon" value="atv/icon_play.png" />
                     <onfocus>RunScript(special://skin/extras/trailer.py,watch)</onfocus>
-                    <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
+                    <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)],$INFO[Container(40).ListItem.Property(original_language)])</onclick>
                     <onup>9000</onup>
                     <ondown>50</ondown>
                     <onleft>Control.Move(40,-1)</onleft>
@@ -240,7 +240,7 @@
                     <param name="label" value="Top 10 on Netflix" />
                     <param name="onup" value="53" />
                     <param name="ondown" value="55" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=8&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=20&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=8&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=20&amp;nextpage=false" />
                 </include>
                 <include content="ATV_RankRow">
                     <param name="id" value="55" />
@@ -250,7 +250,7 @@
                     <param name="label" value="Top 10 on Prime Video" />
                     <param name="onup" value="54" />
                     <param name="ondown" value="56" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=119&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=20&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=119&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=20&amp;nextpage=false" />
                 </include>
                 <include content="ATV_RankRow">
                     <param name="id" value="56" />
@@ -260,7 +260,7 @@
                     <param name="label" value="Top 10 on JioHotstar" />
                     <param name="onup" value="55" />
                     <param name="ondown" value="57" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=2336&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=20&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=2336&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=20&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="57" />
@@ -268,7 +268,7 @@
                     <param name="label" value="Trending in Hindi" />
                     <param name="onup" value="56" />
                     <param name="ondown" value="58" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=15&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=15&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="58" />
@@ -276,14 +276,14 @@
                     <param name="label" value="Trending in Tamil" />
                     <param name="onup" value="57" />
                     <param name="ondown" value="59" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=10&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=10&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="59" />
                     <param name="top" value="5065" />
                     <param name="label" value="World Cinema" />
                     <param name="onup" value="58" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=30&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=30&amp;nextpage=false" />
                 </include>
             </control>
         </control>

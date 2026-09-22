@@ -103,9 +103,18 @@ POV settings that matter, all of which had to be changed from their defaults:
 | `torrent.display.uncached` | **true** | Autoplay drops uncached sources unconditionally (`sources.py`, `sort_uncached_torrents`), so this cannot make Play stall. It gives the **Sources** button uncached options, which POV then caches on demand - the only way to play a title Real-Debrid holds nothing for. |
 | `provider.aiostreams` | **false** | It returned sources that were not actually cached. Its Comet config carries `cachedOnly: false`, so the stream hits EOF the moment it opens. Re-enable it once that is fixed in the AIOStreams account settings. |
 | `auto_start_pov` | **false** | On, POV opens its own window at startup, over the skin's home screen. |
+| `ignore_results_filter` | **false** | On, an empty filtered result set makes POV re-run with the title filter ignored, switch autoplay off and open the source picker. That is both the popup that appears after pressing Play and the path that lets a differently-named film through. |
 
 Umbrella is still installed and still in the Sources dialog, as is MediaFusion once you
 give it a secret string. The **Sources** button on a title page lists all of them.
+
+**Titles that share a name.** POV matches sources on the release name, so searching for
+the Hindi *Animal* (2023) also returns the French *Le Regne Animal* (2023) - and that one
+sorts first, because it happens to be a 55GB cached 4K remux. extras/play.py asks POV to
+sort releases carrying the title's own language tag to the top (`results.language_filter`
+with `results.language`, which orders rather than filters, so the best release inside that
+language still wins). **This is not yet confirmed to work**: the setting is applied but the
+order did not change in testing, and the reason is still open.
 
 **When a title will not play at all.** POV's autoplay only ever offers sources Real-Debrid
 already holds. For a film with no cached copy - which is common for older Tamil and Hindi

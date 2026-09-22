@@ -100,8 +100,8 @@
                     <param name="label" value="$VAR[ATV_DetailPlayLabel2]" />
                     <param name="icon" value="atv/icon_play.png" />
                     <!-- extras/play.py works out which episode is next and where to resume it -->
-                    <onclick condition="!$EXP[ATV_DetailIsTV2]">RunScript(special://skin/extras/play.py,movie,$INFO[Skin.String(DetailID2)])</onclick>
-                    <onclick condition="$EXP[ATV_DetailIsTV2]">RunScript(special://skin/extras/play.py,show,$INFO[Skin.String(DetailID2)])</onclick>
+                    <onclick condition="!$EXP[ATV_DetailIsTV2]">RunScript(special://skin/extras/play.py,movie,$INFO[Skin.String(DetailID2)],$INFO[Skin.String(DetailLang2)])</onclick>
+                    <onclick condition="$EXP[ATV_DetailIsTV2]">RunScript(special://skin/extras/play.py,show,$INFO[Skin.String(DetailID2)],$INFO[Skin.String(DetailLang2)])</onclick>
                     <onright>9603</onright>
                     <ondown>9610</ondown>
                 </include>
