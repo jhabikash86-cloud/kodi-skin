@@ -82,6 +82,32 @@ def genre_ids(container, index=None):
     return ','.join(ids)
 
 
+def language(container, index=None):
+    """The title's own language, so recommendations can stay in it.
+
+    A Rajinikanth film should suggest more Tamil cinema, not the global popularity
+    list its genres would otherwise return.
+    """
+    return info(f'{list_prefix(container, index)}.Property(original_language)')
+
+
+def discover_filter(container, index=None):
+    """The discover query for "you may also like", as one string.
+
+    Genres and language were two skin strings with a two-part condition in the XML, and
+    the container was built before both had committed, so it silently fell back to the
+    genre-only path. One string commits once and cannot be caught half-set.
+    """
+    parts = []
+    genres = genre_ids(container, index)
+    if genres:
+        parts.append(f'with_genres={genres}&with_id=True')
+    code = language(container, index)
+    if code:
+        parts.append(f'with_original_language={code}')
+    return '&'.join(parts)
+
+
 def item_type_and_id(container, index=None):
     prefix = list_prefix(container, index)
     dbtype = info(f'{prefix}.DBType')
@@ -106,7 +132,7 @@ def open_details(container, index=None):
     else:
         page = 0
     set_string(f'DetailType{page}', item_type)
-    set_string(f'DetailGenres{page}', genre_ids(container, index))
+    set_string(f'DetailDiscover{page}', discover_filter(container, index))
     set_string(f'DetailID{page}', tmdb_id)
     set_string(f'DetailNext{page}', '')  # clear the previous title's episode first
     if on_page and page == current:  # deepest page: show the new title in place

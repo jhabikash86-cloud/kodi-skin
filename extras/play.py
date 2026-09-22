@@ -144,6 +144,15 @@ def play(path, resume=0, on_blocked=None):
     xbmc.sleep(SETTLE * 1000)
     try:
         if not player.isPlayingVideo():
+            # It opened and stopped again within a couple of seconds. That is a source
+            # the debrid service never actually had: the stream hits EOF at once. Left
+            # alone it looks as though nothing happened at all.
+            xbmcgui.Dialog().notification(
+                'Source would not play', 'Nothing was cached for it - pick another',
+                xbmcgui.NOTIFICATION_INFO, 4000)
+            if on_blocked:
+                xbmc.sleep(500)
+                xbmc.executebuiltin(on_blocked)
             return
         if blocked_stream():
             player.stop()

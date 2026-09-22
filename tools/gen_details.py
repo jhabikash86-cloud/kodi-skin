@@ -23,8 +23,13 @@ VARIABLES = '''
 	<!-- Titles sharing all of this title's genres (minus the title itself). extras/details.py
 	     stores the genre ids, because TMDb Helper 6 only translates genre names shared by
 	     movies and TV. Falls back to TMDb's "similar" list when we have no ids. -->
+	<!-- Same genres and the same language, so a Tamil film leads to more Tamil cinema.
+	     extras/details.py composes the whole filter into one skin string: as two strings
+	     with a two-part condition, the container could be built before both had
+	     committed and quietly fell back. Falls back to TMDb's "similar" when we have
+	     neither. -->
 	<variable name="ATV_DetailGenrePath{n}">
-		<value condition="!String.IsEmpty(Skin.String(DetailGenres{n}))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType{n})]&amp;with_genres=$INFO[Skin.String(DetailGenres{n})]&amp;with_id=True&amp;sort_by=popularity.desc&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID{n})]&amp;exclude_operator=eq&amp;nextpage=false</value>
+		<value condition="!String.IsEmpty(Skin.String(DetailDiscover{n}))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType{n})]&amp;$INFO[Skin.String(DetailDiscover{n})]&amp;sort_by=popularity.desc&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID{n})]&amp;exclude_operator=eq&amp;nextpage=false</value>
 		<value>plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType{n})]&amp;tmdb_id=$INFO[Skin.String(DetailID{n})]&amp;nextpage=false</value>
 	</variable>
 	<!-- Empty for movies so the hidden season/episode rows never fire a request -->
