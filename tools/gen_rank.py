@@ -24,9 +24,9 @@ import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 COUNT = 10
-SLOT = 292          # pitch of one tile
-POSTER_LEFT = 108   # poster overlaps the numeral, as on Netflix
-POSTER_W, POSTER_H = 180, 270
+SLOT = 358          # pitch of one tile
+POSTER_LEFT = 132   # poster overlaps the numeral, as on Netflix
+POSTER_W, POSTER_H = 226, 339
 
 
 def tile(index):  # noqa: C901
@@ -42,10 +42,10 @@ def tile(index):  # noqa: C901
     nav += '<onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>'
     return f'''
 					<control type="group" id="$PARAM[idbase]{index}">
-						<width>{SLOT}</width><height>340</height>
-						<animation effect="zoom" start="100" end="108" center="{POSTER_LEFT + POSTER_W // 2},175" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]{index}1)">Conditional</animation>
+						<width>{SLOT}</width><height>415</height>
+						<animation effect="zoom" start="100" end="108" center="{POSTER_LEFT + POSTER_W // 2},210" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]{index}1)">Conditional</animation>
 						<control type="label">
-							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<left>0</left><top>20</top><width>290</width><height>375</height>
 							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
 							<label>$NUMBER[{index + 1}]</label>
 							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
@@ -53,7 +53,7 @@ def tile(index):  # noqa: C901
 							<visible>!Control.HasFocus($PARAM[idbase]{index}1)</visible>
 						</control>
 						<control type="label">
-							<left>0</left><top>20</top><width>240</width><height>300</height>
+							<left>0</left><top>20</top><width>290</width><height>375</height>
 							<label>$NUMBER[{index + 1}]</label>
 							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
 							<align>left</align><aligny>bottom</aligny>
@@ -115,27 +115,27 @@ def main():
 					<animation effect="fade" start="100" end="45" time="900" pulse="true" condition="true">Conditional</animation>
 					<animation effect="fade" time="250">VisibleChange</animation>
 					<control type="image">
-						<left>190</left><top>80</top><width>180</width><height>270</height>
+						<left>214</left><top>80</top><width>226</width><height>339</height>
 						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 					</control>
 					<control type="image">
-						<left>482</left><top>80</top><width>180</width><height>270</height>
+						<left>572</left><top>80</top><width>226</width><height>339</height>
 						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 					</control>
 					<control type="image">
-						<left>774</left><top>80</top><width>180</width><height>270</height>
+						<left>930</left><top>80</top><width>226</width><height>339</height>
 						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 					</control>
 					<control type="image">
-						<left>1066</left><top>80</top><width>180</width><height>270</height>
+						<left>1288</left><top>80</top><width>226</width><height>339</height>
 						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 					</control>
 					<control type="image">
-						<left>1358</left><top>80</top><width>180</width><height>270</height>
+						<left>1646</left><top>80</top><width>226</width><height>339</height>
 						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 					</control>
 					<control type="image">
-						<left>1650</left><top>80</top><width>180</width><height>270</height>
+						<left>2004</left><top>80</top><width>226</width><height>339</height>
 						<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 					</control>
 				</control>
@@ -147,7 +147,7 @@ def main():
 					<content limit="{COUNT}">$PARAM[content]</content>
 				</control>
 				<control type="grouplist" id="$PARAM[id]">
-					<left>82</left><top>40</top><width>1760</width><height>340</height>
+					<left>82</left><top>40</top><width>1800</width><height>415</height>
 					<orientation>horizontal</orientation>
 					<itemgap>0</itemgap>
 					<scrolltime tween="sine" easing="inout">380</scrolltime>

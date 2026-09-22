@@ -80,40 +80,40 @@
 					<animation effect="fade" start="100" end="45" time="900" pulse="true" condition="true">Conditional</animation>
 					<animation effect="fade" time="250">VisibleChange</animation>
 				<control type="image">
-					<left>90</left><top>64</top><width>200</width><height>300</height>
+					<left>90</left><top>64</top><width>250</width><height>375</height>
 					<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 				</control>
 				<control type="image">
-					<left>322</left><top>64</top><width>200</width><height>300</height>
+					<left>372</left><top>64</top><width>250</width><height>375</height>
 					<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 				</control>
 				<control type="image">
-					<left>554</left><top>64</top><width>200</width><height>300</height>
+					<left>654</left><top>64</top><width>250</width><height>375</height>
 					<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 				</control>
 				<control type="image">
-					<left>786</left><top>64</top><width>200</width><height>300</height>
+					<left>936</left><top>64</top><width>250</width><height>375</height>
 					<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 				</control>
 				<control type="image">
-					<left>1018</left><top>64</top><width>200</width><height>300</height>
+					<left>1218</left><top>64</top><width>250</width><height>375</height>
 					<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 				</control>
 				<control type="image">
-					<left>1250</left><top>64</top><width>200</width><height>300</height>
+					<left>1500</left><top>64</top><width>250</width><height>375</height>
 					<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 				</control>
 				<control type="image">
-					<left>1482</left><top>64</top><width>200</width><height>300</height>
+					<left>1782</left><top>64</top><width>250</width><height>375</height>
 					<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 				</control>
 				<control type="image">
-					<left>1714</left><top>64</top><width>200</width><height>300</height>
+					<left>2064</left><top>64</top><width>250</width><height>375</height>
 					<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 				</control>
 				</control>
 				<control type="list" id="$PARAM[id]">
-					<left>70</left><top>34</top><width>1850</width><height>380</height>
+					<left>70</left><top>34</top><width>1850</width><height>455</height>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">420</scrolltime>
 					<preloaditems>2</preloaditems>
@@ -121,41 +121,41 @@
 					<ondown>$PARAM[ondown]</ondown>
 					<onback>$PARAM[onback]</onback>
 					<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[id])</onclick>
-					<itemlayout width="232" height="380">
+					<itemlayout width="282" height="455">
 						<control type="image">
-							<left>20</left><top>30</top><width>200</width><height>300</height>
+							<left>16</left><top>30</top><width>250</width><height>375</height>
 							<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_poster.png">white.png</texture>
 						</control>
 						<control type="label">
-							<left>36</left><top>30</top><width>168</width><height>300</height>
+							<left>32</left><top>30</top><width>218</width><height>375</height>
 							<label>$INFO[ListItem.Label]</label>
 							<font>atv_caption</font><textcolor>B3FFFFFF</textcolor>
 							<align>center</align><aligny>center</aligny><wrapmultiline>true</wrapmultiline>
 							<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 						</control>
 						<control type="image">
-							<left>20</left><top>30</top><width>200</width><height>300</height>
+							<left>16</left><top>30</top><width>250</width><height>375</height>
 							<aspectratio scalediffuse="false">scale</aspectratio>
 							<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Art(poster)]</texture>
 						</control>
 						<!-- Watched, straight from Trakt -->
 						<control type="image">
-							<left>20</left><top>30</top><width>200</width><height>300</height>
+							<left>16</left><top>30</top><width>250</width><height>375</height>
 							<texture colordiffuse="59000000" diffuse="atv/mask_poster.png">white.png</texture>
 							<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
 						</control>
 						<control type="image">
-							<left>160</left><top>42</top><width>46</width><height>46</height>
+							<left>206</left><top>42</top><width>46</width><height>46</height>
 							<texture colordiffuse="E6000000" diffuse="atv/mask_circle.png">white.png</texture>
 							<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
 						</control>
 						<control type="image">
-							<left>170</left><top>52</top><width>26</width><height>26</height>
+							<left>216</left><top>52</top><width>26</width><height>26</height>
 							<texture colordiffuse="FFFFFFFF">atv/icon_check.png</texture>
 							<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
 						</control>
 					</itemlayout>
-					<focusedlayout width="232" height="380">
+					<focusedlayout width="282" height="455">
 						<control type="group">
 							<include content="ATV_Lift"><param name="center" value="120,180" /></include>
 							<control type="image">
@@ -165,34 +165,34 @@
 								<animation effect="fade" start="100" end="0" time="160">Unfocus</animation>
 							</control>
 							<control type="image">
-								<left>20</left><top>30</top><width>200</width><height>300</height>
+								<left>16</left><top>30</top><width>250</width><height>375</height>
 								<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_poster.png">white.png</texture>
 							</control>
 							<control type="label">
-								<left>36</left><top>30</top><width>168</width><height>300</height>
+								<left>32</left><top>30</top><width>218</width><height>375</height>
 								<label>$INFO[ListItem.Label]</label>
 								<font>atv_caption</font><textcolor>FFFFFFFF</textcolor>
 								<align>center</align><aligny>center</aligny><wrapmultiline>true</wrapmultiline>
 								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="image">
-								<left>20</left><top>30</top><width>200</width><height>300</height>
+								<left>16</left><top>30</top><width>250</width><height>375</height>
 								<aspectratio scalediffuse="false">scale</aspectratio>
 								<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Art(poster)]</texture>
 							</control>
 							<!-- Watched, straight from Trakt -->
 							<control type="image">
-								<left>20</left><top>30</top><width>200</width><height>300</height>
+								<left>16</left><top>30</top><width>250</width><height>375</height>
 								<texture colordiffuse="59000000" diffuse="atv/mask_poster.png">white.png</texture>
 								<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
 							</control>
 							<control type="image">
-								<left>160</left><top>42</top><width>46</width><height>46</height>
+								<left>206</left><top>42</top><width>46</width><height>46</height>
 								<texture colordiffuse="E6000000" diffuse="atv/mask_circle.png">white.png</texture>
 								<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
 							</control>
 							<control type="image">
-								<left>170</left><top>52</top><width>26</width><height>26</height>
+								<left>216</left><top>52</top><width>26</width><height>26</height>
 								<texture colordiffuse="FFFFFFFF">atv/icon_check.png</texture>
 								<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
 							</control>

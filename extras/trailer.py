@@ -12,11 +12,14 @@ switch to full screen. Home draws it inside the hero's own frame through a
 
     RunScript(special://skin/extras/trailer.py,watch)
 """
+import time
+
 import xbmc
 import xbmcgui
 
 POLL_MS = 250
 DWELL = 2            # seconds of stillness before a preview starts
+GRACE = 10           # Player.play() is asynchronous: give it this long to actually start
 PROPERTY = 'ATVPreview'
 RUNNING = 'ATVPreviewWatcher'
 RESOLVING = 'ATVResolving'   # extras/play.py sets this while it waits for a stream
@@ -42,12 +45,14 @@ class Preview:
     def __init__(self):
         self.player = xbmc.Player()
         self.showing = None   # the trailer url we started, or None
+        self.started = 0.0
 
     def start(self, url):
         item = xbmcgui.ListItem(path=url)
         item.setProperty('IsPlayable', 'true')
         HOME.setProperty(PROPERTY, '1')
         self.showing = url
+        self.started = time.time()
         try:
             self.player.play(url, item, windowed=True)
         except Exception:
@@ -57,6 +62,12 @@ class Preview:
         """Give up the claim without touching the player - something else owns it now."""
         self.showing = None
         HOME.clearProperty(PROPERTY)
+
+    def ended(self):
+        """True once the trailer has really finished - not merely not started yet."""
+        if time.time() - self.started < GRACE:
+            return False
+        return not self.player.isPlaying()
 
     def stop(self):
         if self.showing is None:
@@ -87,30 +98,28 @@ def watch():
             if monitor.waitForAbort(POLL_MS / 1000.0):
                 break
             if not visible('Window.IsActive(home)'):
-                preview.stop()
                 break
-            # The hero is only on screen while its own buttons have focus; moving into
-            # the rows scrolls it away, so anything playing should go with it.
-            on_hero = visible(HERO_FOCUSED)
+
+            # A real play is on its way. Resolving takes long enough that the remote goes
+            # idle with nothing playing, which is exactly the cue below, so this comes first.
+            if HOME.getProperty(RESOLVING) == '1':
+                preview.stop()
+                continue
+
             trailer = info('Container(40).ListItem.Trailer')
-            if preview.showing and HOME.getProperty(RESOLVING) == '1':
-                preview.stop()   # a real play is being resolved; get out of its way
-                continue
-            if preview.showing and visible('Player.HasMedia') \
-                    and info('Player.Filenameandpath') != preview.showing:
-                preview.forget()  # a film is playing now - leave it alone
-                continue
             if preview.showing:
-                # Any button press ends the preview, the way it does on an Apple TV -
-                # and it has to, or pressing Play would start the film underneath a
-                # trailer that is still running.
-                touched = not visible('System.IdleTime(1)')
-                if touched or (trailer and trailer != preview.showing):
-                    preview.stop()
+                if preview.ended():
+                    preview.forget()        # the trailer simply ended
+                elif not visible('System.IdleTime(1)'):
+                    preview.stop()          # any button press ends a preview
+                elif trailer and trailer != preview.showing:
+                    preview.stop()          # the hero moved on to another title
                 continue
-            if preview.showing or preview.someone_else_is_playing():
+
+            # Never start over something else - a film, or a trailer we lost track of.
+            if visible('Player.HasMedia'):
                 continue
-            if on_hero and trailer and visible(f'System.IdleTime({DWELL})'):
+            if visible(HERO_FOCUSED) and trailer and visible(f'System.IdleTime({DWELL})'):
                 preview.start(trailer)
     finally:
         preview.stop()

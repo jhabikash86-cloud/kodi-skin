@@ -14,8 +14,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 
 FIRST_ROW_TOP = 260
-ROW_STRIDE = 400
-ROW_HEIGHT = 380          # a row's content, used for the bottom stop
+ROW_STRIDE = 475
+ROW_HEIGHT = 455          # a row's content, used for the bottom stop
 SCREEN_BOTTOM = 1040      # leave a margin under the last row
 HEADER_TOP = 150          # where the focused row's title settles
 

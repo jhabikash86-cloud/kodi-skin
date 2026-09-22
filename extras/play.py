@@ -22,10 +22,12 @@ later and any offset set beforehand is lost. If whatever resolved the stream has
 already resumed it (some debrid players do), the seek is skipped.
 """
 import json
+import sqlite3
 import sys
 
 import xbmc
 import xbmcgui
+import xbmcvfs
 
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 RESUME_FLOOR = 60      # ignore a resume point this small - it is a false start
@@ -41,6 +43,13 @@ BLOCKED_MARKER = '/videos/failed_'
 # Resolving a stream can take fifteen seconds, during which nothing is playing and the
 # remote is idle - exactly what extras/trailer.py waits for. This tells it to hold off.
 RESOLVING = 'ATVResolving'
+
+# POV caches a title's scrape for a few hours, so pressing Play again replays whatever
+# it settled on last time - including a source that was only picked because the better
+# ones happened to fail that once. Dropping the cached rows first makes every Play look
+# again and take the best that resolves now. POV does the same thing in its own
+# "clear and rescrape" action; this is that delete, from the skin.
+POV_CACHE = 'special://profile/addon_data/plugin.video.pov/providerscache.db'
 
 
 def jsonrpc(method, **params):
@@ -99,6 +108,17 @@ def movie_resume(tmdb_id):
 def blocked_stream():
     """True when what is playing is a "this source was taken down" clip, not the title."""
     return BLOCKED_MARKER in (xbmc.getInfoLabel('Player.Filenameandpath') or '').lower()
+
+
+def rescrape(kind, tmdb_id):
+    """Forget POV's cached sources for one title, so the next play scrapes afresh."""
+    try:
+        database = xbmcvfs.translatePath(POV_CACHE)
+        with sqlite3.connect(database, timeout=2) as connection:
+            connection.execute(
+                'DELETE FROM results_data WHERE db_type = ? AND tmdb_id = ?', (kind, str(tmdb_id)))
+    except Exception:
+        pass  # a locked or missing cache just means this play reuses it
 
 
 def play(path, resume=0, on_blocked=None):
@@ -170,6 +190,7 @@ def play_show(tmdb_id):
     if not tmdb_id:
         return
     season, episode, resume = next_episode(tmdb_id)
+    rescrape('episode', tmdb_id)
     play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}', resume,
          on_blocked=(f'RunScript(plugin.video.themoviedb.helper,play=tv,tmdb_id={tmdb_id},'
                      f'season={season},episode={episode},ignore_default=True)'))
@@ -178,6 +199,7 @@ def play_show(tmdb_id):
 def play_movie(tmdb_id):
     if not tmdb_id:
         return
+    rescrape('movie', tmdb_id)
     play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}', movie_resume(tmdb_id),
          on_blocked=(f'RunScript(plugin.video.themoviedb.helper,play=movie,'
                      f'tmdb_id={tmdb_id},ignore_default=True)'))

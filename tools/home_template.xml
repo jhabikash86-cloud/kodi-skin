@@ -31,6 +31,13 @@
         <!-- Hero backdrop: full bleed, slow Ken Burns drift, fades away when you move into the rows -->
         <control type="group">
             <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio align="center" aligny="top">scale</aspectratio>
+                <fadetime>600</fadetime>
+                <texture background="true">$INFO[Container(40).ListItem.Art(fanart)]</texture>
+                <animation effect="zoom" start="100" end="107" center="960,400" time="22000" tween="linear" pulse="true" condition="true">Conditional</animation>
+            </control>
             <!-- Trailer preview. extras/trailer.py starts it after a couple of seconds of
                  stillness on the hero and stops it the moment you move; the still
                  backdrop underneath stays put so there is no gap while it loads. -->
@@ -39,13 +46,6 @@
                 <visible>!String.IsEmpty(Window(home).Property(ATVPreview)) + Player.HasVideo</visible>
                 <animation effect="fade" start="0" end="100" time="500">Visible</animation>
                 <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-            </control>
-            <control type="image">
-                <left>0</left><top>0</top><width>1920</width><height>1080</height>
-                <aspectratio align="center" aligny="top">scale</aspectratio>
-                <fadetime>600</fadetime>
-                <texture background="true">$INFO[Container(40).ListItem.Art(fanart)]</texture>
-                <animation effect="zoom" start="100" end="107" center="960,400" time="22000" tween="linear" pulse="true" condition="true">Conditional</animation>
             </control>
             <control type="image">
                 <left>0</left><top>0</top><width>1300</width><height>1080</height>
@@ -105,10 +105,10 @@
                 <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8001)">Conditional</animation>
                 <include content="ATV_CapsuleButton">
                     <param name="id" value="8001" />
-                    <onfocus>RunScript(special://skin/extras/trailer.py,watch)</onfocus>
                     <param name="width" value="206" />
                     <param name="label" value="Play" />
                     <param name="icon" value="atv/icon_play.png" />
+                    <onfocus>RunScript(special://skin/extras/trailer.py,watch)</onfocus>
                     <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
                     <onup>9000</onup>
                     <ondown>50</ondown>

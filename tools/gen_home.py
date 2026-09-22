@@ -19,9 +19,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 
 FIRST_ROW_TOP = 860     # the Up Next row sits under the hero
-SECOND_ROW_TOP = 1240   # a shorter gap than the rest: the hero's buttons end above it
-ROW_STRIDE = 400
-ROW_HEIGHT = 380
+SECOND_ROW_TOP = 1265   # a shorter gap than the rest: the hero's buttons end above it
+ROW_STRIDE = 475
+ROW_HEIGHT = 455
 SCREEN_BOTTOM = 980     # where the last row's bottom comes to rest
 HEADER_TOP = 150        # where the focused row's title settles
 

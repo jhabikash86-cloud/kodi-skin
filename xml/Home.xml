@@ -31,6 +31,13 @@
         <!-- Hero backdrop: full bleed, slow Ken Burns drift, fades away when you move into the rows -->
         <control type="group">
             <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio align="center" aligny="top">scale</aspectratio>
+                <fadetime>600</fadetime>
+                <texture background="true">$INFO[Container(40).ListItem.Art(fanart)]</texture>
+                <animation effect="zoom" start="100" end="107" center="960,400" time="22000" tween="linear" pulse="true" condition="true">Conditional</animation>
+            </control>
             <!-- Trailer preview. extras/trailer.py starts it after a couple of seconds of
                  stillness on the hero and stops it the moment you move; the still
                  backdrop underneath stays put so there is no gap while it loads. -->
@@ -39,13 +46,6 @@
                 <visible>!String.IsEmpty(Window(home).Property(ATVPreview)) + Player.HasVideo</visible>
                 <animation effect="fade" start="0" end="100" time="500">Visible</animation>
                 <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-            </control>
-            <control type="image">
-                <left>0</left><top>0</top><width>1920</width><height>1080</height>
-                <aspectratio align="center" aligny="top">scale</aspectratio>
-                <fadetime>600</fadetime>
-                <texture background="true">$INFO[Container(40).ListItem.Art(fanart)]</texture>
-                <animation effect="zoom" start="100" end="107" center="960,400" time="22000" tween="linear" pulse="true" condition="true">Conditional</animation>
             </control>
             <control type="image">
                 <left>0</left><top>0</top><width>1300</width><height>1080</height>
@@ -105,10 +105,10 @@
                 <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8001)">Conditional</animation>
                 <include content="ATV_CapsuleButton">
                     <param name="id" value="8001" />
-                    <onfocus>RunScript(special://skin/extras/trailer.py,watch)</onfocus>
                     <param name="width" value="206" />
                     <param name="label" value="Play" />
                     <param name="icon" value="atv/icon_play.png" />
+                    <onfocus>RunScript(special://skin/extras/trailer.py,watch)</onfocus>
                     <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)])</onclick>
                     <onup>9000</onup>
                     <ondown>50</ondown>
@@ -177,16 +177,17 @@
                  one plays forward and adds them, which overshot badly with ease-out and
                  hesitated with a slow-start curve. The last rows share an offset, so the page
                  stops with the final row at the bottom.
-                 Totals: 50 -710, 51 -1090, 52 -1490, 53 -1890, 54 -2290, 55 -2690, 56 -3090, 57 -3490, 58 -3840, 59 -3840 -->
+                 Totals: 50 -710, 51 -1115, 52 -1590, 53 -2065, 54 -2540, 55 -3015, 56 -3490, 57 -3965, 58 -4440, 59 -4540 -->
             <animation effect="slide" end="0,-710" time="380" tween="sine" easing="inout" condition="Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-380" time="380" tween="sine" easing="inout" condition="!$EXP[ATV_UpNextEmpty] + [ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)]">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-400" time="380" tween="sine" easing="inout" condition="Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
-            <animation effect="slide" end="0,-350" time="380" tween="sine" easing="inout" condition="Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-405" time="380" tween="sine" easing="inout" condition="!$EXP[ATV_UpNextEmpty] + [ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)]">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(53) | ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="ControlGroup(54).HasFocus(0) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="ControlGroup(56).HasFocus(0) | Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(57) | Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(58) | Control.HasFocus(59)">Conditional</animation>
+            <animation effect="slide" end="0,-100" time="380" tween="sine" easing="inout" condition="Control.HasFocus(59)">Conditional</animation>
 
             <!-- ===== ROWS ===== -->
             <!-- trakt_ondeck is "continue watching": the episodes you actually paused, newest
@@ -202,12 +203,12 @@
             </include>
 
             <control type="group">
-                <animation effect="slide" end="0,-380" time="400" tween="quadratic" easing="inout" condition="$EXP[ATV_UpNextEmpty]">Conditional</animation>
+                <animation effect="slide" end="0,-405" time="400" tween="quadratic" easing="inout" condition="$EXP[ATV_UpNextEmpty]">Conditional</animation>
                 <include content="ATV_RankRow">
                     <param name="id" value="51" />
                     <param name="idbase" value="61" />
                     <param name="data" value="6051" />
-                    <param name="top" value="1240" />
+                    <param name="top" value="1265" />
                     <param name="label" value="Top 10 Movies Right Now" />
                     <param name="onup" value="50" />
                     <param name="ondown" value="52" />
@@ -217,7 +218,7 @@
                     <param name="id" value="52" />
                     <param name="idbase" value="62" />
                     <param name="data" value="6052" />
-                    <param name="top" value="1640" />
+                    <param name="top" value="1740" />
                     <param name="label" value="Top 10 Shows Right Now" />
                     <param name="onup" value="51" />
                     <param name="ondown" value="53" />
@@ -225,7 +226,7 @@
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="53" />
-                    <param name="top" value="2040" />
+                    <param name="top" value="2215" />
                     <param name="label" value="Recommended for You" />
                     <param name="onup" value="52" />
                     <param name="ondown" value="54" />
@@ -235,7 +236,7 @@
                     <param name="id" value="54" />
                     <param name="idbase" value="63" />
                     <param name="data" value="6054" />
-                    <param name="top" value="2440" />
+                    <param name="top" value="2690" />
                     <param name="label" value="Top 10 on Netflix" />
                     <param name="onup" value="53" />
                     <param name="ondown" value="55" />
@@ -245,7 +246,7 @@
                     <param name="id" value="55" />
                     <param name="idbase" value="64" />
                     <param name="data" value="6055" />
-                    <param name="top" value="2840" />
+                    <param name="top" value="3165" />
                     <param name="label" value="Top 10 on Prime Video" />
                     <param name="onup" value="54" />
                     <param name="ondown" value="56" />
@@ -255,7 +256,7 @@
                     <param name="id" value="56" />
                     <param name="idbase" value="65" />
                     <param name="data" value="6056" />
-                    <param name="top" value="3240" />
+                    <param name="top" value="3640" />
                     <param name="label" value="Top 10 on JioHotstar" />
                     <param name="onup" value="55" />
                     <param name="ondown" value="57" />
@@ -263,7 +264,7 @@
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="57" />
-                    <param name="top" value="3640" />
+                    <param name="top" value="4115" />
                     <param name="label" value="Trending in Hindi" />
                     <param name="onup" value="56" />
                     <param name="ondown" value="58" />
@@ -271,7 +272,7 @@
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="58" />
-                    <param name="top" value="4040" />
+                    <param name="top" value="4590" />
                     <param name="label" value="Trending in Tamil" />
                     <param name="onup" value="57" />
                     <param name="ondown" value="59" />
@@ -279,7 +280,7 @@
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="59" />
-                    <param name="top" value="4440" />
+                    <param name="top" value="5065" />
                     <param name="label" value="World Cinema" />
                     <param name="onup" value="58" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=30&amp;nextpage=false" />
