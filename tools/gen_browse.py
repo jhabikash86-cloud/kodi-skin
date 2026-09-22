@@ -48,18 +48,24 @@ WORLD_MOVIES = (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_origin_coun
                 f'&amp;sort_by=popularity.desc&amp;primary_release_date.gte={RECENT_SINCE}'
                 f'&amp;vote_count.gte=30&amp;nextpage=false')
 
-WORLD_SHOWS = (f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CJP%7CFR%7CES'
+WORLD_SHOWS = (f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CES%7CFR%7CIT%7CDE'
                f'&amp;sort_by=popularity.desc&amp;first_air_date.gte={THREE_YEARS}'
-               f'&amp;without_genres={NOT_SERIALS}&amp;with_id=True&amp;vote_count.gte=30&amp;nextpage=false')
+               f'&amp;without_genres={NOT_SERIALS},16&amp;with_id=True&amp;vote_count.gte=20&amp;nextpage=false')
 
 
-def language_chart(code, media='movie', votes=15):
-    """A language's current chart."""
+def language_chart(code, media='movie', votes=15, recent=True):
+    """A language's current chart.
+
+    Small catalogues (Tamil television, for one) do not have enough titles inside a
+    recency window to fill ten tiles, so `recent=False` drops it and lets popularity
+    alone decide.
+    """
     date_key = 'primary_release_date' if media == 'movie' else 'first_air_date'
     since = RECENT_SINCE if media == 'movie' else THREE_YEARS
+    window = f'&amp;{date_key}.gte={since}' if recent else ''
     extra = '' if media == 'movie' else f'&amp;without_genres={NOT_SERIALS}&amp;with_id=True'
     return (f'{PLUGIN}info=discover&amp;tmdb_type={media}&amp;with_original_language={code}'
-            f'&amp;sort_by=popularity.desc&amp;{date_key}.gte={since}{extra}'
+            f'&amp;sort_by=popularity.desc{window}{extra}'
             f'&amp;vote_count.gte={votes}&amp;nextpage=false')
 
 
@@ -118,7 +124,7 @@ PAGES = {
             ('rank', 'Top 10 on Hulu', network(453)),
             ('rank', 'Top 10 on the BBC', network(4)),
             ('rank', 'Top 10 Hindi Series Right Now', language_chart('hi', media='tv', votes=10)),
-            ('rank', 'Top 10 Tamil Series Right Now', language_chart('ta', media='tv', votes=5)),
+            ('rank', 'Top 10 Tamil Series Right Now', language_chart('ta', media='tv', votes=3, recent=False)),
             ('poster', 'World Series', WORLD_SHOWS),
             ('poster', 'On TV Today', f'{PLUGIN}info=airing_today&amp;tmdb_type=tv&amp;nextpage=false'),
             ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false'),

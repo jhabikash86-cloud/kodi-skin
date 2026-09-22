@@ -116,7 +116,7 @@
                 <param name="onup" value="57" />
                 <param name="ondown" value="59" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;first_air_date.gte=2023-09-23&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=5&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=3&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="59" />
@@ -125,7 +125,7 @@
                 <param name="onup" value="58" />
                 <param name="ondown" value="60" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CJP%7CFR%7CES&amp;sort_by=popularity.desc&amp;first_air_date.gte=2023-09-23&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=30&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CES%7CFR%7CIT%7CDE&amp;sort_by=popularity.desc&amp;first_air_date.gte=2023-09-23&amp;without_genres=10766,10763,10767,10764,10762,16&amp;with_id=True&amp;vote_count.gte=20&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="60" />

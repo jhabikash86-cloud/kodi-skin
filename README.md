@@ -83,15 +83,29 @@ not emit DV metadata - that needs a player whose video path carries it end to en
 `VideoPlayer.HdrType` reporting `dolbyvision` means the file is DV, not that the
 display is receiving it.
 
-Source coverage is cocoscrapers' provider list. The debrid-cache aggregators
-(torrentio, mediafusion, comet) matter most, because only cached torrents play
-instantly; the big public indexers (knaben, 1337x, torrentgalaxy, piratebay) widen
-what is found. Each one adds to the scrape, so a full scrape takes 20-30 seconds
-against about 6 for a cached one.
+**Sources.** POV (with Magneto built in) is the default player, set in TMDb Helper as
+`default_player_movies` / `default_player_episodes` = `pov.autoplay.json`. It replaced
+Umbrella because Umbrella could not play whole classes of content: Indian and niche
+titles are distributed as season packs whose release names say `S01`, and cocoscrapers
+matches `S01E01` against that name, so it returned nothing at all. POV's scrapers
+include the Real-Debrid cache indexes - DMM, Zilean, Torz, TorrentsDB, Bitmagnet -
+which match filenames *inside* a pack.
 
-A title that has already been played keeps the source it used. The **Sources**
-button on a title page re-asks, and the "select" players list everything that was
-scraped so a 4K release can be picked by hand.
+POV settings that matter, all of which had to be changed from their defaults:
+
+| Setting | Value | Why |
+| --- | --- | --- |
+| `filter.foreign.single.audio` | **false** | On, it discards releases whose only audio is non-English - which is most Hindi and Tamil content. |
+| `autoplay_quality_movie` / `_episode` | `720p, 1080p, 4K` | SD was in the list, so an SD rip could win when nothing better was cached. |
+| `provider.dmm`, `zilean`, `bitmagnet`, `torrentsdb`, `bitsearch`, `torrentdownload` | **true** | The debrid-cache indexes; off by default. |
+| `auto_resume_movie` / `_episode` | `1` (Always) | Otherwise a resume prompt blocks playback. "Autoplay Only" does not work here: it checks POV's own `auto_play` setting, not the `autoplay=true` the skin passes in the URL. |
+| `scrapers_timeout` | `20` | More providers need longer before the scrape is cut off. |
+
+Umbrella is still installed and still in the Sources dialog, as is MediaFusion once you
+give it a secret string. The **Sources** button on a title page lists all of them.
+
+Measured after these changes: a fresh film resolves 4K Dolby Vision with DTS 5.1 in
+about 7 seconds, and a Hindi title that Umbrella could not play at all now plays.
 
 The `<cache>` block in `advancedsettings.xml` is what keeps a 14GB stream from
 stalling; Kodi's default read-ahead is sized for local files.
