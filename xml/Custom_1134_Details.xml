@@ -279,20 +279,20 @@
                 <include content="ATV_PosterRow">
                     <param name="id" value="9630" />
                     <param name="top" value="1400" />
-                    <param name="label" value="You May Also Like" />
+                    <param name="label" value="More Like This$INFO[Container(9500).ListItem.Genre,[COLOR 80FFFFFF]   ,[/COLOR]]" />
                     <param name="onup" value="9620" />
                     <param name="ondown" value="9640" />
                     <param name="onback" value="noop" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;nextpage=false" />
+                    <param name="content" value="$VAR[ATV_DetailGenrePath4]" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="9640" />
                     <param name="top" value="1800" />
-                    <param name="label" value="More Like This$INFO[Container(9500).ListItem.Genre,[COLOR 80FFFFFF]   ,[/COLOR]]" />
+                    <param name="label" value="You May Also Like" />
                     <param name="onup" value="9630" />
                     <param name="ondown" value="9650" />
                     <param name="onback" value="noop" />
-                    <param name="content" value="$VAR[ATV_DetailGenrePath4]" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;nextpage=false" />
                 </include>
 
                 <!-- Cast & Crew: select someone to see everything they're in -->

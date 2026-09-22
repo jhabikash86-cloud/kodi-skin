@@ -100,9 +100,20 @@ POV settings that matter, all of which had to be changed from their defaults:
 | `provider.dmm`, `zilean`, `bitmagnet`, `torrentsdb`, `bitsearch`, `torrentdownload` | **true** | The debrid-cache indexes; off by default. |
 | `auto_resume_movie` / `_episode` | `1` (Always) | Otherwise a resume prompt blocks playback. "Autoplay Only" does not work here: it checks POV's own `auto_play` setting, not the `autoplay=true` the skin passes in the URL. |
 | `scrapers_timeout` | `20` | More providers need longer before the scrape is cut off. |
+| `torrent.display.uncached` | **true** | Autoplay drops uncached sources unconditionally (`sources.py`, `sort_uncached_torrents`), so this cannot make Play stall. It gives the **Sources** button uncached options, which POV then caches on demand - the only way to play a title Real-Debrid holds nothing for. |
+| `provider.aiostreams` | **false** | It returned sources that were not actually cached. Its Comet config carries `cachedOnly: false`, so the stream hits EOF the moment it opens. Re-enable it once that is fixed in the AIOStreams account settings. |
+| `auto_start_pov` | **false** | On, POV opens its own window at startup, over the skin's home screen. |
 
 Umbrella is still installed and still in the Sources dialog, as is MediaFusion once you
 give it a secret string. The **Sources** button on a title page lists all of them.
+
+**When a title will not play at all.** POV's autoplay only ever offers sources Real-Debrid
+already holds. For a film with no cached copy - which is common for older Tamil and Hindi
+titles - Play cannot succeed however long it tries; raising the resolve limit only makes
+the failure slower. The **Sources** button is the route: with uncached sources visible it
+will fetch one, and Real-Debrid caches it as it goes. Adding a second debrid service
+(AllDebrid is already wired into POV and only needs a token) roughly doubles how much is
+cached and findable.
 
 Measured after these changes: a fresh film resolves 4K Dolby Vision with DTS 5.1 in
 about 7 seconds, and a Hindi title that Umbrella could not play at all now plays.
