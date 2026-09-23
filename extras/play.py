@@ -31,6 +31,8 @@ import xbmcaddon
 import xbmcgui
 import xbmcvfs
 
+import resolve  # same folder; Kodi puts a RunScript's directory on sys.path
+
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 RESUME_FLOOR = 60      # ignore a resume point this small - it is a false start
 NEARLY_DONE = 0.92     # past this much of the runtime, treat the episode as finished
@@ -251,6 +253,18 @@ def play(path, resume=0, title=''):
         pass  # playback ended while we were waiting
 
 
+def apply_resume(resume):
+    """Seek to the resume point once something is playing."""
+    if not resume:
+        return
+    player = xbmc.Player()
+    try:
+        if player.isPlayingVideo() and player.getTime() < resume - 30:
+            player.seekTime(resume)
+    except RuntimeError:
+        pass
+
+
 def play_item(container):
     """The focused item of a container - it already knows its own path and progress.
 
@@ -288,21 +302,26 @@ def play_episode(tmdb_id, season, episode, lang=None):
     """A named episode - used by the Up Next card, which knows exactly what comes next."""
     if not (tmdb_id and season and episode):
         return
-    prefer_language(lang)
-    show_title = expected_title('tv', tmdb_id)
     watch_for_next(tmdb_id, season, episode)
+    if resolve.resolve('tv', tmdb_id, season, episode):
+        return
+    prefer_language(lang)
     play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}',
-         title=show_title)
+         title=expected_title('tv', tmdb_id))
 
 
 def play_show(tmdb_id, lang=None):
     if not tmdb_id:
         return
     season, episode, resume = next_episode(tmdb_id)
-    prefer_language(lang)
-    rescrape('episode', tmdb_id)
-    show_title = expected_title('tv', tmdb_id)
     watch_for_next(tmdb_id, season, episode)
+    # Our own pick first: it reads your debrid cache directly, so it sees releases POV's
+    # providers never offer, and it will not hand back a different film.
+    if resolve.resolve('tv', tmdb_id, season, episode):
+        apply_resume(resume)
+        return
+    prefer_language(lang)
+    show_title = expected_title('tv', tmdb_id)
     play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}',
          resume, title=show_title)
 
@@ -310,11 +329,13 @@ def play_show(tmdb_id, lang=None):
 def play_movie(tmdb_id, lang=None):
     if not tmdb_id:
         return
+    resume = movie_resume(tmdb_id)
+    if resolve.resolve('movie', tmdb_id):
+        apply_resume(resume)
+        return
     prefer_language(lang)
-    rescrape('movie', tmdb_id)
     film_title = expected_title('movie', tmdb_id)
-    play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}', movie_resume(tmdb_id),
-         title=film_title)
+    play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}', resume, title=film_title)
 
 
 def main():
