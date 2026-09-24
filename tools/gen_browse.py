@@ -88,6 +88,14 @@ TODAY = datetime.date.today().isoformat()
 # half-dozen blockbusters fill the Top 10, Popular, In Cinemas and the genre rows, so the
 # page read as one list repeated. Now: what is hot, what is new, what is on, what is
 # coming, and the best of a genre by rating - which surfaces a completely different set.
+# TMDb's now_playing carries re-releases - Avengers: Endgame (2019) was "in cinemas" - so this
+# is films that opened in the last six weeks, held to a vote floor so festival one-offs
+# stay out. By region it was worse: an India filter surfaced La La Land and Train to Busan.
+CINEMA_SINCE = (datetime.date.today() - datetime.timedelta(days=45)).isoformat()
+IN_CINEMAS = (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;primary_release_date.gte={CINEMA_SINCE}'
+              f'&amp;primary_release_date.lte={TODAY}&amp;sort_by=popularity.desc'
+              f'&amp;vote_count.gte=20&amp;nextpage=false')
+
 PAGES = {
     1140: {
         'file': 'Custom_1140_Movies.xml',
@@ -95,7 +103,7 @@ PAGES = {
         'rows': [
             ('rank', 'Top 10 Most Watched This Week',
              f'{PLUGIN}info=trakt_mostwatched&amp;tmdb_type=movie&amp;period=weekly&amp;nextpage=false'),
-            ('poster', 'In Cinemas Now', f'{PLUGIN}info=now_playing&amp;tmdb_type=movie&amp;nextpage=false'),
+            ('poster', 'In Cinemas Now', IN_CINEMAS),
             ('poster', 'New Releases',
              f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;sort_by=primary_release_date.desc'
              f'&amp;primary_release_date.gte={NEW_SINCE}&amp;primary_release_date.lte={TODAY}'
@@ -126,11 +134,32 @@ PAGES = {
             ('rank', 'Top 10 Hindi Series Right Now', language_chart('hi', media='tv', votes=10)),
             ('rank', 'Top 10 Tamil Series Right Now', language_chart('ta', media='tv', votes=3, recent=False)),
             ('poster', 'World Series', WORLD_SHOWS),
-            ('poster', 'On TV Today', f'{PLUGIN}info=airing_today&amp;tmdb_type=tv&amp;nextpage=false'),
             ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false'),
         ],
     },
+    1142: {
+        'file': 'Custom_1142_MyList.xml',
+        'title': 'My List',
+        # Your Trakt watchlist - what the My List buttons add to - newest first. Upcoming
+        # titles stay: adding something before it is out is the point of a list.
+        'rows': [
+            ('poster', 'Movies', f'{PLUGIN}info=trakt_watchlist&amp;tmdb_type=movie&amp;sort_by=added&amp;sort_how=desc&amp;nextpage=false'),
+            ('poster', 'TV Shows', f'{PLUGIN}info=trakt_watchlist&amp;tmdb_type=tv&amp;sort_by=added&amp;sort_how=desc&amp;nextpage=false'),
+        ],
+    },
 }
+
+
+# Rows are for things you can watch now. TMDb Helper marks a title that is not out yet
+# with red italic markup in its label, and lists like these otherwise mix a handful in;
+# hide_unaired drops them. Rows that exist to show what is coming keep them.
+KEEPS_UNAIRED = ('trakt_anticipated', 'airing_today', 'trakt_ondeck', 'trakt_watchlist')
+
+
+def watchable(path):
+    if any(f'info={name}' in path for name in KEEPS_UNAIRED) or 'hide_unaired' in path:
+        return path
+    return path.replace('nextpage=false', 'hide_unaired=true&amp;nextpage=false')
 
 
 def row_id(index):
@@ -146,6 +175,7 @@ def focus_condition(index, kind):
 def build_rows(rows):
     out = []
     for i, (kind, label, content) in enumerate(rows):
+        content = watchable(content)
         top = FIRST_ROW_TOP + i * ROW_STRIDE
         onup = 9000 if i == 0 else row_id(i - 1)
         ondown = row_id(i + 1) if i < len(rows) - 1 else 'noop'
@@ -196,6 +226,28 @@ def build_scroll(rows):
     return '\n'.join(lines), offsets
 
 
+def backdrop_variable(window_id, rows):
+    """The backdrop of whatever is focused in the first row - the page's billboard.
+
+    Only the first row: below it the backdrop has gone, and naming a backdrop for every
+    row would have Kodi load a full-size image for each poster passed, unseen. A numbered
+    row's tiles are fixed buttons bound to a hidden list, so ListItem means nothing there:
+    each tile names its own item. Otherwise - the tab bar, a lower row, the moment the
+    page opens - it holds the first title of the first row.
+    """
+    kind = rows[0][0]
+    if kind == 'rank':
+        values = [f'\t\t<value condition="Control.HasFocus(70{n}1)">'
+                  f'$INFO[Container(6100).ListItemAbsolute({n}).Art(fanart)]</value>' for n in range(10)]
+        first = '$INFO[Container(6100).ListItemAbsolute(0).Art(fanart)]'
+    else:
+        values = [f'\t\t<value condition="Control.HasFocus({row_id(0)})">'
+                  f'$INFO[Container({row_id(0)}).ListItem.Art(fanart)]</value>']
+        first = f'$INFO[Container({row_id(0)}).ListItemAbsolute(0).Art(fanart)]'
+    values.append(f'\t\t<value>{first}</value>')
+    return f'\t<variable name="ATV_BrowseFanart{window_id}">\n' + '\n'.join(values) + '\n\t</variable>\n'
+
+
 def build_page(window_id, spec):
     rows = spec['rows']
     scroll, offsets = build_scroll(rows)
@@ -213,6 +265,34 @@ def build_page(window_id, spec):
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>1080</height>
             <texture colordiffuse="FF0B0B0D">white.png</texture>
+        </control>
+
+        <!-- The top of the page is backed by the backdrop of whatever has focus in the first
+             row, cross-fading as you move along it - this page's billboard. Once you move
+             down it scrolls up and away, as Home's does, and the rows below sit on a plain
+             dark page: behind every row it competed with the posters and hid the glass and
+             focus effects. -->
+        <control type="group">
+            <animation effect="fade" start="100" end="0" time="380" tween="sine" easing="inout" condition="{scrolled}">Conditional</animation>
+            <animation effect="slide" end="0,-320" time="380" tween="sine" easing="inout" condition="{scrolled}">Conditional</animation>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio align="center" aligny="top">scale</aspectratio>
+                <fadetime>500</fadetime>
+                <texture background="true">$VAR[ATV_BrowseFanart{window_id}]</texture>
+            </control>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <texture colordiffuse="8C000000">white.png</texture>
+            </control>
+            <control type="image">
+                <left>0</left><top>0</top><width>1400</width><height>1080</height>
+                <texture>atv/grad_left.png</texture>
+            </control>
+            <control type="image">
+                <left>0</left><top>240</top><width>1920</width><height>840</height>
+                <texture colordiffuse="FF0B0B0D">atv/grad_bottom.png</texture>
+            </control>
         </control>
 
         <!-- Page title: fades away as soon as you move into the rows -->
@@ -248,6 +328,11 @@ def build_page(window_id, spec):
 
 
 def main():
+    variables = ''.join(backdrop_variable(window_id, spec['rows']) for window_id, spec in PAGES.items())
+    with open(os.path.join(ROOT, 'xml', 'Includes_ATV_Browse.xml'), 'w') as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
+                '<!-- GENERATED by tools/gen_browse.py - the Movies and TV pages\' backdrops -->\n'
+                '<includes>\n' + variables + '</includes>\n')
     for window_id, spec in PAGES.items():
         path = os.path.join(ROOT, 'xml', spec['file'])
         with open(path, 'w') as f:

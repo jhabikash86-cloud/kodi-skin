@@ -28,6 +28,37 @@
 			<scrolltime tween="sine" easing="inout">280</scrolltime>
 			<include>ATV_SettingsRow</include>
 			<content>
+				<!-- How Play chooses a release. Off (the default) opens Umbrella's Source Select,
+				     and you pick from the full list of sizes and qualities; on, the same press
+				     goes to Umbrella's Auto Play, which starts the top source and falls through
+				     to the next if it will not play. Two items rather than one so the row states
+				     which way it is set instead of only what it would switch to. -->
+				<item>
+					<label>Play  ·  ask me which source</label>
+					<visible>!Skin.HasSetting(atv.autopick)</visible>
+					<onclick>Skin.ToggleSetting(atv.autopick)</onclick>
+					<icon>icons/settings/player.png</icon>
+				</item>
+				<item>
+					<label>Play  ·  pick the best automatically</label>
+					<visible>Skin.HasSetting(atv.autopick)</visible>
+					<onclick>Skin.ToggleSetting(atv.autopick)</onclick>
+					<icon>icons/settings/player.png</icon>
+				</item>
+				<!-- The hero's trailer previews. They come through the YouTube add-on, which
+				     takes 2-40s to find one and holds Kodi's busy dialog while it does. -->
+				<item>
+					<label>Banner trailers  ·  on</label>
+					<visible>!Skin.HasSetting(atv.notrailers)</visible>
+					<onclick>Skin.ToggleSetting(atv.notrailers)</onclick>
+					<icon>icons/settings/player.png</icon>
+				</item>
+				<item>
+					<label>Banner trailers  ·  off</label>
+					<visible>Skin.HasSetting(atv.notrailers)</visible>
+					<onclick>Skin.ToggleSetting(atv.notrailers)</onclick>
+					<icon>icons/settings/player.png</icon>
+				</item>
 				<item>
 					<label>$LOCALIZE[14206]</label>
 					<onclick>ActivateWindow(InterfaceSettings)</onclick>

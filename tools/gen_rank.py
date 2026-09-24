@@ -29,8 +29,37 @@ POSTER_LEFT = 132   # poster overlaps the numeral, as on Netflix
 POSTER_W, POSTER_H = 226, 339
 
 
+STROKE = 4          # outline width of the numerals, in px
+PAGE = 'FF0B0B0D'   # the page background - the numerals' fill, so they read as outlines
+
+
+def numeral(index):
+    """The rank, Netflix style: a light outline around a fill the colour of the page.
+
+    Kodi labels have no outline, so the outline is the numeral drawn eight times, nudged
+    STROKE px in each direction, with the fill drawn over the middle. The whole numeral
+    brightens when its tile has focus; it never zooms, so it cannot swing across the
+    poster to its left the way it did when the whole tile scaled.
+    """
+    label = f'''
+							<control type="label">
+								<left>{{x}}</left><top>{{y}}</top><width>290</width><height>375</height>
+								<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
+								<label>$NUMBER[{index + 1}]</label>
+								<font>atv_rank</font><textcolor>{{color}}</textcolor>
+								<align>left</align><aligny>bottom</aligny>
+							</control>'''
+    offsets = [(dx, dy) for dx in (-STROKE, 0, STROKE) for dy in (-STROKE, 0, STROKE) if dx or dy]
+    outline = ''.join(label.format(x=dx, y=20 + dy, color='A6FFFFFF') for dx, dy in offsets)
+    # Only the outline dims: a dimmed fill would let the outline show through it.
+    return f'''
+						<control type="group">
+							<animation effect="fade" start="100" end="55" time="200" condition="!Control.HasFocus($PARAM[idbase]{index}1)">Conditional</animation>{outline}
+						</control>{label.format(x=0, y=20, color=PAGE)}'''
+
+
 def tile(index):  # noqa: C901
-    """One numbered tile: giant numeral, poster over it, lift on focus.
+    """One numbered tile: outlined numeral, poster over it, lift on focus.
 
     The grouplist lays the tiles out itself, so each tile only declares its size.
     """
@@ -40,38 +69,35 @@ def tile(index):  # noqa: C901
     if index < COUNT - 1:
         nav += f'<onright>$PARAM[idbase]{index + 1}1</onright>'
     nav += '<onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>'
+    focused = f'Control.HasFocus($PARAM[idbase]{index}1)'
     return f'''
 					<control type="group" id="$PARAM[idbase]{index}">
-						<width>{SLOT}</width><height>415</height>
-						<animation effect="zoom" start="100" end="108" center="{POSTER_LEFT + POSTER_W // 2},210" time="220" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[idbase]{index}1)">Conditional</animation>
-						<control type="label">
-							<left>0</left><top>20</top><width>290</width><height>375</height>
-							<!-- $NUMBER[] because Kodi reads a bare number as a translated-string id -->
-							<label>$NUMBER[{index + 1}]</label>
-							<font>atv_rank</font><textcolor>59FFFFFF</textcolor>
-							<align>left</align><aligny>bottom</aligny>
-							<visible>!Control.HasFocus($PARAM[idbase]{index}1)</visible>
-						</control>
-						<control type="label">
-							<left>0</left><top>20</top><width>290</width><height>375</height>
-							<label>$NUMBER[{index + 1}]</label>
-							<font>atv_rank</font><textcolor>CCFFFFFF</textcolor>
-							<align>left</align><aligny>bottom</aligny>
-							<visible>Control.HasFocus($PARAM[idbase]{index}1)</visible>
-						</control>
-						<control type="image">
-							<left>{POSTER_LEFT - 24}</left><top>16</top><width>{POSTER_W + 48}</width><height>{POSTER_H + 48}</height>
-							<texture border="64">atv/shadow.png</texture>
-							<visible>Control.HasFocus($PARAM[idbase]{index}1)</visible>
-						</control>
-						<control type="image">
-							<left>{POSTER_LEFT}</left><top>40</top><width>{POSTER_W}</width><height>{POSTER_H}</height>
-							<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_poster.png">white.png</texture>
-						</control>
-						<control type="image">
-							<left>{POSTER_LEFT}</left><top>40</top><width>{POSTER_W}</width><height>{POSTER_H}</height>
-							<aspectratio scalediffuse="false">scale</aspectratio>
-							<texture background="true" diffuse="atv/mask_poster.png">$INFO[Container($PARAM[data]).ListItemAbsolute({index}).Art(poster)]</texture>
+						<width>{SLOT}</width><height>415</height>{numeral(index)}
+						<!-- Only the poster lifts; see numeral() -->
+						<control type="group">
+							<animation effect="zoom" start="100" end="112" center="{POSTER_LEFT + POSTER_W // 2},210" time="220" tween="cubic" easing="out" condition="{focused}">Conditional</animation>
+							<control type="image">
+								<left>{POSTER_LEFT - 24}</left><top>16</top><width>{POSTER_W + 48}</width><height>{POSTER_H + 48}</height>
+								<texture border="64">atv/shadow.png</texture>
+								<visible>{focused}</visible>
+							</control>
+							<control type="image">
+								<left>{POSTER_LEFT}</left><top>40</top><width>{POSTER_W}</width><height>{POSTER_H}</height>
+								<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_poster.png">white.png</texture>
+							</control>
+							<control type="image">
+								<left>{POSTER_LEFT}</left><top>40</top><width>{POSTER_W}</width><height>{POSTER_H}</height>
+								<aspectratio scalediffuse="false">scale</aspectratio>
+								<fadetime>200</fadetime>
+								<texture background="true" diffuse="atv/mask_poster.png">$INFO[Container($PARAM[data]).ListItemAbsolute({index}).Art(poster)]</texture>
+							</control>
+							<!-- The same light edge as ATV_PosterRow -->
+							<control type="image">
+								<left>{POSTER_LEFT}</left><top>40</top><width>{POSTER_W}</width><height>{POSTER_H}</height>
+								<texture border="16" colordiffuse="33FFFFFF">atv/ring16.png</texture>
+								<visible>{focused}</visible>
+								<animation effect="fade" start="0" end="100" time="220">Visible</animation>
+							</control>
 						</control>
 						<control type="button" id="$PARAM[idbase]{index}1">
 							<left>{POSTER_LEFT}</left><top>40</top><width>{POSTER_W}</width><height>{POSTER_H}</height>

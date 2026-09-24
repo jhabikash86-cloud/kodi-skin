@@ -1,0 +1,34 @@
+# Two fixes to script.module.jurialmunkey 0.2.35 (TMDb Helper's shared module) - see README,
+# "Why pages went blank". Reapply after that add-on updates, from its modules folder:
+#   cd "~/Library/Application Support/Kodi/addons/script.module.jurialmunkey/resources/modules/jurialmunkey"
+#   patch -p1 < <this file>
+--- a/reqapi.py
++++ b/reqapi.py
+@@ -139,6 +139,15 @@
+         try:
+             return self._session
+         except AttributeError:
++            # skin.appletv.minimal: IPv4 only. From this network TMDb's API cannot be reached
++            # over IPv6 - every attempt times out - and urllib3 tries IPv6 first, so each
++            # uncached request stalled until its timeout while holding TMDb Helper's lock on
++            # that title. Every API TMDb Helper uses answers over IPv4.
++            try:
++                import urllib3.util.connection
++                urllib3.util.connection.HAS_IPV6 = False
++            except Exception:
++                pass
+             self._session = self.requests.Session()
+             self._session.mount(self.req_api_url, self.requests.adapters.HTTPAdapter(pool_maxsize=100))
+             return self._session
+--- a/locker.py
++++ b/locker.py
+@@ -8,7 +8,8 @@
+         self._timeout = timeout
+         self._polling = polling
+         self._lockfile = lockfile
+-        self._kodi_log = kodi_log
++        if kodi_log is not None:  # skin.appletv.minimal: left unset, the property below makes a logger;
++            self._kodi_log = kodi_log  # set to None it returned None, and a lock timeout crashed the caller
+         self.lock_aquire()
+ 
+     @property

@@ -45,6 +45,27 @@
 	<!-- ===================== ROWS ===================== -->
 
 	<!-- Row of 2:3 posters (200x300 tiles) -->
+	<!-- Home's "Because You Watched": recommendations for the last film in the hidden history
+	     list (6070). Empty until that list has an id - as a plain path it was requested at
+	     startup with tmdb_id= blank, which fails. -->
+	<variable name="ATV_BecauseYouWatchedPath">
+		<value condition="!String.IsEmpty(Container(6070).ListItem.UniqueID(tmdb))">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Container(6070).ListItem.UniqueID(tmdb)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+
+	<!-- Continue Watching: films and episodes, the more recent of the two first (tools/gen_home.py) -->
+	<variable name="ATV_ContinueFirst">
+		<value condition="String.IsEqual(Window(home).Property(ATVContinueFilmsFirst),1)">plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=movie&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;nextpage=false</value>
+		<value>plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=tv&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_ContinueSecond">
+		<value condition="String.IsEqual(Window(home).Property(ATVContinueFilmsFirst),1)">plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=tv&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;nextpage=false</value>
+		<value>plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=movie&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_UpNextSubtitle">
+		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.Season,Season ,  ·  ]$INFO[ListItem.Episode,Episode ]</value>
+		<value>Movie$INFO[ListItem.Year,  ·  ]</value>
+	</variable>
+
 	<include name="ATV_PosterRow">
 		<param name="id" />
 		<param name="top" />
@@ -53,6 +74,15 @@
 		<param name="onup" />
 		<param name="ondown">noop</param>
 		<param name="onback">SetFocus(8001)</param>
+		<!-- A condition that is true while the row still shows someone else's items. A title
+		     page keeps its last listing in memory and shows it until the new one lands, so
+		     without this "More Like This" spends a second or three recommending for the
+		     previous title. Title pages pass Container(id).IsUpdating; everywhere else a row
+		     never goes stale, and a row that blinked out on every refresh would be worse. -->
+		<param name="stale">false</param>
+		<!-- Where Up goes instead when altup is true - past a row that has nothing in it -->
+		<param name="altup">false</param>
+		<param name="altupto">noop</param>
 		<definition>
 			<control type="group">
 				<top>$PARAM[top]</top>
@@ -76,7 +106,8 @@
 				</control>
 								<!-- Placeholders while the row loads, so it never sits empty -->
 				<control type="group">
-					<visible>Integer.IsEqual(Container($PARAM[id]).NumItems,0)</visible>
+					<visible>Integer.IsEqual(Container($PARAM[id]).NumItems,0) | $PARAM[stale]</visible>
+					<animation effect="fade" start="100" end="0" delay="1000" time="300" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,0) + !Container($PARAM[id]).IsUpdating + !$PARAM[stale]">Conditional</animation>
 					<animation effect="fade" start="100" end="45" time="900" pulse="true" condition="true">Conditional</animation>
 					<animation effect="fade" time="250">VisibleChange</animation>
 				<control type="image">
@@ -112,12 +143,24 @@
 					<texture colordiffuse="14FFFFFF" diffuse="atv/mask_poster.png">white.png</texture>
 				</control>
 				</control>
+				<!-- A row that finished loading with nothing in it says so, rather than pulsing
+				     placeholders forever as though it were still loading -->
+				<control type="label">
+					<left>90</left><top>64</top><width>1400</width><height>60</height>
+					<label>Nothing here yet</label>
+					<font>atv_meta</font><textcolor>66FFFFFF</textcolor>
+					<visible>Integer.IsEqual(Container($PARAM[id]).NumItems,0) + !Container($PARAM[id]).IsUpdating + !$PARAM[stale]</visible>
+					<!-- after a second, so a row just starting to load never flashes it -->
+					<animation effect="fade" start="0" end="100" delay="1000" time="300">Visible</animation>
+				</control>
 				<control type="list" id="$PARAM[id]">
 					<left>70</left><top>34</top><width>1850</width><height>455</height>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">420</scrolltime>
 					<preloaditems>2</preloaditems>
-					<onup>$PARAM[onup]</onup>
+					<animation effect="fade" start="100" end="0" time="180" condition="$PARAM[stale]">Conditional</animation>
+					<onup condition="!$PARAM[altup]">$PARAM[onup]</onup>
+					<onup condition="$PARAM[altup]">$PARAM[altupto]</onup>
 					<ondown>$PARAM[ondown]</ondown>
 					<onback>$PARAM[onback]</onback>
 					<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[id])</onclick>
@@ -136,6 +179,7 @@
 						<control type="image">
 							<left>16</left><top>30</top><width>250</width><height>375</height>
 							<aspectratio scalediffuse="false">scale</aspectratio>
+							<fadetime>200</fadetime>
 							<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Art(poster)]</texture>
 						</control>
 						<!-- Watched, straight from Trakt -->
@@ -157,9 +201,15 @@
 					</itemlayout>
 					<focusedlayout width="282" height="455">
 						<control type="group">
-							<include content="ATV_Lift"><param name="center" value="120,180" /></include>
+							<!-- Apple TV's focus: the poster comes forward - 14% larger, lifted a little, over a
+								     deeper shadow - rather than a highlight moving across it -->
+							<!-- Anchored a third of the way down the poster, so it grows mostly downward: from
+							     the middle, its top edge reached the row title above it -->
+							<include content="ATV_Lift"><param name="center" value="141,161" /><param name="zoom" value="114" /></include>
+							<animation effect="slide" start="0,0" end="0,-4" time="220" tween="cubic" easing="out">Focus</animation>
+							<animation effect="slide" start="0,-4" end="0,0" time="180" tween="cubic" easing="out">Unfocus</animation>
 							<control type="image">
-								<left>-24</left><top>-6</top><width>288</width><height>388</height>
+								<left>-30</left><top>-2</top><width>342</width><height>470</height>
 								<texture border="64">atv/shadow.png</texture>
 								<animation effect="fade" start="0" end="100" time="220">Focus</animation>
 								<animation effect="fade" start="100" end="0" time="160">Unfocus</animation>
@@ -178,7 +228,14 @@
 							<control type="image">
 								<left>16</left><top>30</top><width>250</width><height>375</height>
 								<aspectratio scalediffuse="false">scale</aspectratio>
+								<fadetime>200</fadetime>
 								<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Art(poster)]</texture>
+							</control>
+							<!-- A thin light edge that lifts the poster off the black -->
+							<control type="image">
+								<left>16</left><top>30</top><width>250</width><height>375</height>
+								<texture border="16" colordiffuse="33FFFFFF">atv/ring16.png</texture>
+								<animation effect="fade" start="0" end="100" time="220">Focus</animation>
 							</control>
 							<!-- Watched, straight from Trakt -->
 							<control type="image">
@@ -238,7 +295,8 @@
 			</control>
 			<control type="label">
 				<left>20</left><top>294</top><width>384</width><height>30</height>
-				<label>$INFO[ListItem.Season,Season ,  ·  ]$INFO[ListItem.Episode,Episode ]</label>
+				<!-- An episode says which one; a film says it is a film and its year -->
+				<label>$VAR[ATV_UpNextSubtitle]</label>
 				<font>atv_small</font>
 				<textcolor>99FFFFFF</textcolor>
 			</control>
@@ -254,6 +312,8 @@
 		<param name="top" />
 		<param name="label" />
 		<param name="content" />
+		<!-- A second list merged into the same row - Kodi 21 joins a container's contents -->
+		<param name="content2"></param>
 		<param name="onup" />
 		<param name="ondown" />
 		<definition>
@@ -292,7 +352,10 @@
 							<include content="ATV_UpNextTile"><param name="focused" value="true" /></include>
 						</control>
 					</focusedlayout>
+					<!-- No sortby: Trakt already lists each newest first, and Kodi's lastplayed sort
+					     scrambled that (it put a July pause ahead of this week's) -->
 					<content>$PARAM[content]</content>
+					<content>$PARAM[content2]</content>
 				</control>
 			</control>
 		</definition>
@@ -323,6 +386,17 @@
 				<texturenofocus border="34" colordiffuse="33FFFFFF">atv/pill_68.png</texturenofocus>
 				<pulseonselect>false</pulseonselect>
 				<nested />
+			</control>
+			<!-- The same glass as the tab bar, on the buttons that are not focused -->
+			<control type="image">
+				<left>0</left><top>0</top><width>$PARAM[width]</width><height>68</height>
+				<texture border="34" colordiffuse="17FFFFFF">atv/sheen_pill72.png</texture>
+				<visible>!Control.HasFocus($PARAM[id])</visible>
+			</control>
+			<control type="image">
+				<left>0</left><top>0</top><width>$PARAM[width]</width><height>68</height>
+				<texture border="34" colordiffuse="33FFFFFF">atv/ring_pill72.png</texture>
+				<visible>!Control.HasFocus($PARAM[id])</visible>
 			</control>
 			<control type="image">
 				<left>28</left><top>20</top><width>28</width><height>28</height>
@@ -460,7 +534,8 @@
 				<font>atv_caption</font><textcolor>FFFFFFFF</textcolor>
 			</control>
 			<control type="textbox">
-				<left>20</left><top>328</top><width>384</width><height>62</height>
+				<!-- Two whole lines of 22px Inter are 57px; at 62 the tops of a third peeked through -->
+				<left>20</left><top>328</top><width>384</width><height>58</height>
 				<label>$INFO[ListItem.Plot]</label>
 				<font>atv_small</font><textcolor>99FFFFFF</textcolor>
 			</control>
@@ -558,6 +633,8 @@
 	<variable name="ATV_TabPillMovies"><value condition="Window.IsActive(11140)">26FFFFFF</value><value>00FFFFFF</value></variable>
 	<variable name="ATV_TabColorTV"><value condition="Window.IsActive(11141)">FFFFFFFF</value><value>B3FFFFFF</value></variable>
 	<variable name="ATV_TabPillTV"><value condition="Window.IsActive(11141)">26FFFFFF</value><value>00FFFFFF</value></variable>
+	<variable name="ATV_TabColorMyList"><value condition="Window.IsActive(11142)">FFFFFFFF</value><value>B3FFFFFF</value></variable>
+	<variable name="ATV_TabPillMyList"><value condition="Window.IsActive(11142)">26FFFFFF</value><value>00FFFFFF</value></variable>
 	<variable name="ATV_TabColorSearch"><value condition="Window.IsActive(11120) | Window.IsActive(11121)">FFFFFFFF</value><value>B3FFFFFF</value></variable>
 	<variable name="ATV_TabPillSearch"><value condition="Window.IsActive(11120) | Window.IsActive(11121)">26FFFFFF</value><value>00FFFFFF</value></variable>
 
@@ -575,16 +652,26 @@
 
 				<!-- Glass capsule behind the tabs -->
 				<control type="image">
-					<left>589</left><top>40</top><width>742</width><height>72</height>
+					<left>519</left><top>40</top><width>882</width><height>72</height>
 					<texture border="36" colordiffuse="99000000">atv/pill_72.png</texture>
 				</control>
 				<control type="image">
-					<left>589</left><top>40</top><width>742</width><height>72</height>
+					<left>519</left><top>40</top><width>882</width><height>72</height>
 					<texture border="36" colordiffuse="24FFFFFF">atv/pill_72.png</texture>
+				</control>
+				<!-- What makes it read as glass without a blur Kodi cannot do live: light on
+				     the top edge, and a bright hairline round the rim -->
+				<control type="image">
+					<left>519</left><top>40</top><width>882</width><height>72</height>
+					<texture border="36" colordiffuse="1FFFFFFF">atv/sheen_pill72.png</texture>
+				</control>
+				<control type="image">
+					<left>519</left><top>40</top><width>882</width><height>72</height>
+					<texture border="36" colordiffuse="40FFFFFF">atv/ring_pill72.png</texture>
 				</control>
 
 				<control type="grouplist" id="9000">
-					<left>597</left><top>48</top><width>726</width><height>56</height>
+					<left>527</left><top>48</top><width>866</width><height>56</height>
 					<orientation>horizontal</orientation>
 					<itemgap>4</itemgap>
 					<ondown>$PARAM[ondown]</ondown>
@@ -605,6 +692,13 @@
 						<param name="textcolor" value="$VAR[ATV_TabColorTV]" />
 						<param name="nofocus" value="$VAR[ATV_TabPillTV]" />
 						<param name="onclick" value="ReplaceWindow(1141)" />
+					</include>
+					<!-- What you added with "My List": your Trakt watchlist -->
+					<include content="ATV_Tab">
+						<param name="id" value="9006" /><param name="width" value="136" /><param name="label" value="My List" />
+						<param name="textcolor" value="$VAR[ATV_TabColorMyList]" />
+						<param name="nofocus" value="$VAR[ATV_TabPillMyList]" />
+						<param name="onclick" value="ReplaceWindow(1142)" />
 					</include>
 					<include content="ATV_Tab">
 						<param name="id" value="9004" /><param name="width" value="136" /><param name="label" value="Search" />

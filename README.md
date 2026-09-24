@@ -28,34 +28,64 @@ python3 tools/gen_icon.py         # resources/icon.png, fanart.png
 python3 tools/gen_rank.py         # the numbered Top 10 row
 python3 tools/gen_browse.py       # Movies and TV Shows pages
 python3 tools/gen_details.py      # the five title pages
-python3 tools/gen_search.py       # the two search screens
+python3 tools/gen_search.py .     # the two search screens
 ```
 
-`gen_browse.py` bakes today's date into its "new releases" windows, so re-run it
-now and then to move that window forward.
+`gen_browse.py` and `gen_home.py` bake today's date into every row with a date
+window - "new releases", the "of the decade" cut-offs, the recency floor the charts
+use - so those rows describe the day they were generated, not today. Re-run both now
+and then; nothing breaks if you forget, the windows just drift backwards.
 
 ## Kodi settings this skin expects
 
-**Artwork resolution.** Kodi caches every downloaded image once, at `imageres`
-(default 720) and `fanartres` (default 1080) - and never fetches a bigger one
-later. On the defaults, posters are stored at 480x720 and backdrops at 1920x1080,
-which are then upscaled on any display taller than that. The hero billboard is
-where it shows most. Put this in `userdata/advancedsettings.xml`:
+**Artwork resolution.** Posters come from TMDb at their original size - 2000x3000 for
+most recent titles, though some are barely larger than the 780px copy TMDb also
+offers - with TMDb Helper's *Artwork quality* set to the last option (`artwork_quality`
+4). That option changes posters only; backdrops, logos and thumbs are original on
+every setting.
+
+More pixels were not what made posters look soft. Kodi keeps one resized copy of each
+image and draws it by stretching that copy on the GPU with a plain bilinear filter, so
+a 1170px copy drawn at 600px came out visibly softer than the same file downscaled
+properly. The fix is to make the cached copy close to its drawn size, from the full
+original, with a good filter - in `userdata/advancedsettings.xml`:
 
 ```xml
 <advancedsettings>
-    <imageres>1440</imageres>
-    <fanartres>2160</fanartres>
+    <imageres>1080</imageres>          <!-- above a focused poster on a 4K screen (~810) -->
+    <fanartres>2160</fanartres>        <!-- backdrops stay 4K -->
+    <imagescalingalgorithm>lanczos</imagescalingalgorithm>
+    <imagequalityjpeg>2</imagequalityjpeg>   <!-- lower is better -->
 </advancedsettings>
 ```
 
-Existing cache entries keep their old size, so after adding the file clear the
-texture cache (delete `userdata/Thumbnails/` and `userdata/Database/Textures13.db`
-with Kodi closed) and let it rebuild.
+Compared on the same poster at the same drawn size, the result is clearly sharper:
+rain specks are points rather than smudges, and hair and beard read as texture. It
+uses no more memory than before (720x1080 against 780x1170). The cost is the first
+time a poster is seen - a 1-3MB original to fetch and resize, about a second for a
+page of them, covered by the loading placeholders - and never again after that.
 
-TMDb Helper's own *Artwork quality* setting can stay on the default: it already
-requests `w780` posters and `original` backdrops and logos, and the largest poster
-this skin draws is 200x300 in a 1920x1080 coordinate space.
+Existing cache entries keep their old size. To rebuild them, delete
+`userdata/Thumbnails/` and `userdata/Database/Textures13.db` with Kodi closed.
+
+**The window shape.** Kodi stretches the skin's 1920x1080 to fill its window. A
+windowed Kodi on a Mac is rarely 16:9 - measured here at 2886x1754, 1.645:1 - so every
+poster and every letter was about 8% taller than drawn. Run Kodi full screen, or on a
+16:9 display, and it goes away.
+
+**Subtitles.** English by default. Kodi's *preferred subtitle language*
+(`locale.subtitlelanguage`) is English - it was "original", which in practice meant off - so
+any English track in the file comes on by itself; Kabali (Tamil) played with its English
+track on. Umbrella's own subtitles are on, English, preferring the file's own track: when
+the file has none it downloads the best match from OpenSubtitles. That last part needs a
+free OpenSubtitles.com account, entered in Umbrella's settings (Accounts -> OpenSubtitles:
+username, password, then *Test*); without one, embedded tracks still work and Umbrella says
+it is not authorised when it would have downloaded.
+
+**Resuming.** Nothing asks "Resume from ... / Play from beginning". `extras/play.py` plays
+with `noresume`, because Kodi keeps its own bookmark for the plugin link and asked before
+the source list could even open; the resume point comes from Trakt and is applied once the
+stream is up. Umbrella's *Auto Resume* is on for the same reason.
 
 **Playback.** Two Kodi settings and one add-on setting decide whether a 4K Dolby
 Vision stream is found and whether it plays well:
@@ -83,52 +113,273 @@ not emit DV metadata - that needs a player whose video path carries it end to en
 `VideoPlayer.HdrType` reporting `dolbyvision` means the file is DV, not that the
 display is receiving it.
 
-**Sources.** POV (with Magneto built in) is the default player, set in TMDb Helper as
-`default_player_movies` / `default_player_episodes` = `pov.autoplay.json`. It replaced
-Umbrella because Umbrella could not play whole classes of content: Indian and niche
-titles are distributed as season packs whose release names say `S01`, and cocoscrapers
-matches `S01E01` against that name, so it returned nothing at all. POV's scrapers
-include the Real-Debrid cache indexes - DMM, Zilean, Torz, TorrentsDB, Bitmagnet -
-which match filenames *inside* a pack.
+**Sources.** Umbrella (with Magneto as its external provider) is the player, set in
+TMDb Helper as `default_player_movies` / `default_player_episodes` =
+`umbrella.select.json`. Pressing Play scrapes and then lists every release it found -
+quality, size, which debrid service holds it, which scraper found it - and you choose.
+POV is installed but disabled; its player files are still in the players folder.
 
-POV settings that matter, all of which had to be changed from their defaults:
+The player files are not shipped by either add-on. They live in `extras/players/` and
+are copied to
+`userdata/addon_data/plugin.video.themoviedb.helper/players/`. `select=0` in the URL is
+Source Select, `select=1` is Auto Play. Keep the copy in `extras/players/`: deleting the
+installed ones leaves Play pointing at a player that no longer exists, and nothing in
+either add-on puts them back.
+
+Umbrella settings that matter:
 
 | Setting | Value | Why |
 | --- | --- | --- |
-| `filter.foreign.single.audio` | **false** | On, it discards releases whose only audio is non-English - which is most Hindi and Tamil content. |
-| `autoplay_quality_movie` / `_episode` | `720p, 1080p, 4K` | SD was in the list, so an SD rip could win when nothing better was cached. |
-| `provider.dmm`, `zilean`, `bitmagnet`, `torrentsdb`, `bitsearch`, `torrentdownload` | **true** | The debrid-cache indexes; off by default. |
-| `auto_resume_movie` / `_episode` | `1` (Always) | Otherwise a resume prompt blocks playback. "Autoplay Only" does not work here: it checks POV's own `auto_play` setting, not the `autoplay=true` the skin passes in the URL. |
-| `scrapers_timeout` | `20` | More providers need longer before the scrape is cut off. |
-| `torrent.display.uncached` | **true** | Autoplay drops uncached sources unconditionally (`sources.py`, `sort_uncached_torrents`), so this cannot make Play stall. It gives the **Sources** button uncached options, which POV then caches on demand - the only way to play a title Real-Debrid holds nothing for. |
-| `provider.aiostreams` | **false** | It returned sources that were not actually cached. Its Comet config carries `cachedOnly: false`, so the stream hits EOF the moment it opens. Re-enable it once that is fixed in the AIOStreams account settings. |
-| `auto_start_pov` | **false** | On, POV opens its own window at startup, over the skin's home screen. |
-| `ignore_results_filter` | **false** | On, an empty filtered result set makes POV re-run with the title filter ignored, switch autoplay off and open the source picker. That is both the popup that appears after pressing Play and the path that lets a differently-named film through. |
+| `sources.sort.order` | `1` (Quality, Size, Provider) | Left at the sensible value; changing it did not reorder the list - see **Ordering** below. |
+| `remove.sd.sources` | **true** | Drops anything below 720p, but only when something better exists, so it cannot empty the list. |
+| `remove.cam.sources` | **true** | Cams are never the best copy of anything. |
+| `hosts.quality` | `0` (4K) | The ceiling, not the floor. |
+| `scrapers.timeout` | `20` | Was 60. This is the ceiling on a cold scrape and it was most of the wait. |
+| `preemptive.termination.movie` / `.tv` | **true** | Stop scraping once there is enough to choose from instead of always running to the timeout. |
+| `preemptive.res.movie` / `.tv` | `0` (4K) | Only stop early on 4K results. Stopping early on 1080p would be faster still, but it can end the scrape before a 4K release arrives from a slower scraper. |
+| `preemptive.limit.movie` / `.tv` | `10` | Ten 4K sources is more than anyone picks from. |
+| `source.filtermbysize` | `0` (Off) | Leave it off. On, `source.max.moviesize` caps at 10GB, which excludes every 4K remux. |
+| `terminate.onCloud.sources` | **false** | On, a cloud source ends the scrape and a 720p can win. |
 
-Umbrella is still installed and still in the Sources dialog, as is MediaFusion once you
-give it a secret string. The **Sources** button on a title page lists all of them.
+On timing: the first scrape of a session took **11.7s**; every cold scrape measured
+afterwards - cache emptied each time from `providers.db`, table `rel_src`, with Kodi shut
+down - came back in **0.6-2.1s**, across Kabali, Animal and Vikram, and stayed under a
+second even with the pre-emptive settings turned back off. So most of that first 11.7s
+was session start-up, not the scrapers, and the speed here is not something these
+settings bought. What `scrapers.timeout` does buy is the bad case: a scrape that stalls
+now gives up after 20s instead of 60. Umbrella also caches a title's sources for
+`cache.providers` hours, 48 by default, so a second Play on the same title is instant.
 
-**Titles that share a name.** POV matches sources on the release name, so searching for
-the Hindi *Animal* (2023) also returns the French *Le Regne Animal* (2023) - and that one
-sorts first, because it happens to be a 55GB cached 4K remux. extras/play.py asks POV to
-sort releases carrying the title's own language tag to the top (`results.language_filter`
-with `results.language`, which orders rather than filters, so the best release inside that
-language still wins). **This is not yet confirmed to work**: the setting is applied but the
-order did not change in testing, and the reason is still open.
+**Ordering.** Changing `sources.sort.order` did not change the Source Select list in
+Umbrella 6.7.87. Setting it to `4` (Size, Quality, Provider), which should put the largest file
+first, produced a byte-identical list to `1` on a cold cache. What the list actually
+shows is scraper arrival order - MediaFusion, then Comet, then Torrentio - each group
+internally ordered. So Vikram lists two 4K/27.71GB, then four 1080p/2.2-2.8GB, then two
+4K/29.28GB: the biggest 4K release sits at row 7, below four 1080p files.
 
-**When a title will not play at all.** POV's autoplay only ever offers sources Real-Debrid
-already holds. For a film with no cached copy - which is common for older Tamil and Hindi
-titles - Play cannot succeed however long it tries; raising the resolve limit only makes
-the failure slower. The **Sources** button is the route: with uncached sources visible it
-will fetch one, and Real-Debrid caches it as it goes. Adding a second debrid service
-(AllDebrid is already wired into POV and only needs a token) roughly doubles how much is
-cached and findable.
+The sort itself does run - `sourcesFilter` in `sources.py` orders by the setting, and
+nothing after it regroups by provider - so the likelier cause is that some scrapers' rows
+carry a size or quality the sort reads differently from the badge the list draws. That is
+not confirmed; what is measured is the list above.
 
-Measured after these changes: a fresh film resolves 4K Dolby Vision with DTS 5.1 in
-about 7 seconds, and a Hindi title that Umbrella could not play at all now plays.
+**Settings -> Play** switches between "ask me which source" (Source Select, the default)
+and "pick the best automatically", which sends the same press to Umbrella's Auto Play
+(`umbrella.autoplay.json`, via TMDb Helper's `player=` and `mode=play` parameters). Auto
+Play starts the top source and falls through to the next if it will not play.
+
+An earlier version did the automatic pick itself, reading Torrentio with your debrid keys
+(`extras/resolve.py`, now removed). It could not work. For Kabali, 23 of the 24 copies
+Torrentio listed as cached on Real-Debrid were not playable - 8 were not cached at all
+(Real-Debrid began downloading them), 7 failed, 5 had been taken down for copyright, 3
+timed out - and every AllDebrid link came back `blocked_access`: AllDebrid refuses
+Torrentio's servers. The only copy that played was a Latin-American Spanish dub. A
+debrid refusal still streams, as a short explainer clip under the release's own file
+name, so it looks like a film that will not start. Umbrella checks sources itself and
+talks to both services from this machine, which is why its list plays.
+
+**Duplicates.** The same release appears once per debrid service - one AllDebrid row and
+one Real-Debrid row, next to each other, same name and size. `remove.duplicates` is on
+and does not collapse these: `filter_dupes` in Umbrella's `sources.py` matches on magnet
+hash or on an identical URL, and the same torrent resolved through two services has
+neither. There is no setting for it. Dropping a service would halve the list at the cost
+of everything only that service has cached.
+
+**Titles that share a name.** Six films are called *Animal*. extras/play.py warns when
+the release name does not read like the title asked for - the French *Le Regne Animal*
+in place of the Hindi *Animal* - and only warns, because getting it wrong must never
+cost a film that would have played. With the picker in front of you this matters less
+than it did under autoplay.
+
+**What the list says is not always what opens.** Kabali's top row read
+`1080p ... H264, 10.11 GB`; the stream that opened was HEVC. The name in the list is the
+torrent's name, and the file a debrid service hands back does not have to match it.
+Treat the quality badge as a strong hint, not a guarantee.
+
+**Availability.** An earlier version of this file said older Tamil and Hindi titles
+often have no cached copy and that Play therefore could not succeed. That was wrong.
+Probing Real-Debrid and AllDebrid directly for ten titles - Kabali, Sivaji, Baasha,
+Enthiran, Muthu, Padayappa, Animal, Jawan, Tumbbad, Vikram - every one had cached,
+playable releases, from 3 for Padayappa to 50 for Kabali. When one of these would not
+play, the cause was the player, not the catalogue.
+
+Traps the picker will show you, all seen in the ten titles above: a 120GB pack of 75
+films, `South.Indian.Movies.Pack`, Russian dubs of Jawan and Tumbbad, a songs
+compilation returned for Enthiran, a "4KRM" release group tag on a 1080p Muthu, and a
+"DVD Upscale" labelled 1080p for Padayappa. Muthu was the one title of the ten that did
+not play from its top source, and a pack was what sat there.
 
 The `<cache>` block in `advancedsettings.xml` is what keeps a 14GB stream from
 stalling; Kodi's default read-ahead is sized for local files.
+
+## Why pages went blank - and two fixes outside the skin
+
+Pages that stayed black, a title page with a "TMDb Helper" error, and one Kodi session where
+nothing loaded at all had one cause. From this network, **TMDb's API cannot be reached over
+IPv6** - six attempts, six timeouts - while IPv4 answers in 0.15s; every other service works
+on both. Browsers and curl try both at once, so nothing else noticed. Kodi's Python tries IPv6
+first and waits out the timeout, so any TMDb request not already cached could hang - and
+while it hung it held TMDb Helper's lock on that title, which every other list about the title
+waits on. Past that lock's 10s limit TMDb Helper crashed on a bug in its own timeout message,
+and the row came back empty. Kodi's remote-control server has one thread, so a hung request
+also froze the remote and everything behind it.
+
+Two one-line changes in `script.module.jurialmunkey` (TMDb Helper's shared module) fix it,
+each marked `skin.appletv.minimal` in the file:
+
+- `reqapi.py` - its requests use IPv4 only (`urllib3.util.connection.HAS_IPV6 = False`).
+- `locker.py` - a lock timeout no longer crashes the request; it carries on without the lock.
+
+An update of that module replaces both, which is one reason Kodi's add-on updates are set to
+*Notify, but don't install updates* (Settings > System > Add-ons). The lasting fix is on the
+network: IPv6 to TMDb's servers is broken on this connection - worth raising with the ISP, or
+turning IPv6 off on the router.
+
+The title page also asks in order now. It used to open six lists about the same title at once
+- details, seasons, episodes, cast, More Like This, You May Also Like - and each fetched the
+title's details again for itself, queueing on the lock. Now the details come first, alone, and
+the rest follow and read them from the cache (`ATV_DetailReady`). Measured afterwards: every
+part of a page loaded, including a soap with 38 seasons and 195 episodes, with no lock timeout.
+
+## How pages load
+
+Measured on this skin, a TMDb Helper listing takes 0.7-1.5s the first time and
+0.05-0.3s once cached; a title's details take about 1.4s. Everything below is about
+paying that before you notice it.
+
+**Fetching ahead** (`extras/prefetch.py`, started with Home). A few seconds after
+startup it walks every row of the Movies and TV pages and the Home hero's titles, so the
+first visit to either page is as quick as the second; it walks them again every three
+hours, as TMDb Helper's caches expire. And when you rest on any title for a third of a
+second, it fetches that title's details and "You May Also Like" at once - only the one
+you are on, never a queue of titles scrolled past. A title rested on for two seconds
+opened fully in 0.25s, against 1.55s for one selected straight away.
+
+**Title pages never show the previous title.** Kodi keeps a page's last listing in
+memory and shows it until the new one arrives, so opening a film used to show the last
+film's backdrop, plot and recommendations for a second or more. Now `extras/details.py`
+copies the clicked tile's backdrop, logo and title across before the page opens, so it
+opens on the right picture in 0.1s; the plot and credits wait until the details
+listing's own TMDb id matches (`ATV_DetailReady§`); and each row stays hidden, showing
+placeholders, while `Container(id).IsUpdating` says it still holds someone else's items
+(the `stale` parameter of `ATV_PosterRow`).
+
+**More Like This** is built from the title's own details, not from the tile you
+clicked, which can carry only its first genre: a Comedy / Horror / Romance film arrived
+as "Comedy" and the row filled with Toy Story and PAW Patrol. Same genres and language,
+then held to a standard - films popular, from the last twenty years, with a vote floor;
+shows by rating over the last twelve years, without soap, talk, reality, news or kids
+formats. The Gentlemen now leads to Brassic, Inside No. 9 and Barry rather than Monk,
+Psych and Rizzoli & Isles.
+
+## What rows show
+
+Rows are for things you can watch now: every one passes `hide_unaired=true`, which drops
+titles not out yet - they otherwise appeared with TMDb Helper's red italic markup in their
+names. Coming Soon, On TV Today and Continue Watching keep them.
+
+**Continue Watching** is your paused films and episodes, from Trakt's on-deck lists - one for
+each kind, merged into one row (Kodi 21 joins a container's contents), with whichever holds
+the most recent pause first; `extras/prefetch.py` checks each minute. Anything under 4%
+watched is left out (TMDb Helper already zeroes progress below that), which drops false
+starts. Kodi's own sort by last played is not used: it scrambled Trakt's newest-first order.
+A show with two paused episodes still shows both.
+
+**My List** is its own tab: your Trakt watchlist, which is what the My List buttons add to,
+films and shows, newest first, upcoming titles included.
+
+**More Like This** for a title TMDb knows little about falls back to TMDb's "similar" list;
+a row that loads with nothing in it says "Nothing here yet" instead of pulsing placeholders.
+A show that is announced but not aired says "Episodes aren't out yet" with its premiere date.
+
+*In Cinemas Now* and the Home hero are films that opened in the last six weeks with at
+least 20 votes. TMDb's own now_playing list carries re-releases, so *Avengers: Endgame*
+(2019) was in cinemas; filtering by the Indian region was worse, surfacing La La Land.
+
+**Search** drops results with a TMDb popularity under 1. "shahrukh khan" listed three
+empty profiles before the real Shah Rukh Khan and fan-made DVDs before his films; now
+it is the star and his Netflix special. Upcoming films are kept, being popular long
+before they have votes. TMDb Helper compares the value as text, which is only safe
+because the threshold is 1.
+
+**The hero trailer** starts after four seconds still on the hero - on its buttons or on the
+tab bar above it, since coming back to Home through the tab bar leaves focus there with the
+whole hero in view. Measured from the request to the picture: about 3-4s when YouTube is
+quick. *Settings -> Banner trailers* turns them off.
+
+While the YouTube add-on looks a trailer up, Kodi shows a modal busy dialog that ignores
+every key but Back, and nothing in Kodi's settings changes that (`busydialogdelayms` and
+`videobusydialogdelayms` were both tried and did not). So the pause is four seconds, not
+two, to keep lookups to when you have stopped browsing; and a key pressed during a lookup
+cancels it, so the next press reaches Home at once instead of up to 40s later. The press
+that cancels it is lost - Kodi gives a skin no way to hand it on.
+
+Most of the wait is the YouTube add-on looking the video up, which measured anywhere from
+2s to 31s, and got slower the more trailers were asked for - YouTube throttling it. Three
+things follow from that:
+
+- `extras/trailer.py` gives a trailer 40s to start. At 10s it used to give up, the hero
+  moved on, and the trailer then arrived late, for a title no longer shown, playing as
+  sound with its picture hidden. That was the long-standing "trailer plays only the sound".
+- A YouTube stream that turns up after the preview was stopped or given up on is stopped,
+  once - Kodi can block for a minute closing a stream that is still opening, so it is never
+  asked twice. A trailer that never starts is skipped for the rest of the session.
+- In the YouTube add-on, *MPEG-DASH stream features* no longer include AV1, HDR, 3D and VR
+  (`kodion.mpd.stream.features`). It had been choosing AV1, which a Mac decodes in software;
+  H.264 and VP9 start faster and look the same at this size. Leave *listen address*
+  (`kodion.http.listen`) at `0.0.0.0`: set to 127.0.0.1 it still hands the player the
+  machine's network address, the connection is refused, and every trailer fails. Its
+  "Failed to connect" log lines are harmless - it falls back at once.
+
+Only a widescreen trailer is ever shown. Studios post square and vertical social cuts under
+the same "Trailer" label, often with captions burned in; after 1s of playback the aspect is
+checked, anything narrower than 1.6:1 is stopped and never tried again, and Home shows the
+video only once it has passed.
+
+## Playback details that were quietly broken
+
+- **Starting anything from Home stopped it.** Home's `<onunload>` ran `Action(Stop)` to end a
+  trailer when you leave Home - but playback switches to full-screen video, which unloads
+  Home, so an episode started from Continue Watching stopped 0.7s after its first frame.
+  It now only stops the player while a trailer preview is showing.
+- **TMDb Helper plays a placeholder first.** With a resolvable player like Umbrella it plays
+  `dummy.mp4` and swaps the stream in once resolved. `extras/play.py` took the placeholder
+  for playback, saw it end, and gave up before resuming - Continue Watching always started
+  from 0:00. It now waits for the real stream, and does not count time spent in the source
+  list against its timeout.
+- **Up Next never appeared, and could not have worked.** `extras/upnext.py` started before
+  the stream resolved and quit a second later, seeing nothing playing. The card was also a
+  plain window, not a dialog, so it replaced the picture with black and could not be closed.
+  And the countdown led nowhere: when the episode ended, nothing played. Now it waits for the
+  episode, overlays it, and when the episode ends with the card still up, the next one starts
+  on Auto Play - nobody is at the remote to choose a source. Pressing its Play button follows
+  your Play setting.
+- **Quitting Kodi** could freeze it. Kodi only asks a skin's scripts to stop after it has
+  unloaded the skin, when their GUI calls wait on a Kodi busy shutting down; it killed them
+  after 5s each and sometimes never finished exiting - reliably when a trailer was loading.
+  `extras/trailer.py` and `extras/prefetch.py` now leave on `System.OnQuit`, at the start of
+  shutdown: quitting takes 3-6s in every state, with nothing killed.
+
+## The look
+
+- **Focus.** A focused poster comes forward, as on Apple TV: 14% larger (12% on Top 10
+  rows), lifted a few pixels, over a deeper shadow, with a thin light edge. It grows from a
+  point a third of the way down, so it never reaches the row title above. (A sheen across the
+  poster was tried and removed.)
+- **Top 10** numerals are outlined, Netflix style, and sit behind their posters. Only the
+  poster lifts on focus; when the whole tile scaled, the numeral swung across the poster
+  to its left.
+- **Glass.** Kodi has no live blur, and TMDb Helper's blur service would download and
+  blur a full-size backdrop on every focus change. The tab bar and the unfocused buttons
+  get what actually makes glass read as glass instead: light on the top edge and a
+  bright hairline round the rim.
+- **Billboards scroll away.** Moving into Home's rows carries the hero's text up with the
+  page - the same distance, time and curve as the rows' first step - while its backdrop
+  drifts up more slowly behind and fades. On Movies and TV the first row is backed by the
+  backdrop of whatever has focus in it, the page's billboard; below that the page is plain
+  dark, because behind every row the backdrop competed with the posters and hid the glass
+  and focus effects.
+- Every hero button has an icon and a left-aligned label. A button needs its text offset
+  on both sides, so "More Info" with an icon needs 290 wide.
 
 ## Testing
 

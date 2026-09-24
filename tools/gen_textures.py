@@ -229,3 +229,81 @@ switch(f'{M}/switch_on.png', True)
 switch(f'{M}/switch_off.png', False)
 chevron(f'{M}/icon_chevron.png')
 print('switches ok')
+
+
+def strokes_icon(path, s, segments=(), rings=(), dots=(), rects=(), t=None, ss=4):
+    """An icon from simple pieces, supersampled: line segments, circle outlines, filled dots
+    and rounded-rect outlines, all in the stroke width t."""
+    t = t or s * 0.075
+
+    def on_segment(x, y, a, b):
+        (x1, y1), (x2, y2) = a, b
+        dx, dy = x2 - x1, y2 - y1
+        L = dx * dx + dy * dy
+        u = max(0, min(1, ((x - x1) * dx + (y - y1) * dy) / L)) if L else 0
+        return math.hypot(x - (x1 + u * dx), y - (y1 + u * dy)) <= t / 2
+
+    def covered(x, y):
+        if any(on_segment(x, y, a, b) for a, b in segments):
+            return True
+        if any(abs(math.hypot(x - cx, y - cy) - r) <= t / 2 for cx, cy, r in rings):
+            return True
+        if any(math.hypot(x - cx, y - cy) <= r for cx, cy, r in dots):
+            return True
+        for rx, ry, rw, rh, rr in rects:
+            if abs(rrect_sdf(x - rx, y - ry, rw, rh, rr)) <= t / 2:
+                return True
+        return False
+
+    def px(x, y):
+        n = sum(covered(x + (i + 0.5) / ss, y + (j + 0.5) / ss) for i in range(ss) for j in range(ss))
+        return 255, 255, 255, 255 * n / (ss * ss)
+    write_png(path, s, s, px)
+
+
+def trailer_icon(path, s):
+    """A screen with a play mark in it - Apple's play.rectangle."""
+    t = s * 0.08
+    play = [((0.43 * s, 0.37 * s), (0.43 * s, 0.63 * s)), ((0.43 * s, 0.63 * s), (0.64 * s, 0.50 * s)),
+            ((0.64 * s, 0.50 * s), (0.43 * s, 0.37 * s))]
+    strokes_icon(path, s, segments=play, rects=[(0.10 * s, 0.20 * s, 0.80 * s, 0.60 * s, 0.12 * s)], t=t)
+
+
+def sources_icon(path, s):
+    """Three rows with a bullet each - a list to choose from."""
+    t = s * 0.08
+    rows = [((0.36 * s, y * s), (0.84 * s, y * s)) for y in (0.28, 0.50, 0.72)]
+    dots = [(0.20 * s, y * s, t * 0.75) for y in (0.28, 0.50, 0.72)]
+    strokes_icon(path, s, segments=rows, dots=dots, t=t)
+
+
+def info_icon(path, s):
+    """An i in a circle."""
+    t = s * 0.08
+    strokes_icon(path, s, segments=[((0.50 * s, 0.45 * s), (0.50 * s, 0.72 * s))],
+                 rings=[(0.50 * s, 0.50 * s, 0.38 * s)], dots=[(0.50 * s, 0.31 * s, t * 0.8)], t=t)
+
+
+trailer_icon(f'{M}/icon_trailer.png', 64)
+sources_icon(f'{M}/icon_sources.png', 64)
+info_icon(f'{M}/icon_info.png', 64)
+print('icons ok')
+# The light edge round a focused poster: a 2px outline, 9-slice (border="16")
+ring(f'{M}/ring16.png', 64, 64, 16, 2)
+print('ring ok')
+
+
+def pill_sheen(path, s=72):
+    """Light falling on the top half of a glass capsule, fading out by the middle.
+    9-slice with border=s/2, so it stretches to any width."""
+    def px(x, y):
+        inside = min(1, max(0, 0.5 - rrect_sdf(x + 0.5, y + 0.5, s, s, s / 2)))
+        fall = max(0.0, 1 - (y + 0.5) / (s * 0.55)) ** 1.6
+        return 255, 255, 255, 255 * inside * fall
+    write_png(path, s, s, px)
+
+
+# Glass: a hairline round the capsule, and the light on its top edge (both border="36")
+ring(f'{M}/ring_pill72.png', 72, 72, 36, 1.5)
+pill_sheen(f'{M}/sheen_pill72.png')
+print('glass ok')

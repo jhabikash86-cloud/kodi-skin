@@ -23,20 +23,21 @@ already resumed it (some debrid players do), the seek is skipped.
 """
 import json
 import re
-import sqlite3
 import sys
 
 import xbmc
 import xbmcaddon
 import xbmcgui
-import xbmcvfs
 
-import resolve  # same folder; Kodi puts a RunScript's directory on sys.path
 
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 RESUME_FLOOR = 60      # ignore a resume point this small - it is a false start
 NEARLY_DONE = 0.92     # past this much of the runtime, treat the episode as finished
-START_TIMEOUT = 180    # seconds to wait for the player add-on to resolve a stream
+START_TIMEOUT = 180    # seconds to wait for the player add-on to resolve a stream,
+                       # not counting time spent with the source list open
+# Umbrella's source list and its progress window. While either is up you are choosing,
+# however long that takes, so the wait for a stream does not run out under you.
+PICKING = 'Window.IsActive(13000) | Window.IsActive(13001)'
 SETTLE = 2             # let the player settle before seeking
 
 # When a debrid service refuses a torrent - usually a rights holder's takedown - Torrentio
@@ -56,12 +57,34 @@ YEAR = re.compile(r'\b(19|20)\d{2}\b')
 # remote is idle - exactly what extras/trailer.py waits for. This tells it to hold off.
 RESOLVING = 'ATVResolving'
 
-# POV caches a title's scrape for a few hours, so pressing Play again replays whatever
-# it settled on last time - including a source that was only picked because the better
-# ones happened to fail that once. Dropping the cached rows first makes every Play look
-# again and take the best that resolves now. POV does the same thing in its own
-# "clear and rescrape" action; this is that delete, from the skin.
-POV_CACHE = 'special://profile/addon_data/plugin.video.pov/providerscache.db'
+# Two ways to start a film, and which one you want depends on the evening. Left off,
+# Play hands the title to Umbrella's Source Select and you pick the release yourself,
+# seeing every size and quality on offer. Switched on, the same press goes to Umbrella's
+# Auto Play, which starts the top source and falls through to the next if it will not
+# play. The picker is the default because choosing is the thing you cannot get back once
+# it has started.
+#
+# Auto Play replaced a resolver of this skin's own that read Torrentio directly. It could
+# not work: Torrentio's "cached on Real-Debrid" flag was wrong for 23 of Kabali's 24
+# copies (downloading, failed, or taken down for copyright), and AllDebrid refuses
+# Torrentio's servers outright. Umbrella checks sources itself and talks to both services
+# from this machine, which is why its list plays.
+AUTOPICK = 'Skin.HasSetting(atv.autopick)'
+AUTOPLAY = '&player=umbrella.autoplay.json&mode=play'  # TMDb Helper's forced-player parameters
+
+
+def autopick():
+    return xbmc.getCondVisibility(AUTOPICK)
+
+
+def player(unattended=False):
+    """TMDb Helper's player for this press: its default (Source Select), or Auto Play.
+
+    Unattended - the Up Next countdown running out - always takes Auto Play: nobody is
+    at the remote to choose, and a source list waiting on the screen would end the
+    evening's run of episodes rather than continue it.
+    """
+    return AUTOPLAY if unattended or autopick() else ''
 
 # Release names are all POV has to go on, and a lot of titles share a name: searching for
 # the Hindi "Animal" (2023) also turns up the French "Le Regne Animal" (2023), which wins
@@ -137,13 +160,19 @@ def normalise(text):
 
 
 def release_name(path):
-    """The release name out of whatever the debrid service handed back."""
+    """The release name out of whatever the debrid service handed back.
+
+    Decoded, because a debrid link keeps the spaces of the original file name as %20 -
+    "www.1TamilMV.world%20-%20Baasha%20(1995)" is how half the Tamil releases arrive -
+    and the undecoded form reads as a token of its own, which puts something that is
+    not the title directly in front of the year.
+    """
+    from urllib.parse import unquote_plus
     path = path or ''
     match = re.search(r'torrent_name=([^&]+)', path)
     if match:
-        from urllib.parse import unquote_plus
         return unquote_plus(match.group(1))
-    return path.rsplit('/', 1)[-1].split('?')[0]
+    return unquote_plus(path.rsplit('/', 1)[-1].split('?')[0])
 
 
 def expected_title(kind, tmdb_id):
@@ -182,6 +211,8 @@ def blocked_stream():
 
 def prefer_language(code):
     """Ask POV to sort releases in this language to the top for the coming play."""
+    if not xbmc.getCondVisibility(f'System.HasAddon({POV_ADDON})'):
+        return  # Umbrella is the player now; asking for POV only logged an exception
     name = POV_LANGUAGES.get((code or '').lower())
     try:
         pov = xbmcaddon.Addon(POV_ADDON)
@@ -191,16 +222,6 @@ def prefer_language(code):
     except Exception:
         pass  # POV not installed, or settings locked - ordering just stays as it was
 
-
-def rescrape(kind, tmdb_id):
-    """Forget POV's cached sources for one title, so the next play scrapes afresh."""
-    try:
-        database = xbmcvfs.translatePath(POV_CACHE)
-        with sqlite3.connect(database, timeout=2) as connection:
-            connection.execute(
-                'DELETE FROM results_data WHERE db_type = ? AND tmdb_id = ?', (kind, str(tmdb_id)))
-    except Exception:
-        pass  # a locked or missing cache just means this play reuses it
 
 
 def play(path, resume=0, title=''):
@@ -213,13 +234,12 @@ def play(path, resume=0, title=''):
     home = xbmcgui.Window(10000)
     home.setProperty(RESOLVING, '1')
     try:
-        xbmc.executebuiltin(f'PlayMedia({path})')
+        # noresume: Kodi keeps its own bookmark for the plugin path and otherwise asks
+        # "Resume from ... / Play from beginning" before the source list can even open.
+        # Resuming is done here, from Trakt, once the stream is up (see the docstring).
+        xbmc.executebuiltin(f'PlayMedia({path},noresume)')
         player = xbmc.Player()
-        for _ in range(START_TIMEOUT * 4):
-            if player.isPlayingVideo():
-                break
-            xbmc.sleep(250)
-        else:
+        if not wait_for_stream(player):
             return  # the user backed out, or nothing could be resolved
     finally:
         home.clearProperty(RESOLVING)
@@ -253,16 +273,31 @@ def play(path, resume=0, title=''):
         pass  # playback ended while we were waiting
 
 
-def apply_resume(resume):
-    """Seek to the resume point once something is playing."""
-    if not resume:
-        return
-    player = xbmc.Player()
+def real_stream(player):
+    """True once the stream itself is playing.
+
+    With a resolvable player such as Umbrella, TMDb Helper plays a tiny placeholder
+    first - dummy.mp4 - and swaps the real stream in once it is resolved. Taking the
+    placeholder for playback meant the resume point was never applied (it "stopped"
+    two seconds later), and the Up Next watcher quit before the episode began.
+    """
     try:
-        if player.isPlayingVideo() and player.getTime() < resume - 30:
-            player.seekTime(resume)
+        return player.isPlayingVideo() and not player.getPlayingFile().endswith('dummy.mp4')
     except RuntimeError:
-        pass
+        return False
+
+
+def wait_for_stream(player, timeout=START_TIMEOUT):
+    """Wait for the real stream. The clock stops while the source list is open."""
+    waited = 0.0
+    while waited < timeout:
+        if real_stream(player):
+            return True
+        xbmc.sleep(250)
+        if not xbmc.getCondVisibility(PICKING):
+            waited += 0.25
+    return False
+
 
 
 def play_item(container):
@@ -298,15 +333,13 @@ def watch_for_next(tmdb_id, season, episode):
         f'RunScript(special://skin/extras/upnext.py,{tmdb_id},{season},{episode})')
 
 
-def play_episode(tmdb_id, season, episode, lang=None):
+def play_episode(tmdb_id, season, episode, lang=None, unattended=False):
     """A named episode - used by the Up Next card, which knows exactly what comes next."""
     if not (tmdb_id and season and episode):
         return
     watch_for_next(tmdb_id, season, episode)
-    if resolve.resolve('tv', tmdb_id, season, episode):
-        return
     prefer_language(lang)
-    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}',
+    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}{player(unattended)}',
          title=expected_title('tv', tmdb_id))
 
 
@@ -315,14 +348,9 @@ def play_show(tmdb_id, lang=None):
         return
     season, episode, resume = next_episode(tmdb_id)
     watch_for_next(tmdb_id, season, episode)
-    # Our own pick first: it reads your debrid cache directly, so it sees releases POV's
-    # providers never offer, and it will not hand back a different film.
-    if resolve.resolve('tv', tmdb_id, season, episode):
-        apply_resume(resume)
-        return
     prefer_language(lang)
     show_title = expected_title('tv', tmdb_id)
-    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}',
+    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}{player()}',
          resume, title=show_title)
 
 
@@ -330,12 +358,9 @@ def play_movie(tmdb_id, lang=None):
     if not tmdb_id:
         return
     resume = movie_resume(tmdb_id)
-    if resolve.resolve('movie', tmdb_id):
-        apply_resume(resume)
-        return
     prefer_language(lang)
     film_title = expected_title('movie', tmdb_id)
-    play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}', resume, title=film_title)
+    play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}{player()}', resume, title=film_title)
 
 
 def main():
@@ -350,7 +375,10 @@ def main():
     elif action == 'movie':
         play_movie(target, lang)
     elif action == 'episode' and len(args) > 3:
-        play_episode(target, args[2], args[3], args[4] if len(args) > 4 else None)
+        # optional 5th: a language code; 'auto' anywhere after means the countdown ran out
+        extra = args[4:]
+        lang = next((a for a in extra if a != 'auto'), None)
+        play_episode(target, args[2], args[3], lang, unattended='auto' in extra)
 
 
 if __name__ == '__main__':

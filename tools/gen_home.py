@@ -40,9 +40,6 @@ WORLD_CINEMA = (f'{PLUGIN}info=discover&tmdb_type=movie&with_origin_country=KR%7
                 f'&vote_count.gte=30&nextpage=false')
 THREE_YEARS = (datetime.date.today() - datetime.timedelta(days=1095)).isoformat()
 
-# Netflix's catalogue differs by country; this is the one row that is region-specific.
-WATCH_REGION = 'IN'
-
 # India is the watch region: Netflix, Prime and JioHotstar catalogues differ by country,
 # and these are the services that carry content here. HBO, Hulu and the BBC have no
 # Indian movie catalogue, so their charts live on the TV page where they are networks.
@@ -64,6 +61,17 @@ def language_row(code, media='movie', votes=15):
             f'&vote_count.gte={votes}&nextpage=false')
 
 
+# The hero shows what is in cinemas. TMDb's now_playing carried re-releases (Avengers:
+# Endgame, 2019), so it is films that opened in the last six weeks, as on the Movies page.
+CINEMA_SINCE = (datetime.date.today() - datetime.timedelta(days=45)).isoformat()
+HERO = (f'{PLUGIN}info=discover&tmdb_type=movie&primary_release_date.gte={CINEMA_SINCE}'
+        f'&primary_release_date.lte={datetime.date.today().isoformat()}&sort_by=popularity.desc'
+        f'&vote_count.gte=20&hide_unaired=true&nextpage=false')
+
+# Continue Watching is what you paused, films and episodes both: the row takes two lists,
+# ATV_ContinueFirst and ATV_ContinueSecond in xml/Includes_ATV.xml, whichever holds the most
+# recent pause first (extras/prefetch.py decides). The path in ROWS below is not used by it.
+
 ROWS = [
     ('upnext', 'Continue Watching',
      f'{PLUGIN}info=trakt_ondeck&tmdb_type=tv&nextpage=false'),
@@ -73,10 +81,10 @@ ROWS = [
      f'{PLUGIN}info=trakt_trending&tmdb_type=tv&nextpage=false'),
     ('poster', 'Recommended for You',
      f'{PLUGIN}info=trakt_recommendations&tmdb_type=movie&nextpage=false'),
-    # Follows the last film you finished - the row's own label names it.
+    # Follows the last film you finished - the row's own label names it. The path is a
+    # variable that stays empty until that film is known (see Includes_ATV.xml).
     ('poster', 'Because You Watched $INFO[Container(6070).ListItem.Title]',
-     f'{PLUGIN}info=recommendations&tmdb_type=movie'
-     f'&tmdb_id=$INFO[Container(6070).ListItem.UniqueID(tmdb)]&nextpage=false'),
+     '$VAR[ATV_BecauseYouWatchedPath]'),
     ('rank', 'Top 10 on Netflix', provider_chart(PROVIDERS['Netflix'])),
     ('rank', 'Top 10 on Prime Video', provider_chart(PROVIDERS['Prime Video'])),
     ('rank', 'Top 10 on JioHotstar', provider_chart(PROVIDERS['JioHotstar'])),
@@ -135,9 +143,21 @@ def build_scroll():
     return '\n'.join(lines)
 
 
+# Rows are for things you can watch now. TMDb Helper marks a title that is not out yet
+# with red italic markup in its label, and lists like these otherwise mix a handful in;
+# hide_unaired drops them. Rows that exist to show what is coming keep them.
+KEEPS_UNAIRED = ('trakt_anticipated', 'airing_today', 'trakt_ondeck')
+
+
+def watchable(path):
+    if any(f'info={name}' in path for name in KEEPS_UNAIRED) or 'hide_unaired' in path:
+        return path
+    return path.replace('nextpage=false', 'hide_unaired=true&nextpage=false')
+
+
 def build_row(index, top):
     kind, label, content = ROWS[index]
-    content = content.replace('&', '&amp;')
+    content = watchable(content).replace('&', '&amp;')
     onup = 8001 if index == 0 else row_id(index - 1)
     ondown = f'\n                    <param name="ondown" value="{row_id(index + 1)}" />' if index < len(ROWS) - 1 else ''
     if kind == 'upnext':
@@ -146,7 +166,8 @@ def build_row(index, top):
                 <param name="top" value="{top}" />
                 <param name="label" value="{label}" />
                 <param name="onup" value="{onup}" />{ondown.replace(chr(10) + " " * 20, chr(10) + " " * 16)}
-                <param name="content" value="{content}" />
+                <param name="content" value="$VAR[ATV_ContinueFirst]" />
+                <param name="content2" value="$VAR[ATV_ContinueSecond]" />
             </include>'''
     if kind == 'rank':
         return f'''                <include content="ATV_RankRow">
@@ -173,9 +194,10 @@ def build_rows():
     out = ['            <!-- ===== ROWS ===== -->']
     start = 0
     if has_upnext:
-        out.append('''            <!-- trakt_ondeck is "continue watching": the episodes you actually paused, newest
-                 pause first. trakt_nextepisodes looks tidier (one row per show) but only lists
-                 shows you have FINISHED an episode of, which dropped most of the row. -->''')
+        out.append('''            <!-- Continue Watching: the films and episodes you actually paused (Trakt on deck),
+                 the more recently used list first. trakt_nextepisodes looks tidier (one row per
+                 show) but only lists shows you have FINISHED an episode of, which dropped most
+                 of the row. -->''')
         out.append(build_row(0, t[0]))
         out.append('')
         shift = t[1] - t[0]
@@ -204,7 +226,8 @@ def main():
 
     with open(os.path.join(ROOT, 'tools', 'home_template.xml')) as f:
         template = f.read()
-    xml = template.replace('{SCROLL}', build_scroll()).replace('{ROWS}', build_rows())
+    xml = (template.replace('{SCROLL}', build_scroll()).replace('{ROWS}', build_rows())
+           .replace('{HERO}', HERO.replace('&', '&amp;')))
     with open(os.path.join(ROOT, 'xml', 'Home.xml'), 'w') as f:
         f.write(xml)
 

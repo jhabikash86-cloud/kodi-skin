@@ -5,7 +5,12 @@
     <defaultcontrol>8001</defaultcontrol>
     <menucontrol>9000</menucontrol>
     <onload>RunScript(special://skin/extras/trailer.py,watch)</onload>
-    <onunload>Action(Stop)</onunload>
+    <onload>RunScript(special://skin/extras/prefetch.py)</onload>
+    <!-- Leaving Home ends a trailer preview - but only that. Unconditionally, this stopped
+         everything: starting an episode from Continue Watching, or a film from the hero,
+         switches to full-screen video, which unloads Home, and the episode was stopped
+         0.7s after its first frame. -->
+    <onunload condition="!String.IsEmpty(Window(home).Property(ATVPreview))">Action(Stop)</onunload>
     <controls>
 
         <!-- Hidden data list that feeds the hero ("top shelf"). Rotates every 10s. -->
@@ -18,7 +23,7 @@
 			<autoscroll time="9000">System.IdleTime(5) + String.IsEmpty(Window(home).Property(ATVPreview))</autoscroll>
             <itemlayout width="1" height="1" />
             <focusedlayout width="1" height="1" />
-            <content limit="8">plugin://plugin.video.themoviedb.helper/?info=now_playing&amp;tmdb_type=movie&amp;nextpage=false</content>
+            <content limit="8">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;primary_release_date.gte=2026-08-11&amp;primary_release_date.lte=2026-09-25&amp;sort_by=popularity.desc&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false</content>
         </control>
 
         <!-- Seed for "Because You Watched": the most recent film in your Trakt history.
@@ -37,9 +42,12 @@
             <texture colordiffuse="FF0B0B0D">white.png</texture>
         </control>
 
-        <!-- Hero backdrop: full bleed, slow Ken Burns drift, fades away when you move into the rows -->
+        <!-- Hero backdrop: full bleed, slow Ken Burns drift. Moving into the rows carries it up
+             and away as it fades, the way Apple TV's billboard scrolls off with the page,
+             rather than dimming in place behind the rows. -->
         <control type="group">
-            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="slide" end="0,-320" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
@@ -52,7 +60,9 @@
                  backdrop underneath stays put so there is no gap while it loads. -->
             <control type="videowindow">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
-                <visible>!String.IsEmpty(Window(home).Property(ATVPreview)) + Player.HasVideo</visible>
+                <!-- ATVPreviewShape is set once the picture is known to be widescreen, so a
+                     square social-media cut is never seen before it is stopped -->
+                <visible>!String.IsEmpty(Window(home).Property(ATVPreview)) + !String.IsEmpty(Window(home).Property(ATVPreviewShape)) + Player.HasVideo</visible>
                 <animation effect="fade" start="0" end="100" time="500">Visible</animation>
                 <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
             </control>
@@ -71,11 +81,14 @@
         </control>
 
         <!-- ===== HERO =====
-             Stays where it is and dims while the rows slide up over it (tvOS behaviour).
-             Two elements moving at different speeds read as unsteady. -->
+             Scrolls off with the page: the same 710px, time and curve as the rows' first step
+             (tools/gen_home.py), so the logo, text and buttons move as one piece with the rows
+             instead of dimming in place while the rows slide over them. The backdrop behind
+             moves less, for depth. -->
         <control type="group">
             <left>90</left><top>0</top>
-            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="slide" end="0,-710" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
 
             <!-- Clear logo, or the title in bold if there's no logo -->
             <control type="image">
@@ -142,14 +155,13 @@
                 </include>
             </control>
             <control type="group">
-                <left>496</left><top>722</top><width>270</width><height>68</height>
+                <left>496</left><top>722</top><width>290</width><height>68</height>
                 <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8002)">Conditional</animation>
                 <include content="ATV_CapsuleButton">
                     <param name="id" value="8002" />
-                    <param name="width" value="270" />
+                    <param name="width" value="290" />
                     <param name="label" value="More Info" />
-                    <param name="align" value="center" />
-                    <param name="textoffsetx" value="0" />
+                    <param name="icon" value="atv/icon_info.png" />
                                         <!-- Opens the Apple TV style title page for the hero item -->
                     <onclick>RunScript(special://skin/extras/details.py,open,40)</onclick>
                     <onup>9000</onup>
@@ -200,16 +212,18 @@
             <animation effect="slide" end="0,-100" time="380" tween="sine" easing="inout" condition="Control.HasFocus(60)">Conditional</animation>
 
             <!-- ===== ROWS ===== -->
-            <!-- trakt_ondeck is "continue watching": the episodes you actually paused, newest
-                 pause first. trakt_nextepisodes looks tidier (one row per show) but only lists
-                 shows you have FINISHED an episode of, which dropped most of the row. -->
+            <!-- Continue Watching: the films and episodes you actually paused (Trakt on deck),
+                 the more recently used list first. trakt_nextepisodes looks tidier (one row per
+                 show) but only lists shows you have FINISHED an episode of, which dropped most
+                 of the row. -->
             <include content="ATV_UpNextRow">
                 <param name="id" value="50" />
                 <param name="top" value="860" />
                 <param name="label" value="Continue Watching" />
                 <param name="onup" value="8001" />
                 <param name="ondown" value="51" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=tv&amp;nextpage=false" />
+                <param name="content" value="$VAR[ATV_ContinueFirst]" />
+                <param name="content2" value="$VAR[ATV_ContinueSecond]" />
             </include>
 
             <control type="group">
@@ -222,7 +236,7 @@
                     <param name="label" value="Top 10 Movies Right Now" />
                     <param name="onup" value="50" />
                     <param name="ondown" value="52" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_trending&amp;tmdb_type=movie&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_trending&amp;tmdb_type=movie&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
                 <include content="ATV_RankRow">
                     <param name="id" value="52" />
@@ -232,7 +246,7 @@
                     <param name="label" value="Top 10 Shows Right Now" />
                     <param name="onup" value="51" />
                     <param name="ondown" value="53" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_trending&amp;tmdb_type=tv&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_trending&amp;tmdb_type=tv&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="53" />
@@ -240,7 +254,7 @@
                     <param name="label" value="Recommended for You" />
                     <param name="onup" value="52" />
                     <param name="ondown" value="54" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_recommendations&amp;tmdb_type=movie&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_recommendations&amp;tmdb_type=movie&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="54" />
@@ -248,7 +262,7 @@
                     <param name="label" value="Because You Watched $INFO[Container(6070).ListItem.Title]" />
                     <param name="onup" value="53" />
                     <param name="ondown" value="55" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Container(6070).ListItem.UniqueID(tmdb)]&amp;nextpage=false" />
+                    <param name="content" value="$VAR[ATV_BecauseYouWatchedPath]" />
                 </include>
                 <include content="ATV_RankRow">
                     <param name="id" value="55" />
@@ -258,7 +272,7 @@
                     <param name="label" value="Top 10 on Netflix" />
                     <param name="onup" value="54" />
                     <param name="ondown" value="56" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=8&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=20&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=8&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-03&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
                 <include content="ATV_RankRow">
                     <param name="id" value="56" />
@@ -268,7 +282,7 @@
                     <param name="label" value="Top 10 on Prime Video" />
                     <param name="onup" value="55" />
                     <param name="ondown" value="57" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=119&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=20&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=119&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-03&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
                 <include content="ATV_RankRow">
                     <param name="id" value="57" />
@@ -278,7 +292,7 @@
                     <param name="label" value="Top 10 on JioHotstar" />
                     <param name="onup" value="56" />
                     <param name="ondown" value="58" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=2336&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=20&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=2336&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-03&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="58" />
@@ -286,7 +300,7 @@
                     <param name="label" value="Trending in Hindi" />
                     <param name="onup" value="57" />
                     <param name="ondown" value="59" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=15&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-03&amp;vote_count.gte=15&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="59" />
@@ -294,14 +308,14 @@
                     <param name="label" value="Trending in Tamil" />
                     <param name="onup" value="58" />
                     <param name="ondown" value="60" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=10&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-03&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="60" />
                     <param name="top" value="5540" />
                     <param name="label" value="World Cinema" />
                     <param name="onup" value="59" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-01&amp;vote_count.gte=30&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-03&amp;vote_count.gte=30&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
         </control>

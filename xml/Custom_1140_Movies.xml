@@ -11,6 +11,34 @@
             <texture colordiffuse="FF0B0B0D">white.png</texture>
         </control>
 
+        <!-- The top of the page is backed by the backdrop of whatever has focus in the first
+             row, cross-fading as you move along it - this page's billboard. Once you move
+             down it scrolls up and away, as Home's does, and the rows below sit on a plain
+             dark page: behind every row it competed with the posters and hid the glass and
+             focus effects. -->
+        <control type="group">
+            <animation effect="fade" start="100" end="0" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | Control.HasFocus(56) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59) | Control.HasFocus(60)">Conditional</animation>
+            <animation effect="slide" end="0,-320" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | Control.HasFocus(56) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59) | Control.HasFocus(60)">Conditional</animation>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio align="center" aligny="top">scale</aspectratio>
+                <fadetime>500</fadetime>
+                <texture background="true">$VAR[ATV_BrowseFanart1140]</texture>
+            </control>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <texture colordiffuse="8C000000">white.png</texture>
+            </control>
+            <control type="image">
+                <left>0</left><top>0</top><width>1400</width><height>1080</height>
+                <texture>atv/grad_left.png</texture>
+            </control>
+            <control type="image">
+                <left>0</left><top>240</top><width>1920</width><height>840</height>
+                <texture colordiffuse="FF0B0B0D">atv/grad_bottom.png</texture>
+            </control>
+        </control>
+
         <!-- Page title: fades away as soon as you move into the rows -->
         <control type="label">
             <left>90</left><top>142</top><width>900</width><height>70</height>
@@ -39,7 +67,7 @@
                 <param name="onup" value="9000" />
                 <param name="ondown" value="52" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_mostwatched&amp;tmdb_type=movie&amp;period=weekly&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_mostwatched&amp;tmdb_type=movie&amp;period=weekly&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="52" />
@@ -48,7 +76,7 @@
                 <param name="onup" value="51" />
                 <param name="ondown" value="53" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=now_playing&amp;tmdb_type=movie&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;primary_release_date.gte=2026-08-11&amp;primary_release_date.lte=2026-09-25&amp;sort_by=popularity.desc&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="53" />
@@ -57,7 +85,7 @@
                 <param name="onup" value="52" />
                 <param name="ondown" value="54" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;sort_by=primary_release_date.desc&amp;primary_release_date.gte=2026-06-24&amp;primary_release_date.lte=2026-09-22&amp;vote_count.gte=10&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;sort_by=primary_release_date.desc&amp;primary_release_date.gte=2026-06-27&amp;primary_release_date.lte=2026-09-25&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="54" />
@@ -66,7 +94,7 @@
                 <param name="onup" value="53" />
                 <param name="ondown" value="55" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2015-01-01&amp;primary_release_date.lte=2026-09-22&amp;vote_count.gte=2000&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2015-01-01&amp;primary_release_date.lte=2026-09-25&amp;vote_count.gte=2000&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_RankRow">
                 <param name="id" value="55" />
@@ -77,7 +105,7 @@
                 <param name="onup" value="54" />
                 <param name="ondown" value="56" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=15&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-03&amp;vote_count.gte=15&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="56" />
@@ -86,7 +114,7 @@
                 <param name="onup" value="55" />
                 <param name="ondown" value="57" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=vote_average.desc&amp;primary_release_date.gte=2015-01-01&amp;vote_count.gte=120&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=vote_average.desc&amp;primary_release_date.gte=2015-01-01&amp;vote_count.gte=120&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_RankRow">
                 <param name="id" value="57" />
@@ -97,7 +125,7 @@
                 <param name="onup" value="56" />
                 <param name="ondown" value="58" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=10&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-03&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="58" />
@@ -106,7 +134,7 @@
                 <param name="onup" value="57" />
                 <param name="ondown" value="59" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=vote_average.desc&amp;primary_release_date.gte=2015-01-01&amp;vote_count.gte=60&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=vote_average.desc&amp;primary_release_date.gte=2015-01-01&amp;vote_count.gte=60&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="59" />
@@ -115,7 +143,7 @@
                 <param name="onup" value="58" />
                 <param name="ondown" value="60" />
                 <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-03-31&amp;vote_count.gte=30&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=2025-04-03&amp;vote_count.gte=30&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
                 <param name="id" value="60" />

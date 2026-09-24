@@ -5,7 +5,12 @@
     <defaultcontrol>8001</defaultcontrol>
     <menucontrol>9000</menucontrol>
     <onload>RunScript(special://skin/extras/trailer.py,watch)</onload>
-    <onunload>Action(Stop)</onunload>
+    <onload>RunScript(special://skin/extras/prefetch.py)</onload>
+    <!-- Leaving Home ends a trailer preview - but only that. Unconditionally, this stopped
+         everything: starting an episode from Continue Watching, or a film from the hero,
+         switches to full-screen video, which unloads Home, and the episode was stopped
+         0.7s after its first frame. -->
+    <onunload condition="!String.IsEmpty(Window(home).Property(ATVPreview))">Action(Stop)</onunload>
     <controls>
 
         <!-- Hidden data list that feeds the hero ("top shelf"). Rotates every 10s. -->
@@ -18,7 +23,7 @@
 			<autoscroll time="9000">System.IdleTime(5) + String.IsEmpty(Window(home).Property(ATVPreview))</autoscroll>
             <itemlayout width="1" height="1" />
             <focusedlayout width="1" height="1" />
-            <content limit="8">plugin://plugin.video.themoviedb.helper/?info=now_playing&amp;tmdb_type=movie&amp;nextpage=false</content>
+            <content limit="8">{HERO}</content>
         </control>
 
         <!-- Seed for "Because You Watched": the most recent film in your Trakt history.
@@ -37,9 +42,12 @@
             <texture colordiffuse="FF0B0B0D">white.png</texture>
         </control>
 
-        <!-- Hero backdrop: full bleed, slow Ken Burns drift, fades away when you move into the rows -->
+        <!-- Hero backdrop: full bleed, slow Ken Burns drift. Moving into the rows carries it up
+             and away as it fades, the way Apple TV's billboard scrolls off with the page,
+             rather than dimming in place behind the rows. -->
         <control type="group">
-            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="slide" end="0,-320" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
@@ -52,7 +60,9 @@
                  backdrop underneath stays put so there is no gap while it loads. -->
             <control type="videowindow">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
-                <visible>!String.IsEmpty(Window(home).Property(ATVPreview)) + Player.HasVideo</visible>
+                <!-- ATVPreviewShape is set once the picture is known to be widescreen, so a
+                     square social-media cut is never seen before it is stopped -->
+                <visible>!String.IsEmpty(Window(home).Property(ATVPreview)) + !String.IsEmpty(Window(home).Property(ATVPreviewShape)) + Player.HasVideo</visible>
                 <animation effect="fade" start="0" end="100" time="500">Visible</animation>
                 <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
             </control>
@@ -71,11 +81,14 @@
         </control>
 
         <!-- ===== HERO =====
-             Stays where it is and dims while the rows slide up over it (tvOS behaviour).
-             Two elements moving at different speeds read as unsteady. -->
+             Scrolls off with the page: the same 710px, time and curve as the rows' first step
+             (tools/gen_home.py), so the logo, text and buttons move as one piece with the rows
+             instead of dimming in place while the rows slide over them. The backdrop behind
+             moves less, for depth. -->
         <control type="group">
             <left>90</left><top>0</top>
-            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="slide" end="0,-710" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
 
             <!-- Clear logo, or the title in bold if there's no logo -->
             <control type="image">
@@ -142,14 +155,13 @@
                 </include>
             </control>
             <control type="group">
-                <left>496</left><top>722</top><width>270</width><height>68</height>
+                <left>496</left><top>722</top><width>290</width><height>68</height>
                 <animation effect="zoom" start="100" end="106" center="auto" time="220" tween="cubic" easing="out" condition="Control.HasFocus(8002)">Conditional</animation>
                 <include content="ATV_CapsuleButton">
                     <param name="id" value="8002" />
-                    <param name="width" value="270" />
+                    <param name="width" value="290" />
                     <param name="label" value="More Info" />
-                    <param name="align" value="center" />
-                    <param name="textoffsetx" value="0" />
+                    <param name="icon" value="atv/icon_info.png" />
                                         <!-- Opens the Apple TV style title page for the hero item -->
                     <onclick>RunScript(special://skin/extras/details.py,open,40)</onclick>
                     <onup>9000</onup>

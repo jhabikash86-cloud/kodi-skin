@@ -6,25 +6,58 @@
 	<variable name="ATV_DetailPath0">
 		<value>plugin://plugin.video.themoviedb.helper/?info=details&amp;tmdb_type=$INFO[Skin.String(DetailType0)]&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;nextpage=false</value>
 	</variable>
-	<!-- Titles sharing all of this title's genres (minus the title itself). extras/details.py
-	     stores the genre ids, because TMDb Helper 6 only translates genre names shared by
-	     movies and TV. Falls back to TMDb's "similar" list when we have no ids. -->
-	<!-- Same genres and the same language, so a Tamil film leads to more Tamil cinema.
-	     extras/details.py composes the whole filter into one skin string: as two strings
-	     with a two-part condition, the container could be built before both had
-	     committed and quietly fell back. Falls back to TMDb's "similar" when we have
-	     neither. -->
-	<variable name="ATV_DetailGenrePath0">
-		<value condition="!String.IsEmpty(Skin.String(DetailDiscover0))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType0)]&amp;$INFO[Skin.String(DetailDiscover0)]&amp;sort_by=popularity.desc&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID0)]&amp;exclude_operator=eq&amp;nextpage=false</value>
-		<value>plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType0)]&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;nextpage=false</value>
+	<!-- The details listing is this title's, not the one this page showed last. Kodi keeps a
+	     page's previous listing and shows it until the new one lands, so everything read
+	     from Container(9500) waits on this. -->
+	<expression name="ATV_DetailReady0">String.IsEqual(Container(9500).ListItem.UniqueID(tmdb),Skin.String(DetailID0)) + !Container(9500).IsUpdating</expression>
+	<!-- Until then the page shows the tile that was clicked: extras/details.py copies its
+	     backdrop, logo and title across before opening the page, so it opens on the right
+	     picture instead of the last title's. The URLs are the same ones the details bring,
+	     so nothing is fetched twice. -->
+	<variable name="ATV_DetailFanart0">
+		<value condition="$EXP[ATV_DetailReady0] + !String.IsEmpty(Container(9500).ListItem.Art(fanart))">$INFO[Container(9500).ListItem.Art(fanart)]</value>
+		<value>$INFO[Skin.String(DetailFanart0)]</value>
 	</variable>
-	<!-- Empty for movies so the hidden season/episode rows never fire a request -->
+	<variable name="ATV_DetailLogo0">
+		<value condition="$EXP[ATV_DetailReady0] + !String.IsEmpty(Container(9500).ListItem.Art(clearlogo))">$INFO[Container(9500).ListItem.Art(clearlogo)]</value>
+		<value>$INFO[Skin.String(DetailLogo0)]</value>
+	</variable>
+	<expression name="ATV_DetailHasLogo0">[$EXP[ATV_DetailReady0] + !String.IsEmpty(Container(9500).ListItem.Art(clearlogo))] | !String.IsEmpty(Skin.String(DetailLogo0))</expression>
+	<variable name="ATV_DetailTitle0">
+		<value condition="$EXP[ATV_DetailReady0]">$INFO[Container(9500).ListItem.Title]</value>
+		<value>$INFO[Skin.String(DetailTitle0)]</value>
+	</variable>
+	<!-- More Like This: same genres, and the same language, so a Tamil film leads to more
+	     Tamil cinema. extras/details.py composes the filter from this title's own details
+	     once they land - the tile that was clicked can carry only its first genre, and
+	     "Comedy" alone turned an R-rated horror comedy into Toy Story and PAW Patrol. Empty
+	     until then, so the row fetches once, for the right title. "similar" means the
+	     details had no genres to go on. -->
+	<variable name="ATV_DetailGenrePath0">
+		<value condition="String.IsEqual(Skin.String(DetailDiscover0),similar)">plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType0)]&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="!String.IsEmpty(Skin.String(DetailDiscover0))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType0)]&amp;$INFO[Skin.String(DetailDiscover0)]&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID0)]&amp;exclude_operator=eq&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- Everything below waits for this title's details. TMDb Helper locks a title while it
+	     builds its details, and every list about that title - seasons, episodes, cast,
+	     recommendations - waits on the same lock and, when it gets it, fetches the details
+	     again for itself. Opened all at once they queued up past the lock's 10s limit, and
+	     the last in line failed with a TMDb Helper error - a page with no episodes, or no
+	     rows at all. Once the details are in, each of these reads them from the cache and
+	     holds the lock for a moment. Empty for movies, so the hidden season rows never ask. -->
 	<variable name="ATV_SeasonsPath0">
-		<value condition="$EXP[ATV_DetailIsTV0]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailIsTV0] + $EXP[ATV_DetailReady0]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
 	</variable>
 	<variable name="ATV_EpisodesPath0">
-		<value condition="$EXP[ATV_DetailIsTV0]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailIsTV0] + $EXP[ATV_DetailReady0]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
 	</variable>
+	<variable name="ATV_CastPath0">
+		<value condition="$EXP[ATV_DetailReady0]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType0)]&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedPath0">
+		<value condition="$EXP[ATV_DetailReady0]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType0)]&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- A show TMDb has no seasons for yet - announced, not aired -->
+	<expression name="ATV_DetailNoSeasons0">$EXP[ATV_DetailIsTV0] + $EXP[ATV_DetailReady0] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>
 	<variable name="ATV_DetailMeta0">
 		<value condition="$EXP[ATV_DetailIsTV0]">TV Show$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
 		<value>Movie$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.Duration(mins),  ·  , min]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
@@ -42,25 +75,58 @@
 	<variable name="ATV_DetailPath1">
 		<value>plugin://plugin.video.themoviedb.helper/?info=details&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;nextpage=false</value>
 	</variable>
-	<!-- Titles sharing all of this title's genres (minus the title itself). extras/details.py
-	     stores the genre ids, because TMDb Helper 6 only translates genre names shared by
-	     movies and TV. Falls back to TMDb's "similar" list when we have no ids. -->
-	<!-- Same genres and the same language, so a Tamil film leads to more Tamil cinema.
-	     extras/details.py composes the whole filter into one skin string: as two strings
-	     with a two-part condition, the container could be built before both had
-	     committed and quietly fell back. Falls back to TMDb's "similar" when we have
-	     neither. -->
-	<variable name="ATV_DetailGenrePath1">
-		<value condition="!String.IsEmpty(Skin.String(DetailDiscover1))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;$INFO[Skin.String(DetailDiscover1)]&amp;sort_by=popularity.desc&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID1)]&amp;exclude_operator=eq&amp;nextpage=false</value>
-		<value>plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;nextpage=false</value>
+	<!-- The details listing is this title's, not the one this page showed last. Kodi keeps a
+	     page's previous listing and shows it until the new one lands, so everything read
+	     from Container(9500) waits on this. -->
+	<expression name="ATV_DetailReady1">String.IsEqual(Container(9500).ListItem.UniqueID(tmdb),Skin.String(DetailID1)) + !Container(9500).IsUpdating</expression>
+	<!-- Until then the page shows the tile that was clicked: extras/details.py copies its
+	     backdrop, logo and title across before opening the page, so it opens on the right
+	     picture instead of the last title's. The URLs are the same ones the details bring,
+	     so nothing is fetched twice. -->
+	<variable name="ATV_DetailFanart1">
+		<value condition="$EXP[ATV_DetailReady1] + !String.IsEmpty(Container(9500).ListItem.Art(fanart))">$INFO[Container(9500).ListItem.Art(fanart)]</value>
+		<value>$INFO[Skin.String(DetailFanart1)]</value>
 	</variable>
-	<!-- Empty for movies so the hidden season/episode rows never fire a request -->
+	<variable name="ATV_DetailLogo1">
+		<value condition="$EXP[ATV_DetailReady1] + !String.IsEmpty(Container(9500).ListItem.Art(clearlogo))">$INFO[Container(9500).ListItem.Art(clearlogo)]</value>
+		<value>$INFO[Skin.String(DetailLogo1)]</value>
+	</variable>
+	<expression name="ATV_DetailHasLogo1">[$EXP[ATV_DetailReady1] + !String.IsEmpty(Container(9500).ListItem.Art(clearlogo))] | !String.IsEmpty(Skin.String(DetailLogo1))</expression>
+	<variable name="ATV_DetailTitle1">
+		<value condition="$EXP[ATV_DetailReady1]">$INFO[Container(9500).ListItem.Title]</value>
+		<value>$INFO[Skin.String(DetailTitle1)]</value>
+	</variable>
+	<!-- More Like This: same genres, and the same language, so a Tamil film leads to more
+	     Tamil cinema. extras/details.py composes the filter from this title's own details
+	     once they land - the tile that was clicked can carry only its first genre, and
+	     "Comedy" alone turned an R-rated horror comedy into Toy Story and PAW Patrol. Empty
+	     until then, so the row fetches once, for the right title. "similar" means the
+	     details had no genres to go on. -->
+	<variable name="ATV_DetailGenrePath1">
+		<value condition="String.IsEqual(Skin.String(DetailDiscover1),similar)">plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="!String.IsEmpty(Skin.String(DetailDiscover1))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;$INFO[Skin.String(DetailDiscover1)]&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID1)]&amp;exclude_operator=eq&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- Everything below waits for this title's details. TMDb Helper locks a title while it
+	     builds its details, and every list about that title - seasons, episodes, cast,
+	     recommendations - waits on the same lock and, when it gets it, fetches the details
+	     again for itself. Opened all at once they queued up past the lock's 10s limit, and
+	     the last in line failed with a TMDb Helper error - a page with no episodes, or no
+	     rows at all. Once the details are in, each of these reads them from the cache and
+	     holds the lock for a moment. Empty for movies, so the hidden season rows never ask. -->
 	<variable name="ATV_SeasonsPath1">
-		<value condition="$EXP[ATV_DetailIsTV1]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailIsTV1] + $EXP[ATV_DetailReady1]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
 	</variable>
 	<variable name="ATV_EpisodesPath1">
-		<value condition="$EXP[ATV_DetailIsTV1]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailIsTV1] + $EXP[ATV_DetailReady1]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
 	</variable>
+	<variable name="ATV_CastPath1">
+		<value condition="$EXP[ATV_DetailReady1]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedPath1">
+		<value condition="$EXP[ATV_DetailReady1]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- A show TMDb has no seasons for yet - announced, not aired -->
+	<expression name="ATV_DetailNoSeasons1">$EXP[ATV_DetailIsTV1] + $EXP[ATV_DetailReady1] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>
 	<variable name="ATV_DetailMeta1">
 		<value condition="$EXP[ATV_DetailIsTV1]">TV Show$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
 		<value>Movie$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.Duration(mins),  ·  , min]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
@@ -78,25 +144,58 @@
 	<variable name="ATV_DetailPath2">
 		<value>plugin://plugin.video.themoviedb.helper/?info=details&amp;tmdb_type=$INFO[Skin.String(DetailType2)]&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;nextpage=false</value>
 	</variable>
-	<!-- Titles sharing all of this title's genres (minus the title itself). extras/details.py
-	     stores the genre ids, because TMDb Helper 6 only translates genre names shared by
-	     movies and TV. Falls back to TMDb's "similar" list when we have no ids. -->
-	<!-- Same genres and the same language, so a Tamil film leads to more Tamil cinema.
-	     extras/details.py composes the whole filter into one skin string: as two strings
-	     with a two-part condition, the container could be built before both had
-	     committed and quietly fell back. Falls back to TMDb's "similar" when we have
-	     neither. -->
-	<variable name="ATV_DetailGenrePath2">
-		<value condition="!String.IsEmpty(Skin.String(DetailDiscover2))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType2)]&amp;$INFO[Skin.String(DetailDiscover2)]&amp;sort_by=popularity.desc&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID2)]&amp;exclude_operator=eq&amp;nextpage=false</value>
-		<value>plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType2)]&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;nextpage=false</value>
+	<!-- The details listing is this title's, not the one this page showed last. Kodi keeps a
+	     page's previous listing and shows it until the new one lands, so everything read
+	     from Container(9500) waits on this. -->
+	<expression name="ATV_DetailReady2">String.IsEqual(Container(9500).ListItem.UniqueID(tmdb),Skin.String(DetailID2)) + !Container(9500).IsUpdating</expression>
+	<!-- Until then the page shows the tile that was clicked: extras/details.py copies its
+	     backdrop, logo and title across before opening the page, so it opens on the right
+	     picture instead of the last title's. The URLs are the same ones the details bring,
+	     so nothing is fetched twice. -->
+	<variable name="ATV_DetailFanart2">
+		<value condition="$EXP[ATV_DetailReady2] + !String.IsEmpty(Container(9500).ListItem.Art(fanart))">$INFO[Container(9500).ListItem.Art(fanart)]</value>
+		<value>$INFO[Skin.String(DetailFanart2)]</value>
 	</variable>
-	<!-- Empty for movies so the hidden season/episode rows never fire a request -->
+	<variable name="ATV_DetailLogo2">
+		<value condition="$EXP[ATV_DetailReady2] + !String.IsEmpty(Container(9500).ListItem.Art(clearlogo))">$INFO[Container(9500).ListItem.Art(clearlogo)]</value>
+		<value>$INFO[Skin.String(DetailLogo2)]</value>
+	</variable>
+	<expression name="ATV_DetailHasLogo2">[$EXP[ATV_DetailReady2] + !String.IsEmpty(Container(9500).ListItem.Art(clearlogo))] | !String.IsEmpty(Skin.String(DetailLogo2))</expression>
+	<variable name="ATV_DetailTitle2">
+		<value condition="$EXP[ATV_DetailReady2]">$INFO[Container(9500).ListItem.Title]</value>
+		<value>$INFO[Skin.String(DetailTitle2)]</value>
+	</variable>
+	<!-- More Like This: same genres, and the same language, so a Tamil film leads to more
+	     Tamil cinema. extras/details.py composes the filter from this title's own details
+	     once they land - the tile that was clicked can carry only its first genre, and
+	     "Comedy" alone turned an R-rated horror comedy into Toy Story and PAW Patrol. Empty
+	     until then, so the row fetches once, for the right title. "similar" means the
+	     details had no genres to go on. -->
+	<variable name="ATV_DetailGenrePath2">
+		<value condition="String.IsEqual(Skin.String(DetailDiscover2),similar)">plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType2)]&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="!String.IsEmpty(Skin.String(DetailDiscover2))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType2)]&amp;$INFO[Skin.String(DetailDiscover2)]&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID2)]&amp;exclude_operator=eq&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- Everything below waits for this title's details. TMDb Helper locks a title while it
+	     builds its details, and every list about that title - seasons, episodes, cast,
+	     recommendations - waits on the same lock and, when it gets it, fetches the details
+	     again for itself. Opened all at once they queued up past the lock's 10s limit, and
+	     the last in line failed with a TMDb Helper error - a page with no episodes, or no
+	     rows at all. Once the details are in, each of these reads them from the cache and
+	     holds the lock for a moment. Empty for movies, so the hidden season rows never ask. -->
 	<variable name="ATV_SeasonsPath2">
-		<value condition="$EXP[ATV_DetailIsTV2]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailIsTV2] + $EXP[ATV_DetailReady2]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
 	</variable>
 	<variable name="ATV_EpisodesPath2">
-		<value condition="$EXP[ATV_DetailIsTV2]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailIsTV2] + $EXP[ATV_DetailReady2]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
 	</variable>
+	<variable name="ATV_CastPath2">
+		<value condition="$EXP[ATV_DetailReady2]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType2)]&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedPath2">
+		<value condition="$EXP[ATV_DetailReady2]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType2)]&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- A show TMDb has no seasons for yet - announced, not aired -->
+	<expression name="ATV_DetailNoSeasons2">$EXP[ATV_DetailIsTV2] + $EXP[ATV_DetailReady2] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>
 	<variable name="ATV_DetailMeta2">
 		<value condition="$EXP[ATV_DetailIsTV2]">TV Show$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
 		<value>Movie$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.Duration(mins),  ·  , min]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
@@ -114,25 +213,58 @@
 	<variable name="ATV_DetailPath3">
 		<value>plugin://plugin.video.themoviedb.helper/?info=details&amp;tmdb_type=$INFO[Skin.String(DetailType3)]&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;nextpage=false</value>
 	</variable>
-	<!-- Titles sharing all of this title's genres (minus the title itself). extras/details.py
-	     stores the genre ids, because TMDb Helper 6 only translates genre names shared by
-	     movies and TV. Falls back to TMDb's "similar" list when we have no ids. -->
-	<!-- Same genres and the same language, so a Tamil film leads to more Tamil cinema.
-	     extras/details.py composes the whole filter into one skin string: as two strings
-	     with a two-part condition, the container could be built before both had
-	     committed and quietly fell back. Falls back to TMDb's "similar" when we have
-	     neither. -->
-	<variable name="ATV_DetailGenrePath3">
-		<value condition="!String.IsEmpty(Skin.String(DetailDiscover3))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType3)]&amp;$INFO[Skin.String(DetailDiscover3)]&amp;sort_by=popularity.desc&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID3)]&amp;exclude_operator=eq&amp;nextpage=false</value>
-		<value>plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType3)]&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;nextpage=false</value>
+	<!-- The details listing is this title's, not the one this page showed last. Kodi keeps a
+	     page's previous listing and shows it until the new one lands, so everything read
+	     from Container(9500) waits on this. -->
+	<expression name="ATV_DetailReady3">String.IsEqual(Container(9500).ListItem.UniqueID(tmdb),Skin.String(DetailID3)) + !Container(9500).IsUpdating</expression>
+	<!-- Until then the page shows the tile that was clicked: extras/details.py copies its
+	     backdrop, logo and title across before opening the page, so it opens on the right
+	     picture instead of the last title's. The URLs are the same ones the details bring,
+	     so nothing is fetched twice. -->
+	<variable name="ATV_DetailFanart3">
+		<value condition="$EXP[ATV_DetailReady3] + !String.IsEmpty(Container(9500).ListItem.Art(fanart))">$INFO[Container(9500).ListItem.Art(fanart)]</value>
+		<value>$INFO[Skin.String(DetailFanart3)]</value>
 	</variable>
-	<!-- Empty for movies so the hidden season/episode rows never fire a request -->
+	<variable name="ATV_DetailLogo3">
+		<value condition="$EXP[ATV_DetailReady3] + !String.IsEmpty(Container(9500).ListItem.Art(clearlogo))">$INFO[Container(9500).ListItem.Art(clearlogo)]</value>
+		<value>$INFO[Skin.String(DetailLogo3)]</value>
+	</variable>
+	<expression name="ATV_DetailHasLogo3">[$EXP[ATV_DetailReady3] + !String.IsEmpty(Container(9500).ListItem.Art(clearlogo))] | !String.IsEmpty(Skin.String(DetailLogo3))</expression>
+	<variable name="ATV_DetailTitle3">
+		<value condition="$EXP[ATV_DetailReady3]">$INFO[Container(9500).ListItem.Title]</value>
+		<value>$INFO[Skin.String(DetailTitle3)]</value>
+	</variable>
+	<!-- More Like This: same genres, and the same language, so a Tamil film leads to more
+	     Tamil cinema. extras/details.py composes the filter from this title's own details
+	     once they land - the tile that was clicked can carry only its first genre, and
+	     "Comedy" alone turned an R-rated horror comedy into Toy Story and PAW Patrol. Empty
+	     until then, so the row fetches once, for the right title. "similar" means the
+	     details had no genres to go on. -->
+	<variable name="ATV_DetailGenrePath3">
+		<value condition="String.IsEqual(Skin.String(DetailDiscover3),similar)">plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType3)]&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="!String.IsEmpty(Skin.String(DetailDiscover3))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType3)]&amp;$INFO[Skin.String(DetailDiscover3)]&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID3)]&amp;exclude_operator=eq&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- Everything below waits for this title's details. TMDb Helper locks a title while it
+	     builds its details, and every list about that title - seasons, episodes, cast,
+	     recommendations - waits on the same lock and, when it gets it, fetches the details
+	     again for itself. Opened all at once they queued up past the lock's 10s limit, and
+	     the last in line failed with a TMDb Helper error - a page with no episodes, or no
+	     rows at all. Once the details are in, each of these reads them from the cache and
+	     holds the lock for a moment. Empty for movies, so the hidden season rows never ask. -->
 	<variable name="ATV_SeasonsPath3">
-		<value condition="$EXP[ATV_DetailIsTV3]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailIsTV3] + $EXP[ATV_DetailReady3]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
 	</variable>
 	<variable name="ATV_EpisodesPath3">
-		<value condition="$EXP[ATV_DetailIsTV3]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailIsTV3] + $EXP[ATV_DetailReady3]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
 	</variable>
+	<variable name="ATV_CastPath3">
+		<value condition="$EXP[ATV_DetailReady3]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType3)]&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedPath3">
+		<value condition="$EXP[ATV_DetailReady3]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType3)]&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- A show TMDb has no seasons for yet - announced, not aired -->
+	<expression name="ATV_DetailNoSeasons3">$EXP[ATV_DetailIsTV3] + $EXP[ATV_DetailReady3] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>
 	<variable name="ATV_DetailMeta3">
 		<value condition="$EXP[ATV_DetailIsTV3]">TV Show$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
 		<value>Movie$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.Duration(mins),  ·  , min]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
@@ -150,25 +282,58 @@
 	<variable name="ATV_DetailPath4">
 		<value>plugin://plugin.video.themoviedb.helper/?info=details&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;nextpage=false</value>
 	</variable>
-	<!-- Titles sharing all of this title's genres (minus the title itself). extras/details.py
-	     stores the genre ids, because TMDb Helper 6 only translates genre names shared by
-	     movies and TV. Falls back to TMDb's "similar" list when we have no ids. -->
-	<!-- Same genres and the same language, so a Tamil film leads to more Tamil cinema.
-	     extras/details.py composes the whole filter into one skin string: as two strings
-	     with a two-part condition, the container could be built before both had
-	     committed and quietly fell back. Falls back to TMDb's "similar" when we have
-	     neither. -->
-	<variable name="ATV_DetailGenrePath4">
-		<value condition="!String.IsEmpty(Skin.String(DetailDiscover4))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;$INFO[Skin.String(DetailDiscover4)]&amp;sort_by=popularity.desc&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID4)]&amp;exclude_operator=eq&amp;nextpage=false</value>
-		<value>plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;nextpage=false</value>
+	<!-- The details listing is this title's, not the one this page showed last. Kodi keeps a
+	     page's previous listing and shows it until the new one lands, so everything read
+	     from Container(9500) waits on this. -->
+	<expression name="ATV_DetailReady4">String.IsEqual(Container(9500).ListItem.UniqueID(tmdb),Skin.String(DetailID4)) + !Container(9500).IsUpdating</expression>
+	<!-- Until then the page shows the tile that was clicked: extras/details.py copies its
+	     backdrop, logo and title across before opening the page, so it opens on the right
+	     picture instead of the last title's. The URLs are the same ones the details bring,
+	     so nothing is fetched twice. -->
+	<variable name="ATV_DetailFanart4">
+		<value condition="$EXP[ATV_DetailReady4] + !String.IsEmpty(Container(9500).ListItem.Art(fanart))">$INFO[Container(9500).ListItem.Art(fanart)]</value>
+		<value>$INFO[Skin.String(DetailFanart4)]</value>
 	</variable>
-	<!-- Empty for movies so the hidden season/episode rows never fire a request -->
+	<variable name="ATV_DetailLogo4">
+		<value condition="$EXP[ATV_DetailReady4] + !String.IsEmpty(Container(9500).ListItem.Art(clearlogo))">$INFO[Container(9500).ListItem.Art(clearlogo)]</value>
+		<value>$INFO[Skin.String(DetailLogo4)]</value>
+	</variable>
+	<expression name="ATV_DetailHasLogo4">[$EXP[ATV_DetailReady4] + !String.IsEmpty(Container(9500).ListItem.Art(clearlogo))] | !String.IsEmpty(Skin.String(DetailLogo4))</expression>
+	<variable name="ATV_DetailTitle4">
+		<value condition="$EXP[ATV_DetailReady4]">$INFO[Container(9500).ListItem.Title]</value>
+		<value>$INFO[Skin.String(DetailTitle4)]</value>
+	</variable>
+	<!-- More Like This: same genres, and the same language, so a Tamil film leads to more
+	     Tamil cinema. extras/details.py composes the filter from this title's own details
+	     once they land - the tile that was clicked can carry only its first genre, and
+	     "Comedy" alone turned an R-rated horror comedy into Toy Story and PAW Patrol. Empty
+	     until then, so the row fetches once, for the right title. "similar" means the
+	     details had no genres to go on. -->
+	<variable name="ATV_DetailGenrePath4">
+		<value condition="String.IsEqual(Skin.String(DetailDiscover4),similar)">plugin://plugin.video.themoviedb.helper/?info=similar&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="!String.IsEmpty(Skin.String(DetailDiscover4))">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;$INFO[Skin.String(DetailDiscover4)]&amp;exclude_key=tmdb_id&amp;exclude_value=$INFO[Skin.String(DetailID4)]&amp;exclude_operator=eq&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- Everything below waits for this title's details. TMDb Helper locks a title while it
+	     builds its details, and every list about that title - seasons, episodes, cast,
+	     recommendations - waits on the same lock and, when it gets it, fetches the details
+	     again for itself. Opened all at once they queued up past the lock's 10s limit, and
+	     the last in line failed with a TMDb Helper error - a page with no episodes, or no
+	     rows at all. Once the details are in, each of these reads them from the cache and
+	     holds the lock for a moment. Empty for movies, so the hidden season rows never ask. -->
 	<variable name="ATV_SeasonsPath4">
-		<value condition="$EXP[ATV_DetailIsTV4]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailIsTV4] + $EXP[ATV_DetailReady4]">plugin://plugin.video.themoviedb.helper/?info=seasons&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;exclude_key=season&amp;exclude_value=-1&amp;exclude_operator=eq&amp;nextpage=false</value>
 	</variable>
 	<variable name="ATV_EpisodesPath4">
-		<value condition="$EXP[ATV_DetailIsTV4]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailIsTV4] + $EXP[ATV_DetailReady4]">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;tmdb_type=tv&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;season=$VAR[ATV_DetailSeason]&amp;nextpage=false</value>
 	</variable>
+	<variable name="ATV_CastPath4">
+		<value condition="$EXP[ATV_DetailReady4]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedPath4">
+		<value condition="$EXP[ATV_DetailReady4]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- A show TMDb has no seasons for yet - announced, not aired -->
+	<expression name="ATV_DetailNoSeasons4">$EXP[ATV_DetailIsTV4] + $EXP[ATV_DetailReady4] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>
 	<variable name="ATV_DetailMeta4">
 		<value condition="$EXP[ATV_DetailIsTV4]">TV Show$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>
 		<value>Movie$INFO[Container(9500).ListItem.Year,  ·  ]$INFO[Container(9500).ListItem.Genre,  ·  ]$INFO[Container(9500).ListItem.Duration(mins),  ·  , min]$INFO[Container(9500).ListItem.MPAA,  ·  ]$INFO[Container(9500).ListItem.Rating,  ·  ★ ]</value>

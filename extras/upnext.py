@@ -23,6 +23,8 @@ WINDOW = 1150
 LEAD_IN = 45          # seconds before the end to offer the next episode
 MIN_RUNTIME = 300     # ignore anything too short to have an "end" worth calling
 POLL_MS = 1000
+ENDED_WITHIN = 3     # seconds from the end: stopping this close is the episode finishing
+START_WAIT = 180     # seconds for the episode to start, not counting time in the source list
 HOME = xbmcgui.Window(10000)
 
 
@@ -56,7 +58,10 @@ def fill_card(tmdb_id, item):
     for name, value in (
             ('UpNextTitle', item.get('label') or item.get('title') or ''),
             ('UpNextPlot', (item.get('plot') or '')[:240]),
-            ('UpNextThumb', art.get('thumb') or art.get('poster') or ''),
+            # Not every episode has a still; the show's own backdrop beats an empty frame.
+            ('UpNextThumb', art.get('thumb') or art.get('landscape') or art.get('fanart')
+             or xbmc.getInfoLabel('Player.Art(tvshow.fanart)') or xbmc.getInfoLabel('Player.Art(fanart)')
+             or art.get('poster') or ''),
             ('UpNextNumber', 'S%s E%s' % (item.get('season'), item.get('episode'))),
             ('UpNextTmdb', str(tmdb_id)),
             ('UpNextSeason', str(item.get('season'))),
@@ -70,15 +75,49 @@ def clear_card():
         HOME.clearProperty(name)
 
 
+def wait_for_episode(monitor, player):
+    """Wait for the episode itself: started before playback has even resolved, this used to
+    see nothing playing after a second and quit, so the card never appeared. The clock
+    stops while Umbrella's source list is open - that is you choosing - and TMDb Helper's
+    placeholder video does not count as the episode."""
+    waited = 0.0
+    while waited < START_WAIT:
+        if monitor.waitForAbort(0.5):
+            return False
+        try:
+            if player.isPlayingVideo() and not player.getPlayingFile().endswith('dummy.mp4'):
+                return True
+        except RuntimeError:
+            pass
+        if not xbmc.getCondVisibility('Window.IsActive(13000) | Window.IsActive(13001)'):
+            waited += 0.5
+    return False
+
+
+def play_next(item):
+    """Start the following episode unattended - Auto Play, since nobody is choosing."""
+    xbmc.executebuiltin(f'Dialog.Close({WINDOW},true)')
+    xbmc.executebuiltin('RunScript(special://skin/extras/play.py,episode,{},{},{},auto)'.format(
+        HOME.getProperty('UpNextTmdb'), item.get('season'), item.get('episode')))
+
+
 def watch(tmdb_id, season, episode):
     monitor, player = xbmc.Monitor(), xbmc.Player()
     shown = False
+    remaining_at_last, following = LEAD_IN + 1, None
+    if not wait_for_episode(monitor, player):
+        return
     try:
         while not monitor.abortRequested():
             if monitor.waitForAbort(POLL_MS / 1000.0):
                 return
             try:
                 if not player.isPlayingVideo():
+                    # Ended with the card up and nothing chosen: that is the countdown
+                    # running out, so the next episode starts - as the card promised.
+                    # Stopped part-way instead, and the offer lapses with it.
+                    if shown and remaining_at_last <= ENDED_WITHIN:
+                        play_next(following)
                     return
                 total, position = player.getTotalTime(), player.getTime()
             except RuntimeError:
@@ -86,6 +125,7 @@ def watch(tmdb_id, season, episode):
             if total < MIN_RUNTIME:
                 return
             remaining = total - position
+            remaining_at_last = remaining
             if shown:
                 # The card is up. Dismissing it, or seeking back into the episode,
                 # takes it down and ends the offer for this episode.
