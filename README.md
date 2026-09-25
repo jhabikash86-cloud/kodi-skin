@@ -418,6 +418,15 @@ video only once it has passed.
   after 5s each and sometimes never finished exiting - reliably when a trailer was loading.
   `extras/trailer.py` and `extras/prefetch.py` now leave on `System.OnQuit`, at the start of
   shutdown: quitting takes 3-6s in every state, with nothing killed.
+- **Download subtitle looked frozen.** With no subtitle add-on installed it opened a window with nothing in
+  it to select - on a controller it looked frozen over the paused video. It now offers
+  *Get a subtitle add-on*, which opens Kodi's list of them (OpenSubtitles.com is one; it
+  needs a free account).
+- **Stop a trailer, then Quit, froze the quit.** It held Kodi for minutes: Home
+  restarted the trailer watcher after Kodi had announced it was quitting, and that script,
+  never hearing it, blocked the shutdown. The first script to hear the quit now marks Home
+  (`ATVQuitting`), Home starts no script once marked, and one that starts anyway leaves at
+  once (`extras/waiting.py`). The same stop-then-quit now exits in 6 seconds.
 
 ## The look
 

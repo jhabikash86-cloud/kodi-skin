@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<include>Animation_DialogPopupOpenClose</include>
+	<!-- With no subtitle add-on installed the services list is empty, and Kodi focused it:
+	     nothing on screen could be selected, so on a controller the window looked frozen
+	     over a paused video. Then the only button is one that gets a subtitle add-on. -->
+	<onload condition="!Integer.IsGreater(Container(150).NumItems,0)">SetFocus(161)</onload>
 	<controls>
 		<control type="group">
 			<centertop>50%</centertop>
@@ -27,7 +31,24 @@
 							<param name="label" value="$LOCALIZE[24120]" />
 							<param name="width" value="420" />
 							<param name="height" value="150" />
+							<param name="visible" value="Integer.IsGreater(Container(150).NumItems,0)" />
 						</include>
+						<control type="button" id="161">
+							<!-- DefaultDialogButton's look, with the two actions it cannot take -->
+							<width>420</width>
+							<height>150</height>
+							<label>Get a subtitle add-on</label>
+							<font>atv_button</font>
+							<textoffsetx>20</textoffsetx>
+							<align>center</align>
+							<texturefocus border="42" colordiffuse="FFFFFFFF">atv/pill_84.png</texturefocus>
+							<texturenofocus border="42" colordiffuse="1FFFFFFF">atv/pill_84.png</texturenofocus>
+							<textcolor>E6FFFFFF</textcolor>
+							<focusedcolor>FF0B0B0D</focusedcolor>
+							<onclick>Dialog.Close(all,true)</onclick>
+							<onclick>ActivateWindow(addonbrowser,addons://repository.xbmc.org/xbmc.subtitle.module/,return)</onclick>
+							<visible>!Integer.IsGreater(Container(150).NumItems,0)</visible>
+						</control>
 					</control>
 					<control type="label" id="140">
 						<description>textarea</description>

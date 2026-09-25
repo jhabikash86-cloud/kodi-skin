@@ -7,12 +7,14 @@
 import time
 
 import xbmc
+import xbmcgui
 
 # Umbrella's source list (13001) and its progress window (13000), and Kodi's busy dialogs.
 # While any is up, a play is still on its way - however long you spend choosing.
 PICKING = 'Window.IsActive(13000) | Window.IsActive(13001)'
 BUSY = 'Window.IsActive(10138) | Window.IsActive(10160)'
 BACKED_OUT = 10   # seconds with the list gone and nothing playing: you pressed Back
+QUITTING = 'ATVQuitting'   # set on Home once Kodi says it is quitting; see Monitor
 
 
 class Monitor(xbmc.Monitor):
@@ -23,13 +25,21 @@ class Monitor(xbmc.Monitor):
     script never sees the request, Kodi kills it after 5s, and on a bad exit never finishes
     quitting. System.OnQuit arrives at the start of shutdown, while there is still time to
     leave cleanly.
+
+    A script started after that - the trailer watcher, restarted by Home when a preview is
+    stopped just before Quit - never hears it, and held Kodi's quit for minutes. So the first
+    script to hear it marks Home, the skin starts no script once Home is marked (Home.xml),
+    and a script that starts anyway sees the mark and leaves at once.
     """
 
-    quitting = False
+    def __init__(self):
+        super().__init__()
+        self.quitting = xbmcgui.Window(10000).getProperty(QUITTING) == '1'
 
     def onNotification(self, sender, method, data):
         if method in ('System.OnQuit', 'System.OnRestart'):
             self.quitting = True
+            xbmcgui.Window(10000).setProperty(QUITTING, '1')
 
     def stopping(self, seconds=0):
         """Wait up to `seconds`, then True if Kodi is going away."""
