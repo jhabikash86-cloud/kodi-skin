@@ -223,7 +223,7 @@
                 <param name="label" value="Continue Watching" />
                 <param name="onup" value="8001" />
                 <param name="ondown" value="51" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=tv&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=tv&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;filter_key=lastplayed.original&amp;filter_value=$DAYS[-90]&amp;filter_operator=gt&amp;reload=$INFO[Window(home).Property(ATVContinueReload)]&amp;nextpage=false" />
             </include>
 
             <control type="group">
@@ -234,7 +234,7 @@
                 <param name="label" value="Continue Watching Films" />
                 <param name="onup" value="50" />
                 <param name="ondown" value="52" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=movie&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=movie&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;filter_key=lastplayed.original&amp;filter_value=$DAYS[-90]&amp;filter_operator=gt&amp;reload=$INFO[Window(home).Property(ATVContinueReload)]&amp;nextpage=false" />
                 <param name="empty" value="Integer.IsEqual(Container(51).NumItems,0)" />
             </include>
                 <include content="ATV_RankRow">

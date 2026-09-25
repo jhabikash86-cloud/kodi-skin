@@ -69,12 +69,16 @@ HERO = (f'{PLUGIN}info=discover&tmdb_type=movie&primary_release_date.gte={CINEMA
         f'&primary_release_date.lte={DATE["today"]}&sort_by=popularity.desc'
         f'&vote_count.gte=20&hide_unaired=true&nextpage=false')
 
-# What you paused, from Trakt's on-deck lists, newest first. Anything under 4% watched is
+# What you paused, from Trakt's on-deck lists, newest first, the last 90 days. Anything under 4% watched is
 # left out (TMDb Helper zeroes the progress below that), which drops false starts. Episodes
 # and films are separate rows: merged into one row - two <content> lists - they froze Kodi.
 def paused(kind):
+    # Paused in the last 90 days: older pauses are things you gave up on, and they piled up.
+    # (60 dropped every paused episode here - the most recent was 80 days old.) The reload
+    # value changes when extras/forget.py removes a tile, so the row fetches again.
     return (f'{PLUGIN}info=trakt_ondeck&tmdb_type={kind}&exclude_key=ResumeTime&exclude_value=0'
-            f'&exclude_operator=eq&nextpage=false')
+            f'&exclude_operator=eq&filter_key=lastplayed.original&filter_value=$DAYS[-90]'
+            f'&filter_operator=gt&reload=$INFO[Window(home).Property(ATVContinueReload)]&nextpage=false')
 
 
 ROWS = [

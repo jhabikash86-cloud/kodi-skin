@@ -346,6 +346,9 @@
 						</control>
 					</focusedlayout>
 					<!-- No sortby: Trakt already lists it newest first -->
+					<!-- Tells the context menu it was opened on Continue Watching (see DialogContextMenu.xml) -->
+					<onfocus>SetProperty(ATVContinueFocus,1,home)</onfocus>
+					<onunfocus>ClearProperty(ATVContinueFocus,home)</onunfocus>
 					<content>$PARAM[content]</content>
 				</control>
 			</control>

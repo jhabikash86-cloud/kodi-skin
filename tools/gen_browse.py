@@ -23,7 +23,7 @@ HEADER_TOP = 150          # where the focused row's title settles
 # has no such list, so they use popularity limited to recent releases. Re-run this
 # generator now and then to move that window forward.
 # Date windows are filled in by Kodi from extras/dates.py, so rows never go stale.
-DATE = {n: f'$INFO[Window(home).Property(ATVDate.{n})]' for n in ('today', 'd45', 'd90', 'd365', 'd540', 'd1095', 'd3650')}
+DATE = {n: f'$INFO[Window(home).Property(ATVDate.{n})]' for n in ('today', 'd45', 'd90', 'd365', 'd540', 'd1095', 'd3650', 'y3')}
 RECENT_SINCE = DATE['d540']
 NEW_SINCE = DATE['d90']
 YEAR_SINCE = DATE['d365']
@@ -97,11 +97,30 @@ IN_CINEMAS = (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;primary_release_da
               f'&amp;primary_release_date.lte={TODAY}&amp;sort_by=popularity.desc'
               f'&amp;vote_count.gte=20&amp;nextpage=false')
 
-# Mood rows, Netflix style: named for what you are in the mood for, held to recent and
-# well-voted titles, and chosen because each brought mostly titles no other row on its page
-# shows (checked when they were added - Big Action and Binge-Worthy Mysteries were dropped
-# for repeating the charts). English for the TV ones: by rating alone, Korean dramas
-# filled them, and World Series already covers those.
+# Genre rows, for thrillers, horror and dramas only - what this house watches. Two kinds:
+#
+#   Everyone's Watching - Trakt's weekly chart of unique viewers, cut to the genre and to
+#   titles its members rate well (and IMDb too, for films). Films are held to the last three
+#   years, so the row is what is new and talked about; a series binged this week counts
+#   however old it is.
+#   Must-Watch - the all-time greats: TMDb, thousands of votes, best rated first.
+#
+# The genres left out keep each row to its mood: cartoons and comedies everywhere, horror
+# out of the thrillers (it has its own rows), thrillers out of the dramas (checked: five of
+# the twenty drama greats were also thriller greats). The dates are tokens, kept current by
+# extras/dates.py.
+def everyone_watching(media, genres, ratings, imdb=''):
+    extra = f'&amp;imdb_ratings={imdb}-10&amp;years={DATE["y3"]}' if media == 'movie' else ''
+    return (f'{PLUGIN}info=trakt_mostviewers&amp;tmdb_type={media}&amp;genres={genres}'
+            f'&amp;ratings={ratings}-100{extra}&amp;nextpage=false')
+
+
+def must_watch(media, genres, without, votes, extra=''):
+    return (f'{PLUGIN}info=discover&amp;tmdb_type={media}&amp;with_genres={genres}'
+            f'&amp;without_genres={without}{extra}&amp;vote_count.gte={votes}'
+            f'&amp;sort_by=vote_average.desc&amp;with_id=True&amp;nextpage=false')
+
+
 def mood(media, genres, since, votes, sort, without='', extra=''):
     date_key = 'primary_release_date' if media == 'movie' else 'first_air_date'
     skip = f'&amp;without_genres={without}' if without else ''
@@ -111,17 +130,21 @@ def mood(media, genres, since, votes, sort, without='', extra=''):
 
 
 ENGLISH = '&amp;with_original_language=en'
-MOVIE_MOODS = {
-    'thrillers': mood('movie', '53', THREE_YEARS, 300, 'popularity.desc', '27,16'),
-    'comedies': mood('movie', '35', THREE_YEARS, 150, 'popularity.desc', '27,53,80,18,16,10751'),
-    'scifi': mood('movie', '878', DECADE, 1000, 'vote_average.desc', '16,28,10751'),
+FILM_GENRES = {
+    'thrillers': everyone_watching('movie', 'thriller,-animation,-comedy,-horror', 68, '6.5'),
+    'horror': everyone_watching('movie', 'horror,-animation,-comedy', 65, '6.0'),
+    'dramas': everyone_watching('movie', 'drama,-animation,-comedy,-superhero,-musical,-thriller,-horror', 72, '7.0'),
+    'great_thrillers': must_watch('movie', '53', '16,35,27,10751', 6000),
+    'great_horror': must_watch('movie', '27', '16,35,10751', 2500),
+    'great_dramas': must_watch('movie', '18', '16,35,10751,10749,53', 12000),
     'romance': mood('movie', '10749', DECADE, 40, 'popularity.desc', extra='&amp;with_original_language=hi'),
-    'dramas': mood('movie', '18', DECADE, 4000, 'vote_average.desc', '16,10751,28', '&amp;vote_average.gte=7.4'),
 }
-TV_MOODS = {
+SERIES_GENRES = {
+    'thrillers': everyone_watching('tv', 'thriller,-anime,-animation,-comedy,-horror', 75),
+    'horror': everyone_watching('tv', 'horror,-anime,-animation,-comedy', 75),
+    'dramas': everyone_watching('tv', 'drama,-anime,-animation,-comedy,-superhero,-thriller,-horror', 80),
+    'great_dramas': must_watch('tv', '18', f'{NOT_SERIALS},16,35,10751,10765', 2500, ENGLISH),
     'crime': mood('tv', '80,18', DECADE, 300, 'vote_average.desc', f'{NOT_SERIALS},16', ENGLISH),
-    'comedy': mood('tv', '35', DECADE, 150, 'vote_average.desc', f'{NOT_SERIALS},16,10751', ENGLISH),
-    'scifi': mood('tv', '10765', DECADE, 500, 'vote_average.desc', '16,10762,10751', ENGLISH),
 }
 
 PAGES = {
@@ -129,23 +152,27 @@ PAGES = {
         'file': 'Custom_1140_Movies.xml',
         'title': 'Movies',
         'rows': [
+            # Trakt's weekly chart of unique viewers. (trakt_mostwatched, used here before,
+            # is your own history by play count - it showed what you had rewatched.)
             ('rank', 'Top 10 Most Watched This Week',
-             f'{PLUGIN}info=trakt_mostwatched&amp;tmdb_type=movie&amp;period=weekly&amp;nextpage=false'),
+             f'{PLUGIN}info=trakt_mostviewers&amp;tmdb_type=movie&amp;nextpage=false'),
             ('poster', 'In Cinemas Now', IN_CINEMAS),
             ('poster', 'New Releases',
              f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;sort_by=primary_release_date.desc'
              f'&amp;primary_release_date.gte={NEW_SINCE}&amp;primary_release_date.lte={TODAY}'
              f'&amp;vote_count.gte=10&amp;nextpage=false'),
-            ('poster', 'Edge-of-Your-Seat Thrillers', MOVIE_MOODS['thrillers']),
+            ('poster', "Thrillers Everyone's Watching", FILM_GENRES['thrillers']),
+            ('poster', "Horror Everyone's Talking About", FILM_GENRES['horror']),
+            ('poster', "Dramas Everyone's Hooked On", FILM_GENRES['dramas']),
             ('poster', 'Blockbusters', BLOCKBUSTERS),
             ('rank', 'Top 10 Hindi Movies Right Now', language_chart('hi')),
-            ('poster', 'Bollywood Romance', MOVIE_MOODS['romance']),
             ('poster', 'Hindi Films of the Decade', best_of_language('hi', votes=120)),
-            ('poster', 'Laugh-Out-Loud Comedies', MOVIE_MOODS['comedies']),
+            ('poster', 'Bollywood Romance', FILM_GENRES['romance']),
+            ('poster', 'Must-Watch Thrillers: The All-Time Greats', FILM_GENRES['great_thrillers']),
             ('rank', 'Top 10 Tamil Movies Right Now', language_chart('ta', votes=10)),
             ('poster', 'Tamil Films of the Decade', best_of_language('ta', votes=60)),
-            ('poster', 'Mind-Bending Sci-Fi', MOVIE_MOODS['scifi']),
-            ('poster', 'Award-Worthy Dramas', MOVIE_MOODS['dramas']),
+            ('poster', 'Must-Watch Horror: Lights On', FILM_GENRES['great_horror']),
+            ('poster', 'Must-Watch Dramas: The Classics', FILM_GENRES['great_dramas']),
             ('poster', 'World Cinema', WORLD_MOVIES),
             ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=movie&amp;nextpage=false'),
         ],
@@ -161,12 +188,14 @@ PAGES = {
             ('rank', 'Top 10 on Netflix', network(213)),
             ('rank', 'Top 10 on Prime Video', network(1024)),
             ('rank', 'Top 10 on HBO', network(49)),
-            ('poster', 'Gripping Crime Dramas', TV_MOODS['crime']),
+            ('poster', "Thrillers Everyone's Watching", SERIES_GENRES['thrillers']),
             ('rank', 'Top 10 on Apple TV+', network(2552)),
+            ('poster', "Horror Everyone's Talking About", SERIES_GENRES['horror']),
             ('rank', 'Top 10 on Hulu', network(453)),
-            ('poster', 'Comedies to Binge', TV_MOODS['comedy']),
+            ('poster', "Dramas Everyone's Hooked On", SERIES_GENRES['dramas']),
             ('rank', 'Top 10 on the BBC', network(4)),
-            ('poster', 'Epic Sci-Fi &amp; Fantasy', TV_MOODS['scifi']),
+            ('poster', 'Gripping Crime Dramas', SERIES_GENRES['crime']),
+            ('poster', 'Must-Watch Drama Series', SERIES_GENRES['great_dramas']),
             ('rank', 'Top 10 Hindi Series Right Now', language_chart('hi', media='tv', votes=10)),
             ('rank', 'Top 10 Tamil Series Right Now', language_chart('ta', media='tv', votes=3, recent=False)),
             ('poster', 'World Series', WORLD_SHOWS),

@@ -4,6 +4,8 @@
      capsule on the focused row. -->
 <window>
 	<defaultcontrol>996</defaultcontrol>
+	<!-- Opened on Continue Watching, start on our own entry: it is why you pressed the menu there -->
+	<onload condition="String.IsEqual(Window(home).Property(ATVContinueFocus),1) + Window.IsActive(home)">SetFocus(9701)</onload>
 	<include>Animation_DialogPopupOpenClose</include>
 	<coordinates>
 		<left>0</left>
@@ -53,6 +55,20 @@
 				<width>456</width>
 				<height max="752">auto</height>
 				<usecontrolcoords>true</usecontrolcoords>
+				<!-- Our own first entry, on the Continue Watching rows only (they set the flag while
+				     focused). Kodi adds its own entries after this one. -->
+				<control type="button" id="9701">
+					<width>456</width><height>66</height>
+					<label>Remove from this row</label>
+					<align>left</align><aligny>center</aligny><textoffsetx>24</textoffsetx>
+					<font>atv_body</font><textcolor>E6FFFFFF</textcolor><focusedcolor>FF0B0B0D</focusedcolor>
+					<texturefocus border="12" colordiffuse="FFFFFFFF">atv/rounded12.png</texturefocus>
+					<texturenofocus />
+					<pulseonselect>false</pulseonselect>
+					<visible>Window.IsActive(home) + String.IsEqual(Window(home).Property(ATVContinueFocus),1)</visible>
+					<onclick>Dialog.Close(contextmenu,true)</onclick>
+					<onclick>RunScript(special://skin/extras/forget.py)</onclick>
+				</control>
 			</control>
 			<include content="UpDownArrows">
 				<param name="container_id" value="996" />

@@ -277,12 +277,20 @@ Psych and Rizzoli & Isles.
 
 Rows are for things you can watch now: every one passes `hide_unaired=true`, which drops
 titles not out yet - they otherwise appeared with TMDb Helper's red italic markup in their
-names. Coming Soon, On TV Today and Continue Watching keep them.
+names. Coming Soon, My List and Continue Watching keep them.
 
 **Continue Watching** is two rows: the episodes you paused, then the films, each Trakt's
 on-deck list, newest first. Anything under 4% watched is left out (TMDb Helper already
-zeroes progress below that), which drops false starts. A show with two paused episodes still
-shows both.
+zeroes progress below that), which drops false starts, and so is anything not played in 90
+days: Trakt keeps a paused position forever, and this account had 40. A show with two
+paused episodes still shows both.
+
+To take a tile off by hand, press Menu on it: the first entry, *Remove from this row*, runs
+`extras/forget.py`, which deletes that saved position on Trakt through TMDb Helper (the title
+is not marked watched), closes TMDb Helper's "successful" box and reloads both rows - about
+three seconds. A failure leaves TMDb Helper's box up, since it says why; a tile Trakt still
+lists after two reloads gets a "try again" notice. Trakt once answered a delete with success
+and kept the entry; the same delete sent again went through.
 
 They were one row for a day - two `<content>` lists in one container, which Kodi 21 merges -
 and it froze Kodi. Its multi-list provider takes a list's lock while holding the graphics
@@ -291,13 +299,30 @@ artwork, which needs the graphics lock. Each waits for the other, and everything
 remote, the pages, even Quit. A row with one list does not take that path, so every row in
 the skin has one list. Checked afterwards with five cold starts in a row.
 
-**Mood rows**, Netflix style, sit between the charts so no page is a run of Top 10s: on
-Movies, Edge-of-Your-Seat Thrillers, Bollywood Romance, Laugh-Out-Loud Comedies, Mind-Bending
-Sci-Fi and Award-Worthy Dramas; on TV, Gripping Crime Dramas, Comedies to Binge and Epic
-Sci-Fi & Fantasy (`mood()` in `tools/gen_browse.py`). Each was kept because most of its
-titles appear in no other row on its page; Big Action and Binge-Worthy Mysteries were tried
-and dropped for repeating the charts. The TV ones are English: by rating alone, Korean dramas
-filled them, and World Series covers those.
+**Genre rows** are thrillers, horror and dramas only - what this house watches; the comedy
+and sci-fi rows are gone. Two kinds, `everyone_watching()` and `must_watch()` in
+`tools/gen_browse.py`:
+
+- *Thrillers Everyone's Watching*, *Horror Everyone's Talking About* and *Dramas Everyone's
+  Hooked On*, on Movies and TV: Trakt's weekly chart of unique viewers, cut to the genre and
+  to titles Trakt members rate well - IMDb too, for films. Films are held to the last three
+  years (`ATVDate.y3`, kept current by `extras/dates.py`) so the row is what is new; a series
+  binged this week counts however old it is.
+- *Must-Watch Thrillers: The All-Time Greats*, *Must-Watch Horror: Lights On*, *Must-Watch
+  Dramas: The Classics* and *Must-Watch Drama Series*: TMDb, thousands of votes, best rated
+  first - The Dark Knight and Se7en, Psycho and The Shining, Shawshank and The Godfather,
+  Breaking Bad and Chernobyl.
+
+Cartoons and comedies are left out of all of them, horror out of the thrillers, thrillers out
+of the dramas (five of the twenty drama greats were also thriller greats), musicals out of
+the film dramas. Trakt's own all-time list was tried for Must-Watch and dropped: filtered to a
+genre it returned five to thirteen titles, nearly all from this year. Trakt ignores its vote
+filter on these charts; the rating filters work. Gripping Crime Dramas and Bollywood Romance
+stay from the earlier mood rows.
+
+*Top 10 Most Watched This Week* on Movies is Trakt's weekly chart of unique viewers
+(`trakt_mostviewers`). It used `trakt_mostwatched`, which despite the name is your own
+history by play count - it showed the films you had rewatched.
 
 **My List** is its own tab: your Trakt watchlist, which is what the My List buttons add to,
 films and shows, newest first, upcoming titles included.
