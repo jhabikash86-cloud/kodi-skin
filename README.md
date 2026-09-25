@@ -38,6 +38,22 @@ the charts the last 18 months, "of the Decade" the last ten years - the XML asks
 after midnight the windows move on by themselves and the rows reload. Nothing needs
 regenerating.
 
+## Setting up a new device
+
+Install the skin, install TMDb Helper, Umbrella and YouTube, restart Kodi once, and sign in
+(Trakt, TMDb, debrid). The rest is done by `extras/setup.py`, which runs at every start
+from `Startup.xml` and, for each of those add-ons it finds, applies once what is below:
+Play opening Umbrella's source list (and the two player files), Umbrella's scraper and
+subtitle settings, English subtitles, YouTube's server for trailers, and an
+`advancedsettings.xml` where there is none (the Xbox-safe one in `extras/`). Settings are
+applied once per add-on and then left alone, so changing one later sticks; an add-on
+installed later is set up at the next start. It also applies the IPv4 and lock fixes to
+TMDb Helper's shared module whenever it finds the module without them - after an update,
+the next start fixes it again - and only where the lines it replaces are exactly as
+expected. Nothing touches an account. Tested on the Mac by reverting every one of these
+settings, removing the players and the fixes, and starting Kodi: all came back, and Play
+opened the source list.
+
 ## Kodi settings this skin expects
 
 **Artwork resolution.** Posters come from TMDb at their original size - 2000x3000 for

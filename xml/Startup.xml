@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- extras/dates.py sets the date windows the rows are built on, then opens Kodi's start
-     window itself - so Home never builds a row before its dates exist. -->
+     window itself - so Home never builds a row before its dates exist. extras/setup.py
+     sets up the add-ons the skin works with, on a new device. -->
 <window>
+	<onload>RunScript(special://skin/extras/setup.py)</onload>
 	<onload>RunScript(special://skin/extras/dates.py,startup)</onload>
 	<controls />
 </window>

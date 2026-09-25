@@ -1,0 +1,17 @@
+<advancedsettings>
+    <!-- Written by skin.appletv.minimal (extras/setup.py) on a device that had none. Sharp
+         posters: Kodi keeps one resized copy of each, made close to the size it is drawn
+         at, with Lanczos, at near-lossless JPEG quality. Backdrops at 1080 and a modest
+         stream buffer, because Kodi on Xbox runs in a fixed memory budget. -->
+    <imageres>1080</imageres>
+    <fanartres>1080</fanartres>
+    <imagescalingalgorithm>lanczos</imagescalingalgorithm>
+    <imagequalityjpeg>2</imagequalityjpeg>
+
+    <!-- Buffers internet streams; Kodi uses up to about three times memorysize (~300MB). -->
+    <cache>
+        <buffermode>1</buffermode>
+        <memorysize>104857600</memorysize>
+        <readfactor>20</readfactor>
+    </cache>
+</advancedsettings>
