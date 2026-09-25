@@ -5,8 +5,11 @@ A new device - the Xbox - otherwise needs a page of settings copied by hand befo
 opens Umbrella's source list, subtitles come in English, or pages load at all. This runs
 at every start (Startup.xml), costs nothing once done, and for each add-on found:
 
-  * TMDb Helper: the Umbrella players, and Play set to open Umbrella's source list
-  * Umbrella: scraper timeout, early stop at 10 4K results, subtitles, resume, Trakt
+  * TMDb Helper: the Umbrella players, Play set to open Umbrella's source list, and
+    lighter posters on the Xbox
+  * Umbrella: scraper timeout, early stop at 10 4K results, subtitles, resume, Trakt, the
+    release filters, and Magneto as its external scraper
+  * Magneto and CocoScrapers: the providers switched on as on the Mac
   * YouTube: its local server reachable, which the trailers need
   * Kodi: English subtitles, add-on updates notify only; advancedsettings.xml if none
 
@@ -14,9 +17,10 @@ Each add-on's settings are applied once, then left alone - change them afterward
 they stay changed. Installing an add-on later is fine: it is set up at the next start.
 Signing in (Trakt, TMDb, debrid) is yours to do; nothing here touches an account.
 
-It also applies the IPv4 fix to TMDb Helper's shared module (see README, "Why pages went
-blank") whenever that module is found without it - so an update of it is fixed again at
-the next start.
+It also applies three fixes to TMDb Helper's shared module whenever it is found without
+them - so an update of it is fixed again at the next start: IPv4 only and the lock crash
+(README, "Why pages went blank"), and not caching a failed list, which left a row empty for
+six hours; failed lists already cached are cleared.
 
     RunScript(special://skin/extras/setup.py)
 """
@@ -28,16 +32,25 @@ import xbmcgui
 import xbmcvfs
 
 SKIN = 'special://skin/extras/'
+XBOX = xbmc.getCondVisibility('System.Platform.UWP')
 STATE = 'special://profile/addon_data/skin.appletv.minimal/setup.json'
-VERSION = 1   # raise to apply a changed list below once more
+VERSION = 2   # raise to apply a changed list below once more
 
 KODI = {
     'locale.subtitlelanguage': 'English',
     'general.addonupdates': 1,   # notify, don't install: an update can undo the IPv4 fix
 }
+if XBOX:
+    # Apple TV's "Match Frame Rate": a film plays at its own 24 frames a second, not pulled
+    # up to the TV's 60 with an uneven 3:2 cadence (judder on pans). Needs "Allow 24 Hz" in
+    # the Xbox's video modes; the TV blanks for a moment as it switches.
+    KODI['videoplayer.adjustrefreshrate'] = 2   # on start and stop of playback
 ADDONS = {
     'plugin.video.themoviedb.helper': {
-        'artwork_quality': 4,
+        # Original-size posters (2000x3000) look best on the Mac; on the Xbox each one is a
+        # multi-megabyte download to decode and shrink, so there "Highest": w780 posters,
+        # still sharper than the 300-450px a poster is drawn at, and original backdrops.
+        'artwork_quality': 0 if XBOX else 4,
         'default_player_movies': 'umbrella.select.json play_movie',
         'default_player_episodes': 'umbrella.select.json play_episode',
         'combined_players': False,
@@ -62,9 +75,54 @@ ADDONS = {
         'indicators': 'Trakt',
         'scrobble': 'Trakt',
         'scrobble.source': 1,
+        # which releases are listed - as on the Mac
+        'torrent.remove.uncached': False,
+        'terminate.onCloud.sources': False,
+        'rd_cloud.enabled': True,
+        'remove.mp4': True,
+        'remove.mpeg': True,
+        'remove.wmv': True,
+        'remove.audio.aac': True,
+        'remove.audio.mp3': True,
+        'dev.disable.season.filter': True,
+        'dev.disable.show.filter': True,
+    },
+    # The scrapers behind Umbrella's sources on the Mac. Without them Umbrella lists far
+    # fewer releases, and new shows (Furious) found none on the Xbox.
+    'script.module.magneto': {
+        'scraping_timeout': 30,
+        'provider.piratebay': True,
+        'provider.comet': True,
+        'comet.url': 2,
+        'provider.mediafusion': True,
+        'mediafusion.url': 1,
+        'provider.torrentio': True,
+        'provider.torz': True,
+        'provider.aiostreams': True,
+        'aiostreams_instance': 4,
+        'results.list_format': 1,
+        'highlight.type': 1,
+    },
+    'script.module.cocoscrapers': {
+        'provider.1337x': True, 'provider.bitcq': False, 'provider.bitlord': True,
+        'provider.bitsearch': True, 'provider.comet': True, 'provider.eztv': True,
+        'provider.isohunt2': False, 'provider.kickass2': True, 'provider.knaben': True,
+        'provider.mediafusion': True, 'provider.nyaa': False, 'provider.piratebay': True,
+        'provider.torrentdownload': True, 'provider.torrentfunk': False,
+        'provider.torrentgalaxy': True, 'provider.torrentio': True,
+        'provider.torrentquest': True, 'provider.torrentproject2': False,
+        'provider.yourbittorrent': False, 'provider.ytsmx': False,
     },
     'plugin.video.youtube': {
         'kodion.http.listen': '0.0.0.0',
+    },
+}
+# Umbrella's external scraper, set only once the scraper itself is installed - pointing
+# Umbrella at a module that is missing breaks its source search
+LINKS = {
+    ('plugin.video.umbrella', 'script.module.magneto'): {
+        'provider.external.enabled': True,
+        'external_provider.module': 'script.module.magneto',
     },
 }
 PLAYERS = ('umbrella.select.json', 'umbrella.autoplay.json')
@@ -83,8 +141,17 @@ IPV4 = (
     '            except Exception:\n'
     '                pass\n'
 )
+CACHE_LINE = '            return self.set_cache(my_object, cache_name, cache_days, force=cache_force, fallback=cache_fallback)\n'
 FIXES = {
     # file: (already fixed if this is in it, the line to find, what goes there instead)
+    'bcache.py': ('skin.appletv.minimal: a list',
+                  CACHE_LINE,
+                  '            # skin.appletv.minimal: a list with no items and no pages is a request that\n'
+                  '            # failed (TMDb answers with at least one page); cached, it kept a row empty\n'
+                  '            # for six hours\n'
+                  "            if isinstance(my_object, dict) and 'items' in my_object and not my_object.get('items') and not my_object.get('pages'):\n"
+                  '                return my_object\n'
+                  + CACHE_LINE),
     'reqapi.py': ('HAS_IPV6 = False',
                   '            self._session = self.requests.Session()\n',
                   IPV4 + '            self._session = self.requests.Session()\n'),
@@ -179,6 +246,42 @@ def fix_module():
         log(f'fixed {name}')
 
 
+FAILED = b'{"items":[],"pages":0,"count":0}'
+
+
+def clear_failed_lists():
+    """Drop failed requests TMDb Helper cached before the fix above, which left rows empty
+    until they expired. Only entries that decode to exactly an empty, page-less list."""
+    try:
+        import sqlite3
+        import zlib
+    except ImportError:
+        return
+    root = xbmcvfs.translatePath('special://profile/addon_data/plugin.video.themoviedb.helper/')
+    folders = xbmcvfs.listdir(root)[0]
+    for folder in [f for f in folders if f.startswith('database_')]:
+        path = f'{root}{folder}/ItemContainer.db'
+        if not xbmcvfs.exists(path):
+            continue
+        try:
+            db = sqlite3.connect(path, timeout=5)
+            stale = []
+            for key, data in db.execute('SELECT id, data FROM simplecache WHERE length(data) < 80'):
+                try:
+                    raw = data if isinstance(data, bytes) else data.encode('latin-1')
+                    if zlib.decompress(raw) == FAILED:
+                        stale.append((key,))
+                except (zlib.error, UnicodeEncodeError):
+                    continue
+            if stale:
+                db.executemany('DELETE FROM simplecache WHERE id = ?', stale)
+                db.commit()
+                log(f'cleared {len(stale)} failed lists from the cache')
+            db.close()
+        except sqlite3.Error as error:
+            log(f'could not check the list cache ({error})')
+
+
 def main():
     state = load_state()
     changed = []
@@ -198,9 +301,19 @@ def main():
         state[addon_id] = VERSION
         changed.append(xbmcaddon.Addon(addon_id).getAddonInfo('name'))
         log(f'set up {addon_id}')
+    for (addon_id, needs), settings in LINKS.items():
+        key = f'{addon_id}+{needs}'
+        if state.get(key) == VERSION or not (installed(addon_id) and installed(needs)):
+            continue
+        addon = xbmcaddon.Addon(addon_id)
+        for setting, value in settings.items():
+            set_value(addon, setting, value)
+        state[key] = VERSION
+        log(f'linked {addon_id} to {needs}')
     save_state(state)
     copy_players()
     fix_module()
+    clear_failed_lists()
     if changed:
         xbmcgui.Dialog().notification('ATV Minimal', 'Set up: ' + ', '.join(changed),
                                       xbmcgui.NOTIFICATION_INFO, 6000)

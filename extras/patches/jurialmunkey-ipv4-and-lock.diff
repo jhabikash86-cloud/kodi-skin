@@ -1,6 +1,6 @@
-# Two fixes to script.module.jurialmunkey 0.2.35 (TMDb Helper's shared module) - see README,
-# "Why pages went blank". Reapply after that add-on updates, from its modules folder:
-#   cd "~/Library/Application Support/Kodi/addons/script.module.jurialmunkey/resources/modules/jurialmunkey"
+# Three fixes to script.module.jurialmunkey 0.2.35 (TMDb Helper's shared module). extras/setup.py
+# applies them at every Kodi start wherever they are missing; this file is the record of
+# what it changes (README, "Why pages went blank"). To apply by hand, from its modules folder:
 #   patch -p1 < <this file>
 --- a/reqapi.py
 +++ b/reqapi.py
@@ -32,3 +32,17 @@
          self.lock_aquire()
  
      @property
+--- a/bcache.py
++++ b/bcache.py
+@@ -82,6 +82,11 @@
+             if headers:
+                 kwargs['headers'] = headers
+             my_object = func(*args, **kwargs)
++            # skin.appletv.minimal: a list with no items and no pages is a request that
++            # failed (TMDb answers with at least one page); cached, it kept a row empty
++            # for six hours
++            if isinstance(my_object, dict) and 'items' in my_object and not my_object.get('items') and not my_object.get('pages'):
++                return my_object
+             return self.set_cache(my_object, cache_name, cache_days, force=cache_force, fallback=cache_fallback)
+ 
+ 

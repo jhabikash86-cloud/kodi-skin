@@ -39,6 +39,8 @@ DWELL = 0.35         # seconds on one title before its page is worth fetching - 
                      # take ~1.4s to fetch, so the earlier this starts the more of it is done
 REWARM = 3 * 3600    # TMDb Helper's list caches expire; walk the rows again this often
 STARTUP_DELAY = 8    # let Home load its own rows first - they are what is on screen
+if xbmc.getCondVisibility('System.Platform.UWP'):
+    STARTUP_DELAY = 25   # the Xbox takes longer over Home, and this would compete with it
 REMEMBERED = 200     # titles fetched recently, so moving back and forth costs nothing
 DATES_EVERY = 60     # seconds between checks that the date windows are still today's
 

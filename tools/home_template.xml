@@ -59,6 +59,15 @@
             <!-- Trailer preview. extras/trailer.py starts it after a couple of seconds of
                  stillness on the hero and stops it the moment you move; the still
                  backdrop underneath stays put so there is no gap while it loads. -->
+            <!-- Black behind the picture: a trailer wider than the screen is letterboxed, and
+                 the still backdrop showed in strips above and below it -->
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <texture colordiffuse="FF000000">white.png</texture>
+                <visible>$EXP[ATV_TrailerFull]</visible>
+                <animation effect="fade" start="0" end="100" time="500">Visible</animation>
+                <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+            </control>
             <control type="videowindow">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <!-- ATVPreviewShape is set once the picture is known to be widescreen, so a
@@ -67,17 +76,21 @@
                 <animation effect="fade" start="0" end="100" time="500">Visible</animation>
                 <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
             </control>
-            <control type="image">
-                <left>0</left><top>0</top><width>1300</width><height>1080</height>
-                <texture>atv/grad_left.png</texture>
-            </control>
-            <control type="image">
-                <left>0</left><top>420</top><width>1920</width><height>660</height>
-                <texture colordiffuse="FF0B0B0D">atv/grad_bottom.png</texture>
-            </control>
-            <control type="image">
-                <left>0</left><top>0</top><width>1920</width><height>240</height>
-                <texture colordiffuse="B3FFFFFF">atv/grad_top.png</texture>
+            <!-- The shades that make the text readable; gone while a trailer plays -->
+            <control type="group">
+    <animation effect="fade" start="100" end="0" time="900" delay="2500" tween="sine" easing="inout" condition="$EXP[ATV_TrailerFull]">Conditional</animation>
+                <control type="image">
+                    <left>0</left><top>0</top><width>1300</width><height>1080</height>
+                    <texture>atv/grad_left.png</texture>
+                </control>
+                <control type="image">
+                    <left>0</left><top>420</top><width>1920</width><height>660</height>
+                    <texture colordiffuse="FF0B0B0D">atv/grad_bottom.png</texture>
+                </control>
+                <control type="image">
+                    <left>0</left><top>0</top><width>1920</width><height>240</height>
+                    <texture colordiffuse="B3FFFFFF">atv/grad_top.png</texture>
+                </control>
             </control>
         </control>
 
@@ -90,6 +103,7 @@
             <left>90</left><top>0</top>
             <animation effect="fade" start="100" end="0" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
             <animation effect="slide" end="0,-710" time="380" tween="sine" easing="inout" condition="$EXP[ATV_RowsFocused]">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="900" delay="2500" tween="sine" easing="inout" condition="$EXP[ATV_TrailerFull]">Conditional</animation>
 
             <!-- Clear logo, or the title in bold if there's no logo -->
             <control type="image">
@@ -133,6 +147,7 @@
                     <param name="icon" value="atv/icon_play.png" />
                     <onfocus condition="String.IsEmpty(Window(home).Property(ATVQuitting))">RunScript(special://skin/extras/trailer.py,watch)</onfocus>
                     <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)],$INFO[Container(40).ListItem.Property(original_language)])</onclick>
+                    <onback>SetFocus(9001)</onback>
                     <onup>9000</onup>
                     <ondown>50</ondown>
                     <onleft>Control.Move(40,-1)</onleft>
@@ -149,6 +164,7 @@
                     <param name="icon" value="atv/icon_plus.png" />
                     <!-- Adds / removes the title on your Trakt watchlist -->
                     <onclick>RunScript(plugin.video.themoviedb.helper,sync_trakt,tmdb_type=movie,tmdb_id=$INFO[Container(40).ListItem.UniqueID(tmdb)],sync_type=watchlist)</onclick>
+                    <onback>SetFocus(9001)</onback>
                     <onup>9000</onup>
                     <ondown>50</ondown>
                     <onleft>8001</onleft>
@@ -165,6 +181,7 @@
                     <param name="icon" value="atv/icon_info.png" />
                                         <!-- Opens the Apple TV style title page for the hero item -->
                     <onclick>RunScript(special://skin/extras/details.py,open,40)</onclick>
+                    <onback>SetFocus(9001)</onback>
                     <onup>9000</onup>
                     <ondown>50</ondown>
                     <onleft>8003</onleft>
@@ -192,6 +209,7 @@
         <!-- ===================== SCROLLING PAGE ===================== -->
         <control type="group" id="7000">
             <left>0</left><top>0</top>
+            <animation effect="fade" start="100" end="0" time="900" delay="2500" tween="sine" easing="inout" condition="$EXP[ATV_TrailerFull]">Conditional</animation>
 
 {SCROLL}
 
@@ -207,7 +225,7 @@
         </control>
 
         <include content="ATV_TabBar">
-            <param name="hidewhen" value="$EXP[ATV_RowsFocused]" />
+            <param name="hidewhen" value="$EXP[ATV_TabBarHidden]" />
             <param name="ondown" value="8001" />
         </include>
 

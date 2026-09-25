@@ -71,7 +71,7 @@
                 <param name="label" value="Top 10 on Netflix" />
                 <param name="onup" value="9000" />
                 <param name="ondown" value="52" />
-                <param name="onback" value="noop" />
+                <param name="onback" value="9003" />
                 <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=213&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_RankRow">
@@ -82,7 +82,7 @@
                 <param name="label" value="Top 10 on Prime Video" />
                 <param name="onup" value="51" />
                 <param name="ondown" value="53" />
-                <param name="onback" value="noop" />
+                <param name="onback" value="7001" />
                 <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=1024&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_RankRow">
@@ -93,127 +93,163 @@
                 <param name="label" value="Top 10 on HBO" />
                 <param name="onup" value="52" />
                 <param name="ondown" value="54" />
-                <param name="onback" value="noop" />
+                <param name="onback" value="7001" />
                 <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=49&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
-            <include content="ATV_PosterRow">
-                <param name="id" value="54" />
-                <param name="top" value="1685" />
-                <param name="label" value="Thrillers Everyone's Watching" />
-                <param name="onup" value="53" />
-                <param name="ondown" value="55" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_mostviewers&amp;tmdb_type=tv&amp;genres=thriller,-anime,-animation,-comedy,-horror&amp;ratings=75-100&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_RankRow">
-                <param name="id" value="55" />
-                <param name="idbase" value="74" />
-                <param name="data" value="6104" />
-                <param name="top" value="2160" />
-                <param name="label" value="Top 10 on Apple TV+" />
-                <param name="onup" value="54" />
-                <param name="ondown" value="56" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=2552&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_PosterRow">
-                <param name="id" value="56" />
-                <param name="top" value="2635" />
-                <param name="label" value="Horror Everyone's Talking About" />
-                <param name="onup" value="55" />
-                <param name="ondown" value="57" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_mostviewers&amp;tmdb_type=tv&amp;genres=horror,-anime,-animation,-comedy&amp;ratings=75-100&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_RankRow">
-                <param name="id" value="57" />
-                <param name="idbase" value="76" />
-                <param name="data" value="6106" />
-                <param name="top" value="3110" />
-                <param name="label" value="Top 10 on Hulu" />
-                <param name="onup" value="56" />
-                <param name="ondown" value="58" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=453&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_PosterRow">
-                <param name="id" value="58" />
-                <param name="top" value="3585" />
-                <param name="label" value="Dramas Everyone's Hooked On" />
-                <param name="onup" value="57" />
-                <param name="ondown" value="59" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_mostviewers&amp;tmdb_type=tv&amp;genres=drama,-anime,-animation,-comedy,-superhero,-thriller,-horror&amp;ratings=80-100&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_RankRow">
-                <param name="id" value="59" />
-                <param name="idbase" value="78" />
-                <param name="data" value="6108" />
-                <param name="top" value="4060" />
-                <param name="label" value="Top 10 on the BBC" />
-                <param name="onup" value="58" />
-                <param name="ondown" value="60" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=4&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_PosterRow">
-                <param name="id" value="60" />
-                <param name="top" value="4535" />
-                <param name="label" value="Gripping Crime Dramas" />
-                <param name="onup" value="59" />
-                <param name="ondown" value="61" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_genres=80,18&amp;without_genres=10766,10763,10767,10764,10762,16&amp;with_original_language=en&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d3650)]&amp;vote_count.gte=300&amp;sort_by=vote_average.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_PosterRow">
-                <param name="id" value="61" />
-                <param name="top" value="5010" />
-                <param name="label" value="Must-Watch Drama Series" />
-                <param name="onup" value="60" />
-                <param name="ondown" value="62" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_genres=18&amp;without_genres=10766,10763,10767,10764,10762,16,35,10751,10765&amp;with_original_language=en&amp;vote_count.gte=2500&amp;sort_by=vote_average.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_RankRow">
-                <param name="id" value="62" />
-                <param name="idbase" value="711" />
-                <param name="data" value="6111" />
-                <param name="top" value="5485" />
-                <param name="label" value="Top 10 Hindi Series Right Now" />
-                <param name="onup" value="61" />
-                <param name="ondown" value="63" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_RankRow">
-                <param name="id" value="63" />
-                <param name="idbase" value="712" />
-                <param name="data" value="6112" />
-                <param name="top" value="5960" />
-                <param name="label" value="Top 10 Tamil Series Right Now" />
-                <param name="onup" value="62" />
-                <param name="ondown" value="64" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=3&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_PosterRow">
-                <param name="id" value="64" />
-                <param name="top" value="6435" />
-                <param name="label" value="World Series" />
-                <param name="onup" value="63" />
-                <param name="ondown" value="65" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CES%7CFR%7CIT%7CDE&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;without_genres=10766,10763,10767,10764,10762,16&amp;with_id=True&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
-            </include>
-            <include content="ATV_PosterRow">
-                <param name="id" value="65" />
-                <param name="top" value="6910" />
-                <param name="label" value="Coming Soon" />
-                <param name="onup" value="64" />
-                <param name="ondown" value="noop" />
-                <param name="onback" value="noop" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false" />
-            </include>
+            <control type="group">
+                <visible>ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | Control.HasFocus(56) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="54" />
+                    <param name="top" value="1685" />
+                    <param name="label" value="Thrillers Everyone's Watching" />
+                    <param name="onup" value="53" />
+                    <param name="ondown" value="55" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_mostviewers&amp;tmdb_type=tv&amp;genres=thriller,-anime,-animation,-comedy,-horror&amp;ratings=75-100&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>ControlGroup(53).HasFocus(0) | Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | Control.HasFocus(56) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_RankRow">
+                    <param name="id" value="55" />
+                    <param name="idbase" value="74" />
+                    <param name="data" value="6104" />
+                    <param name="top" value="2160" />
+                    <param name="label" value="Top 10 on Apple TV+" />
+                    <param name="onup" value="54" />
+                    <param name="ondown" value="56" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=2552&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | Control.HasFocus(56) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="56" />
+                    <param name="top" value="2635" />
+                    <param name="label" value="Horror Everyone's Talking About" />
+                    <param name="onup" value="55" />
+                    <param name="ondown" value="57" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_mostviewers&amp;tmdb_type=tv&amp;genres=horror,-anime,-animation,-comedy&amp;ratings=75-100&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>ControlGroup(55).HasFocus(0) | Control.HasFocus(56) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_RankRow">
+                    <param name="id" value="57" />
+                    <param name="idbase" value="76" />
+                    <param name="data" value="6106" />
+                    <param name="top" value="3110" />
+                    <param name="label" value="Top 10 on Hulu" />
+                    <param name="onup" value="56" />
+                    <param name="ondown" value="58" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=453&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>Control.HasFocus(56) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="58" />
+                    <param name="top" value="3585" />
+                    <param name="label" value="Dramas Everyone's Hooked On" />
+                    <param name="onup" value="57" />
+                    <param name="ondown" value="59" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_mostviewers&amp;tmdb_type=tv&amp;genres=drama,-anime,-animation,-comedy,-superhero,-thriller,-horror&amp;ratings=80-100&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_RankRow">
+                    <param name="id" value="59" />
+                    <param name="idbase" value="78" />
+                    <param name="data" value="6108" />
+                    <param name="top" value="4060" />
+                    <param name="label" value="Top 10 on the BBC" />
+                    <param name="onup" value="58" />
+                    <param name="ondown" value="60" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=4&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="60" />
+                    <param name="top" value="4535" />
+                    <param name="label" value="Gripping Crime Dramas" />
+                    <param name="onup" value="59" />
+                    <param name="ondown" value="61" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_genres=80,18&amp;without_genres=10766,10763,10767,10764,10762,16&amp;with_original_language=en&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d3650)]&amp;vote_count.gte=300&amp;sort_by=vote_average.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="61" />
+                    <param name="top" value="5010" />
+                    <param name="label" value="Must-Watch Drama Series" />
+                    <param name="onup" value="60" />
+                    <param name="ondown" value="62" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_genres=18&amp;without_genres=10766,10763,10767,10764,10762,16,35,10751,10765&amp;with_original_language=en&amp;vote_count.gte=2500&amp;sort_by=vote_average.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_RankRow">
+                    <param name="id" value="62" />
+                    <param name="idbase" value="711" />
+                    <param name="data" value="6111" />
+                    <param name="top" value="5485" />
+                    <param name="label" value="Top 10 Hindi Series Right Now" />
+                    <param name="onup" value="61" />
+                    <param name="ondown" value="63" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_RankRow">
+                    <param name="id" value="63" />
+                    <param name="idbase" value="712" />
+                    <param name="data" value="6112" />
+                    <param name="top" value="5960" />
+                    <param name="label" value="Top 10 Tamil Series Right Now" />
+                    <param name="onup" value="62" />
+                    <param name="ondown" value="64" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=3&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="64" />
+                    <param name="top" value="6435" />
+                    <param name="label" value="World Series" />
+                    <param name="onup" value="63" />
+                    <param name="ondown" value="65" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CES%7CFR%7CIT%7CDE&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;without_genres=10766,10763,10767,10764,10762,16&amp;with_id=True&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="65" />
+                    <param name="top" value="6910" />
+                    <param name="label" value="Coming Soon" />
+                    <param name="onup" value="64" />
+                    <param name="ondown" value="noop" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false" />
+                </include>
+            </control>
         </control>
 
         <!-- Rows above the focused one dissolve into the top edge -->
@@ -225,7 +261,7 @@
         </control>
 
         <include content="ATV_TabBar">
-            <param name="hidewhen" value="ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | Control.HasFocus(56) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)" />
+            <param name="hidewhen" value="$EXP[ATV_TabBarHidden]" />
             <param name="ondown" value="51" />
         </include>
 

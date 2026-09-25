@@ -166,6 +166,8 @@
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],0)</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							<onright>$PARAM[idbase]11</onright><onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>
 						</control>
 					</control>
@@ -270,6 +272,8 @@
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],1)</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							<onleft>$PARAM[idbase]01</onleft><onright>$PARAM[idbase]21</onright><onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>
 						</control>
 					</control>
@@ -374,6 +378,8 @@
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],2)</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							<onleft>$PARAM[idbase]11</onleft><onright>$PARAM[idbase]31</onright><onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>
 						</control>
 					</control>
@@ -478,6 +484,8 @@
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],3)</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							<onleft>$PARAM[idbase]21</onleft><onright>$PARAM[idbase]41</onright><onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>
 						</control>
 					</control>
@@ -582,6 +590,8 @@
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],4)</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							<onleft>$PARAM[idbase]31</onleft><onright>$PARAM[idbase]51</onright><onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>
 						</control>
 					</control>
@@ -686,6 +696,8 @@
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],5)</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							<onleft>$PARAM[idbase]41</onleft><onright>$PARAM[idbase]61</onright><onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>
 						</control>
 					</control>
@@ -790,6 +802,8 @@
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],6)</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							<onleft>$PARAM[idbase]51</onleft><onright>$PARAM[idbase]71</onright><onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>
 						</control>
 					</control>
@@ -894,6 +908,8 @@
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],7)</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							<onleft>$PARAM[idbase]61</onleft><onright>$PARAM[idbase]81</onright><onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>
 						</control>
 					</control>
@@ -998,6 +1014,8 @@
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],8)</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							<onleft>$PARAM[idbase]71</onleft><onright>$PARAM[idbase]91</onright><onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>
 						</control>
 					</control>
@@ -1102,6 +1120,8 @@
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],9)</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							<onleft>$PARAM[idbase]81</onleft><onup>$PARAM[onup]</onup><ondown>$PARAM[ondown]</ondown>
 						</control>
 					</control>

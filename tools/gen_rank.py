@@ -106,6 +106,8 @@ def tile(index):  # noqa: C901
 							<texturenofocus />
 							<pulseonselect>false</pulseonselect>
 							<onclick>RunScript(special://skin/extras/details.py,open,$PARAM[data],{index})</onclick>
+							<!-- Back belongs on the tile: focus is on it, not on the row around it -->
+							<onback>$PARAM[onback]</onback>
 							{nav}
 						</control>
 					</control>'''

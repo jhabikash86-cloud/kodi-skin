@@ -198,6 +198,23 @@ def build_row(index, top):
                 </include>'''
 
 
+# Rows load as you reach them. A row Kodi is not drawing asks for nothing, so every row from
+# the fourth down exists only while the focus is within two rows above it: opening Home
+# asked TMDb Helper for all twelve rows at once, a dozen Python jobs competing for the
+# Xbox's CPU while the two rows on screen waited their turn. The first three always load.
+EAGER = 3
+AHEAD = 2
+
+
+def lazy(index, xml):
+    if index < EAGER:
+        return xml
+    near = ' | '.join(focus_condition(j) for j in range(max(0, index - AHEAD), len(ROWS)))
+    indent = ' ' * (len(xml) - len(xml.lstrip(' ')))
+    return (f'{indent}<control type="group">\n{indent}    <visible>{near}</visible>\n'
+            + '\n'.join('    ' + line for line in xml.split('\n')) + f'\n{indent}</control>')
+
+
 def build_rows():
     t = tops()
     has_upnext = ROWS[0][0] == 'upnext'
@@ -216,7 +233,7 @@ def build_rows():
                    f'easing="inout" condition="$EXP[ATV_UpNextEmpty]">Conditional</animation>')
         start = 1
     for i in range(start, len(ROWS)):
-        out.append(build_row(i, t[i]))
+        out.append(lazy(i, build_row(i, t[i])))
     if has_upnext:
         out.append('            </control>')
     return '\n'.join(out)

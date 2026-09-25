@@ -56,7 +56,7 @@
                 <param name="label" value="Movies" />
                 <param name="onup" value="9000" />
                 <param name="ondown" value="52" />
-                <param name="onback" value="noop" />
+                <param name="onback" value="9006" />
                 <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_watchlist&amp;tmdb_type=movie&amp;sort_by=added&amp;sort_how=desc&amp;nextpage=false" />
             </include>
             <include content="ATV_PosterRow">
@@ -65,7 +65,7 @@
                 <param name="label" value="TV Shows" />
                 <param name="onup" value="51" />
                 <param name="ondown" value="noop" />
-                <param name="onback" value="noop" />
+                <param name="onback" value="51" />
                 <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_watchlist&amp;tmdb_type=tv&amp;sort_by=added&amp;sort_how=desc&amp;nextpage=false" />
             </include>
         </control>
@@ -79,7 +79,7 @@
         </control>
 
         <include content="ATV_TabBar">
-            <param name="hidewhen" value="Control.HasFocus(52)" />
+            <param name="hidewhen" value="$EXP[ATV_TabBarHidden]" />
             <param name="ondown" value="51" />
         </include>
 

@@ -40,17 +40,22 @@ regenerating.
 
 ## Setting up a new device
 
-Install the skin, install TMDb Helper, Umbrella and YouTube, restart Kodi once, and sign in
-(Trakt, TMDb, debrid). The rest is done by `extras/setup.py`, which runs at every start
-from `Startup.xml` and, for each of those add-ons it finds, applies once what is below:
-Play opening Umbrella's source list (and the two player files), Umbrella's scraper and
-subtitle settings, English subtitles, YouTube's server for trailers, and an
-`advancedsettings.xml` where there is none (the Xbox-safe one in `extras/`). Settings are
+Install the skin, install TMDb Helper, Umbrella, YouTube, Magneto and CocoScrapers from the
+same repositories as the Mac, restart Kodi once, and sign in (Trakt, debrid, Easynews,
+AIOStreams). The rest is done by `extras/setup.py`, which runs at every start from
+`Startup.xml` and, for each of those add-ons it finds, applies once what is below: Play
+opening Umbrella's source list (and the two player files); Umbrella's scraper, filter,
+subtitle and Trakt settings, with Magneto as its external scraper once Magneto is
+installed; the providers Magneto and CocoScrapers have switched on; English subtitles;
+YouTube's server for trailers; and an `advancedsettings.xml` where there is none (the
+Xbox-safe one in `extras/`). On the Xbox it also picks lighter posters (w780 rather than
+2000x3000 originals) and turns on matching the TV to the film's frame rate. Settings are
 applied once per add-on and then left alone, so changing one later sticks; an add-on
-installed later is set up at the next start. It also applies the IPv4 and lock fixes to
-TMDb Helper's shared module whenever it finds the module without them - after an update,
-the next start fixes it again - and only where the lines it replaces are exactly as
-expected. Nothing touches an account. Tested on the Mac by reverting every one of these
+installed later is set up at the next start. It also applies three fixes to TMDb Helper's
+shared module whenever it finds the module without them - after an update, the next start
+fixes it again - and only where the lines it replaces are exactly as expected. Nothing
+touches an account. Without Magneto and CocoScrapers, Umbrella found no releases at all for
+some new shows on the Xbox (Furious). Tested on the Mac by reverting every one of these
 settings, removing the players and the fixes, and starting Kodi: all came back, and Play
 opened the source list.
 
@@ -229,7 +234,7 @@ not play from its top source, and a pack was what sat there.
 The `<cache>` block in `advancedsettings.xml` is what keeps a 14GB stream from
 stalling; Kodi's default read-ahead is sized for local files.
 
-## Why pages went blank - and two fixes outside the skin
+## Why pages went blank - and three fixes outside the skin
 
 Pages that stayed black, a title page with a "TMDb Helper" error, and one Kodi session where
 nothing loaded at all had one cause. From this network, **TMDb's API cannot be reached over
@@ -241,11 +246,15 @@ waits on. Past that lock's 10s limit TMDb Helper crashed on a bug in its own tim
 and the row came back empty. Kodi's remote-control server has one thread, so a hung request
 also froze the remote and everything behind it.
 
-Two one-line changes in `script.module.jurialmunkey` (TMDb Helper's shared module) fix it,
-each marked `skin.appletv.minimal` in the file:
+Changes in `script.module.jurialmunkey` (TMDb Helper's shared module) fix it, each marked
+`skin.appletv.minimal` in the file and recorded in `extras/patches/`:
 
 - `reqapi.py` - its requests use IPv4 only (`urllib3.util.connection.HAS_IPV6 = False`).
 - `locker.py` - a lock timeout no longer crashes the request; it carries on without the lock.
+- `bcache.py` - a list that failed (no items and no pages; TMDb always answers with at least
+  one page) is no longer cached. TMDb Helper kept every answer six hours, failures included,
+  so one stalled request left its row empty for the rest of the evening. The first start
+  with this fix found 35 such rows cached on the Mac, and clears them (`extras/setup.py`).
 
 An update of that module replaces both, which is one reason Kodi's add-on updates are set to
 *Notify, but don't install updates* (Settings > System > Add-ons). The lasting fix is on the
@@ -263,6 +272,14 @@ part of a page loaded, including a soap with 38 seasons and 195 episodes, with n
 Measured on this skin, a TMDb Helper listing takes 0.7-1.5s the first time and
 0.05-0.3s once cached; a title's details take about 1.4s. Everything below is about
 paying that before you notice it.
+
+**Rows load as you reach them.** Every listing is a Python run of TMDb Helper, and a page
+used to start them all at once - twelve on Home, seventeen on Movies - so on the Xbox the
+two rows on screen queued behind fifteen you could not see. Now the first three rows of a
+page load straight away and each row below exists, and so loads, only once the focus is
+within two rows of it (`lazy()` in `tools/gen_home.py` and `tools/gen_browse.py`); a row
+Kodi does not draw asks for nothing. Scrolled down Home, every row was full before it
+came on screen.
 
 **Fetching ahead** (`extras/prefetch.py`, started with Home). A few seconds after
 startup it walks every row of the Movies and TV pages and the Home hero's titles, so the
@@ -447,6 +464,17 @@ video only once it has passed.
   backdrop of whatever has focus in it, the page's billboard; below that the page is plain
   dark, because behind every row the backdrop competed with the posters and hid the glass
   and focus effects.
+- **The tab bar stays out of the way.** It shows only while it has focus: press Up at the
+  top of a page, or Back. Back climbs as on Apple TV - from a row to the top of the page,
+  from there to the bar (on the tab of the page you are on), and from the bar to Home. On
+  Movies and TV each Back names a control rather than running `SetFocus()`: Kodi treats a
+  control id as a move and stops, but after a command it still runs the page's own Back,
+  which left the page. On Top 10 rows Back sits on each tile, since the focus is on the
+  tile, not the row around it.
+- **Trailers play full-screen.** Two and a half seconds into a hero trailer the shades, the
+  hero's text and buttons and the rows below fade away (`ATV_TrailerFull`), over black, so a
+  trailer wider than the screen is letterboxed rather than framed by strips of the still
+  backdrop. The first press stops it and brings everything back; the next goes on as usual.
 - Every hero button has an icon and a left-aligned label. A button needs its text offset
   on both sides, so "More Info" with an icon needs 290 wide.
 
