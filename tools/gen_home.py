@@ -12,7 +12,6 @@ Row kinds:
     rank    a numbered Top 10 (tools/gen_rank.py)
     poster  an ordinary poster row
 """
-import datetime
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,7 +27,9 @@ HEADER_TOP = 150        # where the focused row's title settles
 # Sorting by raw popularity fills these with whatever airs every weekday - Sesame Street,
 # Top of the Pops - so the network rows are held to recent titles with real vote counts,
 # and the "best of" rows are sorted by rating instead.
-RECENT = (datetime.date.today() - datetime.timedelta(days=540)).isoformat()
+# Date windows are filled in by Kodi from extras/dates.py, so rows never go stale.
+DATE = {n: f'$INFO[Window(home).Property(ATVDate.{n})]' for n in ('today', 'd45', 'd90', 'd365', 'd540', 'd1095', 'd3650')}
+RECENT = DATE['d540']
 
 # Genre ids for the formats that dominate popularity in some countries but are not what
 # anyone means by a chart: soap, news, talk, reality, kids.
@@ -38,7 +39,7 @@ NOT_SERIALS = '10766,10763,10767,10764,10762'
 WORLD_CINEMA = (f'{PLUGIN}info=discover&tmdb_type=movie&with_origin_country=KR%7CJP%7CFR%7CES%7CIT'
                 f'&sort_by=popularity.desc&primary_release_date.gte={RECENT}'
                 f'&vote_count.gte=30&nextpage=false')
-THREE_YEARS = (datetime.date.today() - datetime.timedelta(days=1095)).isoformat()
+THREE_YEARS = DATE['d1095']
 
 # India is the watch region: Netflix, Prime and JioHotstar catalogues differ by country,
 # and these are the services that carry content here. HBO, Hulu and the BBC have no
@@ -63,18 +64,22 @@ def language_row(code, media='movie', votes=15):
 
 # The hero shows what is in cinemas. TMDb's now_playing carried re-releases (Avengers:
 # Endgame, 2019), so it is films that opened in the last six weeks, as on the Movies page.
-CINEMA_SINCE = (datetime.date.today() - datetime.timedelta(days=45)).isoformat()
+CINEMA_SINCE = DATE['d45']
 HERO = (f'{PLUGIN}info=discover&tmdb_type=movie&primary_release_date.gte={CINEMA_SINCE}'
-        f'&primary_release_date.lte={datetime.date.today().isoformat()}&sort_by=popularity.desc'
+        f'&primary_release_date.lte={DATE["today"]}&sort_by=popularity.desc'
         f'&vote_count.gte=20&hide_unaired=true&nextpage=false')
 
-# Continue Watching is what you paused, films and episodes both: the row takes two lists,
-# ATV_ContinueFirst and ATV_ContinueSecond in xml/Includes_ATV.xml, whichever holds the most
-# recent pause first (extras/prefetch.py decides). The path in ROWS below is not used by it.
+# What you paused, from Trakt's on-deck lists, newest first. Anything under 4% watched is
+# left out (TMDb Helper zeroes the progress below that), which drops false starts. Episodes
+# and films are separate rows: merged into one row - two <content> lists - they froze Kodi.
+def paused(kind):
+    return (f'{PLUGIN}info=trakt_ondeck&tmdb_type={kind}&exclude_key=ResumeTime&exclude_value=0'
+            f'&exclude_operator=eq&nextpage=false')
+
 
 ROWS = [
-    ('upnext', 'Continue Watching',
-     f'{PLUGIN}info=trakt_ondeck&tmdb_type=tv&nextpage=false'),
+    ('upnext', 'Continue Watching', paused('tv')),
+    ('upnext', 'Continue Watching Films', paused('movie')),
     ('rank', 'Top 10 Movies Right Now',
      f'{PLUGIN}info=trakt_trending&tmdb_type=movie&nextpage=false'),
     ('rank', 'Top 10 Shows Right Now',
@@ -161,13 +166,14 @@ def build_row(index, top):
     onup = 8001 if index == 0 else row_id(index - 1)
     ondown = f'\n                    <param name="ondown" value="{row_id(index + 1)}" />' if index < len(ROWS) - 1 else ''
     if kind == 'upnext':
+        # the first row's emptiness collapses the page (ATV_UpNextEmpty); a later one only hides its title
+        empty = '' if index == 0 else f'\n                <param name="empty" value="Integer.IsEqual(Container({row_id(index)}).NumItems,0)" />'
         return f'''            <include content="ATV_UpNextRow">
                 <param name="id" value="{row_id(index)}" />
                 <param name="top" value="{top}" />
                 <param name="label" value="{label}" />
                 <param name="onup" value="{onup}" />{ondown.replace(chr(10) + " " * 20, chr(10) + " " * 16)}
-                <param name="content" value="$VAR[ATV_ContinueFirst]" />
-                <param name="content2" value="$VAR[ATV_ContinueSecond]" />
+                <param name="content" value="{content}" />{empty}
             </include>'''
     if kind == 'rank':
         return f'''                <include content="ATV_RankRow">

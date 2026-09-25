@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- extras/dates.py sets the date windows the rows are built on, then opens Kodi's start
+     window itself - so Home never builds a row before its dates exist. -->
 <window>
-	<onload>ReplaceWindow($INFO[System.StartupWindow])</onload>
+	<onload>RunScript(special://skin/extras/dates.py,startup)</onload>
 	<controls />
 </window>

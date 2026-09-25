@@ -24,7 +24,11 @@ import time
 
 import xbmc
 import xbmcgui
+
+from waiting import Monitor  # same folder; Kodi puts a RunScript's directory on sys.path
 import xbmcvfs
+
+import dates  # same folder; Kodi puts a RunScript's directory on sys.path
 
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 HOME = xbmcgui.Window(10000)
@@ -36,31 +40,8 @@ DWELL = 0.35         # seconds on one title before its page is worth fetching - 
 REWARM = 3 * 3600    # TMDb Helper's list caches expire; walk the rows again this often
 STARTUP_DELAY = 8    # let Home load its own rows first - they are what is on screen
 REMEMBERED = 200     # titles fetched recently, so moving back and forth costs nothing
-CONTINUE_EVERY = 60  # seconds between checks of which Continue Watching list goes first
-FILMS_FIRST = 'ATVContinueFilmsFirst'
+DATES_EVERY = 60     # seconds between checks that the date windows are still today's
 
-
-class Monitor(xbmc.Monitor):
-    """Knows Kodi is quitting as soon as Kodi says so.
-
-    Kodi only asks a skin's scripts to stop after it has unloaded the skin, and by then
-    the GUI calls a loop like this makes are waiting on a Kodi that is busy shutting down:
-    the script cannot see the request, Kodi kills it after 5s, and on a bad exit never
-    finishes quitting. System.OnQuit arrives at the start of shutdown, while there is
-    still time to leave cleanly.
-    """
-
-    quitting = False
-
-    def onNotification(self, sender, method, data):
-        if method in ('System.OnQuit', 'System.OnRestart'):
-            self.quitting = True
-
-    def stopping(self, seconds=0):
-        """Wait up to `seconds`, then True if Kodi is going away."""
-        if self.quitting or (self.waitForAbort(seconds) if seconds else self.abortRequested()):
-            return True
-        return self.quitting
 
 
 def jsonrpc(method, **params):
@@ -86,7 +67,7 @@ def page_rows():
         except Exception:
             continue
         for match in re.finditer(r'(plugin://plugin\.video\.themoviedb\.helper/\?[^"<]+)', xml):
-            path = match.group(1).replace('&amp;', '&')
+            path = dates.resolve(match.group(1).replace('&amp;', '&'))
             if '$INFO' not in path and '$VAR' not in path and path not in paths:
                 paths.append(path)
     return paths
@@ -145,27 +126,6 @@ class Fetcher:
             fetch(path)
 
 
-def newest_pause(kind):
-    """When the most recent pause in Trakt's on-deck list of this kind was, as (y, m, d).
-
-    The list is already newest first. Read through TMDb Helper, so it is its cached copy -
-    a tenth of a second - and the same list the row shows.
-    """
-    result = jsonrpc('Files.GetDirectory', media='video', properties=['lastplayed'],
-                     directory=f'{PLUGIN}info=trakt_ondeck&tmdb_type={kind}&nextpage=false')
-    for item in result.get('files') or []:
-        match = re.match(r'(\d{2})/(\d{2})/(\d{4})', item.get('lastplayed') or '')
-        if match:
-            month, day, year = match.groups()
-            return int(year), int(month), int(day)
-    return (0, 0, 0)
-
-
-def order_continue_watching():
-    films_first = newest_pause('movie') > newest_pause('tv')
-    if (HOME.getProperty(FILMS_FIRST) == '1') != films_first:
-        HOME.setProperty(FILMS_FIRST, '1' if films_first else '0')
-
 
 def hero_titles():
     titles = []
@@ -188,9 +148,9 @@ def watch():
     ordered = 0.0
     try:
         while not monitor.stopping():
-            if time.time() - ordered > CONTINUE_EVERY:
+            if time.time() - ordered > DATES_EVERY:
                 ordered = time.time()
-                order_continue_watching()
+                dates.refresh()        # past midnight, the date windows move on
 
             if time.time() - warmed > REWARM:
                 warmed = time.time()

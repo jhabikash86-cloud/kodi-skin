@@ -18,6 +18,8 @@ import time
 import xbmc
 import xbmcgui
 
+from waiting import Monitor  # same folder; Kodi puts a RunScript's directory on sys.path
+
 POLL_MS = 250
 # Seconds of stillness before a preview starts. While the YouTube add-on looks a trailer
 # up - 2-40s here - Kodi shows a modal busy dialog that ignores every key but Back, so a
@@ -60,28 +62,6 @@ def video_id(url):
     match = re.search(r'video_id=([\w-]{6,})', url or '')
     return match.group(1) if match else ''
 
-
-class Monitor(xbmc.Monitor):
-    """Knows Kodi is quitting as soon as Kodi says so.
-
-    Kodi only asks a skin's scripts to stop after it has unloaded the skin, and by then
-    the GUI calls a loop like this makes are waiting on a Kodi that is busy shutting down:
-    the script cannot see the request, Kodi kills it after 5s, and on a bad exit never
-    finishes quitting. System.OnQuit arrives at the start of shutdown, while there is
-    still time to leave cleanly.
-    """
-
-    quitting = False
-
-    def onNotification(self, sender, method, data):
-        if method in ('System.OnQuit', 'System.OnRestart'):
-            self.quitting = True
-
-    def stopping(self, seconds=0):
-        """Wait up to `seconds`, then True if Kodi is going away."""
-        if self.quitting or (self.waitForAbort(seconds) if seconds else self.abortRequested()):
-            return True
-        return self.quitting
 
 
 def info(label):

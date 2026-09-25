@@ -4,7 +4,7 @@
 
 	<!-- ===================== EXPRESSIONS ===================== -->
 
-	<expression name="ATV_RowsFocused">Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59) | Control.HasFocus(60)</expression>
+	<expression name="ATV_RowsFocused">Control.HasFocus(50) | Control.HasFocus(51) | ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | Control.HasFocus(54) | Control.HasFocus(55) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)</expression>
 	<expression name="ATV_UpNextEmpty">Integer.IsEqual(Container(50).NumItems,0)</expression>
 
 	<!-- ===================== VARIABLES ===================== -->
@@ -52,15 +52,6 @@
 		<value condition="!String.IsEmpty(Container(6070).ListItem.UniqueID(tmdb))">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=movie&amp;tmdb_id=$INFO[Container(6070).ListItem.UniqueID(tmdb)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
 
-	<!-- Continue Watching: films and episodes, the more recent of the two first (tools/gen_home.py) -->
-	<variable name="ATV_ContinueFirst">
-		<value condition="String.IsEqual(Window(home).Property(ATVContinueFilmsFirst),1)">plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=movie&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;nextpage=false</value>
-		<value>plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=tv&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;nextpage=false</value>
-	</variable>
-	<variable name="ATV_ContinueSecond">
-		<value condition="String.IsEqual(Window(home).Property(ATVContinueFilmsFirst),1)">plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=tv&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;nextpage=false</value>
-		<value>plugin://plugin.video.themoviedb.helper/?info=trakt_ondeck&amp;tmdb_type=movie&amp;exclude_key=ResumeTime&amp;exclude_value=0&amp;exclude_operator=eq&amp;nextpage=false</value>
-	</variable>
 	<variable name="ATV_UpNextSubtitle">
 		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.Season,Season ,  ·  ]$INFO[ListItem.Episode,Episode ]</value>
 		<value>Movie$INFO[ListItem.Year,  ·  ]</value>
@@ -312,8 +303,10 @@
 		<param name="top" />
 		<param name="label" />
 		<param name="content" />
-		<!-- A second list merged into the same row - Kodi 21 joins a container's contents -->
-		<param name="content2"></param>
+		<!-- One list per row. Two <content> lists in one row froze Kodi: its multi-list
+		     provider takes the list lock under the graphics lock, while a finished load holds
+		     the list lock and waits for the graphics lock to free the old artwork. -->
+		<param name="empty">$EXP[ATV_UpNextEmpty]</param>
 		<param name="onup" />
 		<param name="ondown" />
 		<definition>
@@ -324,7 +317,7 @@
 					<label>$PARAM[label]</label>
 					<font>atv_row</font>
 					<textcolor>FFFFFFFF</textcolor>
-					<visible>!$EXP[ATV_UpNextEmpty]</visible>
+					<visible>!$PARAM[empty]</visible>
 				</control>
 				<control type="list" id="$PARAM[id]">
 					<left>70</left><top>34</top><width>1850</width><height>340</height>
@@ -352,10 +345,8 @@
 							<include content="ATV_UpNextTile"><param name="focused" value="true" /></include>
 						</control>
 					</focusedlayout>
-					<!-- No sortby: Trakt already lists each newest first, and Kodi's lastplayed sort
-					     scrambled that (it put a July pause ahead of this week's) -->
+					<!-- No sortby: Trakt already lists it newest first -->
 					<content>$PARAM[content]</content>
-					<content>$PARAM[content2]</content>
 				</control>
 			</control>
 		</definition>

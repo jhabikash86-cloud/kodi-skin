@@ -18,6 +18,8 @@ import sys
 import xbmc
 import xbmcgui
 
+from waiting import Monitor, wait_for_stream  # same folder; on sys.path for RunScript
+
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 WINDOW = 1150
 LEAD_IN = 45          # seconds before the end to offer the next episode
@@ -75,24 +77,6 @@ def clear_card():
         HOME.clearProperty(name)
 
 
-def wait_for_episode(monitor, player):
-    """Wait for the episode itself: started before playback has even resolved, this used to
-    see nothing playing after a second and quit, so the card never appeared. The clock
-    stops while Umbrella's source list is open - that is you choosing - and TMDb Helper's
-    placeholder video does not count as the episode."""
-    waited = 0.0
-    while waited < START_WAIT:
-        if monitor.waitForAbort(0.5):
-            return False
-        try:
-            if player.isPlayingVideo() and not player.getPlayingFile().endswith('dummy.mp4'):
-                return True
-        except RuntimeError:
-            pass
-        if not xbmc.getCondVisibility('Window.IsActive(13000) | Window.IsActive(13001)'):
-            waited += 0.5
-    return False
-
 
 def play_next(item):
     """Start the following episode unattended - Auto Play, since nobody is choosing."""
@@ -102,15 +86,13 @@ def play_next(item):
 
 
 def watch(tmdb_id, season, episode):
-    monitor, player = xbmc.Monitor(), xbmc.Player()
+    monitor, player = Monitor(), xbmc.Player()
     shown = False
     remaining_at_last, following = LEAD_IN + 1, None
-    if not wait_for_episode(monitor, player):
+    if not wait_for_stream(player, START_WAIT, monitor):
         return
     try:
-        while not monitor.abortRequested():
-            if monitor.waitForAbort(POLL_MS / 1000.0):
-                return
+        while not monitor.stopping(POLL_MS / 1000.0):
             try:
                 if not player.isPlayingVideo():
                     # Ended with the card up and nothing chosen: that is the countdown

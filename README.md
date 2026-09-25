@@ -31,10 +31,12 @@ python3 tools/gen_details.py      # the five title pages
 python3 tools/gen_search.py .     # the two search screens
 ```
 
-`gen_browse.py` and `gen_home.py` bake today's date into every row with a date
-window - "new releases", the "of the decade" cut-offs, the recency floor the charts
-use - so those rows describe the day they were generated, not today. Re-run both now
-and then; nothing breaks if you forget, the windows just drift backwards.
+Rows never go stale. Where a row has a date window - "In Cinemas Now" is the last 45 days,
+the charts the last 18 months, "of the Decade" the last ten years - the XML asks for
+`$INFO[Window(home).Property(ATVDate.d45)]` and `extras/dates.py` sets it: from
+`Startup.xml`, before Home builds a row, and again each minute from `extras/prefetch.py`, so
+after midnight the windows move on by themselves and the rows reload. Nothing needs
+regenerating.
 
 ## Kodi settings this skin expects
 
@@ -277,12 +279,25 @@ Rows are for things you can watch now: every one passes `hide_unaired=true`, whi
 titles not out yet - they otherwise appeared with TMDb Helper's red italic markup in their
 names. Coming Soon, On TV Today and Continue Watching keep them.
 
-**Continue Watching** is your paused films and episodes, from Trakt's on-deck lists - one for
-each kind, merged into one row (Kodi 21 joins a container's contents), with whichever holds
-the most recent pause first; `extras/prefetch.py` checks each minute. Anything under 4%
-watched is left out (TMDb Helper already zeroes progress below that), which drops false
-starts. Kodi's own sort by last played is not used: it scrambled Trakt's newest-first order.
-A show with two paused episodes still shows both.
+**Continue Watching** is two rows: the episodes you paused, then the films, each Trakt's
+on-deck list, newest first. Anything under 4% watched is left out (TMDb Helper already
+zeroes progress below that), which drops false starts. A show with two paused episodes still
+shows both.
+
+They were one row for a day - two `<content>` lists in one container, which Kodi 21 merges -
+and it froze Kodi. Its multi-list provider takes a list's lock while holding the graphics
+lock; a list that has just finished loading holds its own lock while freeing the old
+artwork, which needs the graphics lock. Each waits for the other, and everything stops: the
+remote, the pages, even Quit. A row with one list does not take that path, so every row in
+the skin has one list. Checked afterwards with five cold starts in a row.
+
+**Mood rows**, Netflix style, sit between the charts so no page is a run of Top 10s: on
+Movies, Edge-of-Your-Seat Thrillers, Bollywood Romance, Laugh-Out-Loud Comedies, Mind-Bending
+Sci-Fi and Award-Worthy Dramas; on TV, Gripping Crime Dramas, Comedies to Binge and Epic
+Sci-Fi & Fantasy (`mood()` in `tools/gen_browse.py`). Each was kept because most of its
+titles appear in no other row on its page; Big Action and Binge-Worthy Mysteries were tried
+and dropped for repeating the charts. The TV ones are English: by rating alone, Korean dramas
+filled them, and World Series covers those.
 
 **My List** is its own tab: your Trakt watchlist, which is what the My List buttons add to,
 films and shows, newest first, upcoming titles included.
@@ -353,6 +368,10 @@ video only once it has passed.
   episode, overlays it, and when the episode ends with the card still up, the next one starts
   on Auto Play - nobody is at the remote to choose a source. Pressing its Play button follows
   your Play setting.
+- **Backing out of the source list** left `extras/play.py` waiting up to three minutes for a
+  stream that was never coming, with the hero's trailers switched off the whole time. The
+  wait (`extras/waiting.py`, shared with `upnext.py`) now pauses while the list is open and
+  gives up 10s after it closes with nothing playing.
 - **Quitting Kodi** could freeze it. Kodi only asks a skin's scripts to stop after it has
   unloaded the skin, when their GUI calls wait on a Kodi busy shutting down; it killed them
   after 5s each and sometimes never finished exiting - reliably when a trailer was loading.

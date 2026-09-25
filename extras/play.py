@@ -29,15 +29,14 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 
+from waiting import wait_for_stream  # same folder; Kodi puts a RunScript's directory on sys.path
+
 
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 RESUME_FLOOR = 60      # ignore a resume point this small - it is a false start
 NEARLY_DONE = 0.92     # past this much of the runtime, treat the episode as finished
 START_TIMEOUT = 180    # seconds to wait for the player add-on to resolve a stream,
                        # not counting time spent with the source list open
-# Umbrella's source list and its progress window. While either is up you are choosing,
-# however long that takes, so the wait for a stream does not run out under you.
-PICKING = 'Window.IsActive(13000) | Window.IsActive(13001)'
 SETTLE = 2             # let the player settle before seeking
 
 # When a debrid service refuses a torrent - usually a rights holder's takedown - Torrentio
@@ -239,7 +238,7 @@ def play(path, resume=0, title=''):
         # Resuming is done here, from Trakt, once the stream is up (see the docstring).
         xbmc.executebuiltin(f'PlayMedia({path},noresume)')
         player = xbmc.Player()
-        if not wait_for_stream(player):
+        if not wait_for_stream(player, START_TIMEOUT):
             return  # the user backed out, or nothing could be resolved
     finally:
         home.clearProperty(RESOLVING)
@@ -272,31 +271,6 @@ def play(path, resume=0, title=''):
     except RuntimeError:
         pass  # playback ended while we were waiting
 
-
-def real_stream(player):
-    """True once the stream itself is playing.
-
-    With a resolvable player such as Umbrella, TMDb Helper plays a tiny placeholder
-    first - dummy.mp4 - and swaps the real stream in once it is resolved. Taking the
-    placeholder for playback meant the resume point was never applied (it "stopped"
-    two seconds later), and the Up Next watcher quit before the episode began.
-    """
-    try:
-        return player.isPlayingVideo() and not player.getPlayingFile().endswith('dummy.mp4')
-    except RuntimeError:
-        return False
-
-
-def wait_for_stream(player, timeout=START_TIMEOUT):
-    """Wait for the real stream. The clock stops while the source list is open."""
-    waited = 0.0
-    while waited < timeout:
-        if real_stream(player):
-            return True
-        xbmc.sleep(250)
-        if not xbmc.getCondVisibility(PICKING):
-            waited += 0.25
-    return False
 
 
 
