@@ -236,7 +236,7 @@ not play from its top source, and a pack was what sat there.
 The `<cache>` block in `advancedsettings.xml` is what keeps a 14GB stream from
 stalling; Kodi's default read-ahead is sized for local files.
 
-## Why pages went blank - and three fixes outside the skin
+## Why pages went blank - and the fixes outside the skin
 
 Pages that stayed black, a title page with a "TMDb Helper" error, and one Kodi session where
 nothing loaded at all had one cause. From this network, **TMDb's API cannot be reached over
@@ -479,6 +479,55 @@ video only once it has passed.
   backdrop. The first press stops it and brings everything back; the next goes on as usual.
 - Every hero button has an icon and a left-aligned label. A button needs its text offset
   on both sides, so "More Info" with an icon needs 290 wide.
+
+## On the Xbox - what testing there found
+
+Everything here was measured on the Xbox Series X itself, through a small test add-on that
+connects out to the Mac (the Xbox blocks connections coming in): key presses, info labels,
+screenshots, Kodi's log, and Python run inside Kodi there. Kodi 21.2, Python 3.8, SQLite
+3.30, all eight cores and 3.3 GB free to Kodi.
+
+**Why it was slow.**
+- Every TMDb Helper call costs about 0.7s on the Xbox before it does anything - starting
+  Python and importing the add-on - against 0.05s on the Mac. Keeping its Python running
+  between calls (`reuselanguageinvoker`) crashed Kodi on the Mac when rows loaded in
+  parallel, which is presumably why TMDb Helper ships with it off. So: fewer calls, made
+  earlier. Rows load as you reach them; nothing starts with Home that can wait.
+- TMDb Helper's details cache never worked there: SQLite 3.30 rejects two of its statements
+  ("SQL logic error", 143 in an evening), so no title's details, cast or art were saved and
+  every title page was fetched again. `extras/setup.py` patches both (on an SQLite older than
+  3.35 only) - see "three fixes" above, and `HELPER_FIXES`.
+- At a cold start about fifteen Python processes began in the same second and slowed each
+  other: Home opened at 1.0s but its first rows filled at 6.7-14s. Now only what is on
+  screen loads first: setup runs at start only after a skin update, the date windows and
+  the hero are remembered between runs, prefetch and the trailer watcher start seconds
+  later, and TMDb Helper trusts an unexpired Trakt token instead of confirming it with
+  Trakt (1.6-2.2s at every start). Eight add-on services from other setups (Fen Light, POV,
+  Embuary, Umbrestuary, script.trakt, service.upnext, CocoScrapers) and Kodi's version check
+  were switched off.
+- Once loaded, pages are quick: a tab switch draws completely in 0.1-0.5s, a key press
+  moves focus in about 0.1s, the GUI holds 60fps.
+
+**Why playback stopped, stuttered or felt soft.**
+- Kodi's stream buffer was 20 MB - two seconds of a remux. Kodi 21 reads it from its own
+  settings (`filecache.memorysize`), not from advancedsettings.xml, so the 100 MB set there
+  never applied anywhere. Now 256 MB; a 2s stall from the debrid server during an episode
+  later passed unnoticed. The Xbox pulls 229 Mbit/s from the debrid service.
+- At 120Hz Kodi presents at 60fps, so 24fps film ran 3:2 - judder on every pan. Frame-rate
+  matching is on, with 2s for the TV to settle; without it the switch collided with the
+  HDR switch and the renderer failed and retried.
+- F1's list was topped by a 78 GB full Blu-ray disc image, which Kodi plays badly over the
+  internet; an AI upscale was fifth. Both are filtered out now (a patch to Umbrella, and its
+  own AI filter). Episodes are held to 1-10 GB (season packs, listed at 15-40 GB, drop out),
+  films to 3-100 GB; Umbrella no longer puts Dolby Vision first (the QN90A has none).
+- Up Next quit Kodi: the next episode was asked for while the last still played, and Kodi
+  exits on "two concurrent busydialogs". It now stops the episode first. The card counts
+  down ten seconds; its Play button starts the next at once; both Auto Play.
+
+**Found, not fixed.** The hand-over to the next episode takes about 40s - Umbrella's search
+(11-22s) and the HDR and refresh switches. Umbrella pre-scrapes the next episode only for its
+own playlists. Real-Debrid and AllDebrid no longer let apps check what is cached, so every
+release shows as UNCHECKED; seeders are no substitute (the cached-release indexes report 0).
 
 ## Testing
 

@@ -764,7 +764,9 @@
 	</variable>
 	<variable name="ATV_PlayingHDR">
 		<value condition="String.IsEqual(VideoPlayer.HdrType,dolbyvision)">  ·  Dolby Vision</value>
-		<value condition="String.IsEqual(VideoPlayer.HdrType,hdr10+)">  ·  HDR10+</value>
+		<!-- "hdr10+" cannot be written in a condition: Kodi reads + as "and", and the whole
+		     condition failed to parse. Anything longer than hdr10 that starts with it is HDR10+. -->
+		<value condition="String.StartsWith(VideoPlayer.HdrType,hdr10) + !String.IsEqual(VideoPlayer.HdrType,hdr10)">  ·  HDR10+</value>
 		<value condition="String.IsEqual(VideoPlayer.HdrType,hdr10)">  ·  HDR10</value>
 		<value condition="String.IsEqual(VideoPlayer.HdrType,hlg)">  ·  HLG</value>
 		<value></value>
