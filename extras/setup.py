@@ -9,7 +9,7 @@ at every start (Startup.xml), costs nothing once done, and for each add-on found
     lighter posters on the Xbox
   * Umbrella: scraper timeout, early stop at 10 4K results, subtitles, resume, Trakt, the
     release filters, and Magneto as its external scraper
-  * Magneto and CocoScrapers: the providers switched on as on the Mac
+  * Magneto: the providers switched on as on the Mac
   * YouTube: its local server reachable, which the trailers need
   * Kodi: English subtitles, add-on updates notify only; advancedsettings.xml if none
 
@@ -34,7 +34,7 @@ import xbmcvfs
 SKIN = 'special://skin/extras/'
 XBOX = xbmc.getCondVisibility('System.Platform.UWP')
 STATE = 'special://profile/addon_data/skin.appletv.minimal/setup.json'
-VERSION = 2   # raise to apply a changed list below once more
+VERSION = 3   # raise to apply a changed list below once more
 
 KODI = {
     'locale.subtitlelanguage': 'English',
@@ -87,8 +87,8 @@ ADDONS = {
         'dev.disable.season.filter': True,
         'dev.disable.show.filter': True,
     },
-    # The scrapers behind Umbrella's sources on the Mac. Without them Umbrella lists far
-    # fewer releases, and new shows (Furious) found none on the Xbox.
+    # The scraper behind Umbrella's sources on the Mac. Umbrella takes one external scraper;
+    # without it, it lists far fewer releases, and new shows (Furious) found none on the Xbox.
     'script.module.magneto': {
         'scraping_timeout': 30,
         'provider.piratebay': True,
@@ -103,16 +103,6 @@ ADDONS = {
         'results.list_format': 1,
         'highlight.type': 1,
     },
-    'script.module.cocoscrapers': {
-        'provider.1337x': True, 'provider.bitcq': False, 'provider.bitlord': True,
-        'provider.bitsearch': True, 'provider.comet': True, 'provider.eztv': True,
-        'provider.isohunt2': False, 'provider.kickass2': True, 'provider.knaben': True,
-        'provider.mediafusion': True, 'provider.nyaa': False, 'provider.piratebay': True,
-        'provider.torrentdownload': True, 'provider.torrentfunk': False,
-        'provider.torrentgalaxy': True, 'provider.torrentio': True,
-        'provider.torrentquest': True, 'provider.torrentproject2': False,
-        'provider.yourbittorrent': False, 'provider.ytsmx': False,
-    },
     'plugin.video.youtube': {
         'kodion.http.listen': '0.0.0.0',
     },
@@ -123,6 +113,7 @@ LINKS = {
     ('plugin.video.umbrella', 'script.module.magneto'): {
         'provider.external.enabled': True,
         'external_provider.module': 'script.module.magneto',
+        'external_provider.name': 'magneto',   # the module Umbrella imports; the id alone is not enough
     },
 }
 PLAYERS = ('umbrella.select.json', 'umbrella.autoplay.json')

@@ -52,6 +52,8 @@
 				</control>
 				<!-- Hidden list: holds the ten items the tiles read by position -->
 				<control type="list" id="$PARAM[data]">
+					<!-- never keep focus: if Kodi drops it here, hand it to the first tile -->
+					<onfocus>SetFocus($PARAM[idbase]01)</onfocus>
 					<left>0</left><top>1078</top><width>10</width><height>2</height>
 					<itemlayout width="1" height="1" />
 					<focusedlayout width="1" height="1" />

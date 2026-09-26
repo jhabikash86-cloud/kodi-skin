@@ -24,7 +24,6 @@ Add-ons > Install from zip file > USB, one at a time, waiting for "Add-on instal
 | `repository.umbrella-2.2.6.zip` | Umbrella, and the YouTube version the Mac uses |
 | `repository.jurialmunkey-3.4.zip` | TMDb Helper 6.17 (Kodi's own repository only has 5.4) |
 | `repository.kodifitzwell-0.0.1.zip` | Magneto, Umbrella's scraper |
-| `repository.cocoscrapers-1.0.0.zip` | CocoScrapers |
 
 ## 3. Add-ons - Add-ons > Install from repository
 
@@ -32,14 +31,14 @@ Add-ons > Install from zip file > USB, one at a time, waiting for "Add-on instal
   Update, and pick the 6.x version)
 - Umbrella repository > **Umbrella**, and **YouTube**
 - kodifitzwell > **Magneto**
-- CocoScrapers > **CocoScrapers**
 
-Without Magneto and CocoScrapers Umbrella finds far fewer releases; that is why Furious
-had no episodes on the Xbox.
+Umbrella takes one external scraper, and on the Mac that is Magneto; the skin points Umbrella
+at it. Without it Umbrella finds far fewer releases - the likely reason Furious had no
+episodes on the Xbox. (CocoScrapers is on the Mac too, but Umbrella does not use it.)
 
 ## 4. The skin
 
-Add-ons > Install from zip file > USB > `skin.appletv.minimal-0.3.2.zip`, then
+Add-ons > Install from zip file > USB > `skin.appletv.minimal-0.3.3.zip`, then
 Settings > Interface > Skin > ATV Minimal. **Quit Kodi and open it again** (Xbox button >
 Kodi > ☰ > Quit). A notice lists what it set up.
 

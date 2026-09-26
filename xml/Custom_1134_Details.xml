@@ -10,6 +10,8 @@
 
         <!-- Hidden list: item 0 of TMDb Helper's details folder is the title with full metadata -->
         <control type="list" id="9500">
+            <!-- Never keep focus: if Kodi drops it here (the focused control vanished), hand it on -->
+            <onfocus>SetFocus(9601)</onfocus>
             <left>0</left><top>1078</top><width>10</width><height>2</height>
             <itemlayout width="1" height="1" />
             <focusedlayout width="1" height="1" />

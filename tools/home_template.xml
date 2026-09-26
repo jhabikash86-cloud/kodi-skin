@@ -16,6 +16,8 @@
 
         <!-- Hidden data list that feeds the hero ("top shelf"). Rotates every 10s. -->
         <control type="list" id="40">
+            <!-- Never keep focus: if Kodi drops it here (the focused control vanished), hand it on -->
+            <onfocus>SetFocus(8001)</onfocus>
             <left>0</left><top>1078</top><width>1740</width><height>2</height>
             <orientation>horizontal</orientation>
             <!-- Only rotates while you are idle, so the title never changes under your hands -->
@@ -30,6 +32,7 @@
         <!-- Seed for "Because You Watched": the most recent film in your Trakt history.
              The row below reads its title and id, so the row follows what you watch. -->
         <control type="list" id="6070">
+            <onfocus>SetFocus(8001)</onfocus>
             <left>0</left><top>1078</top><width>10</width><height>2</height>
             <itemlayout width="1" height="1" />
             <focusedlayout width="1" height="1" />

@@ -40,13 +40,14 @@ regenerating.
 
 ## Setting up a new device
 
-Install the skin, install TMDb Helper, Umbrella, YouTube, Magneto and CocoScrapers from the
-same repositories as the Mac, restart Kodi once, and sign in (Trakt, debrid, Easynews,
+Install the skin, install TMDb Helper, Umbrella, YouTube and Magneto from the same
+repositories as the Mac, restart Kodi once, and sign in (Trakt, debrid, Easynews,
 AIOStreams). The rest is done by `extras/setup.py`, which runs at every start from
 `Startup.xml` and, for each of those add-ons it finds, applies once what is below: Play
 opening Umbrella's source list (and the two player files); Umbrella's scraper, filter,
 subtitle and Trakt settings, with Magneto as its external scraper once Magneto is
-installed; the providers Magneto and CocoScrapers have switched on; English subtitles;
+installed (Umbrella takes one; it needs both the add-on id and the module name, `magneto`);
+the providers Magneto has switched on; English subtitles;
 YouTube's server for trailers; and an `advancedsettings.xml` where there is none (the
 Xbox-safe one in `extras/`). On the Xbox it also picks lighter posters (w780 rather than
 2000x3000 originals) and turns on matching the TV to the film's frame rate. Settings are
@@ -54,8 +55,9 @@ applied once per add-on and then left alone, so changing one later sticks; an ad
 installed later is set up at the next start. It also applies three fixes to TMDb Helper's
 shared module whenever it finds the module without them - after an update, the next start
 fixes it again - and only where the lines it replaces are exactly as expected. Nothing
-touches an account. Without Magneto and CocoScrapers, Umbrella found no releases at all for
-some new shows on the Xbox (Furious). Tested on the Mac by reverting every one of these
+touches an account. Without Magneto, Umbrella found no releases at all for some new shows
+on the Xbox (Furious). CocoScrapers is installed on the Mac but unused - Umbrella points at
+Magneto - so the Xbox does not need it. Tested on the Mac by reverting every one of these
 settings, removing the players and the fixes, and starting Kodi: all came back, and Play
 opened the source list.
 
