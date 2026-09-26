@@ -34,18 +34,23 @@ import xbmcvfs
 SKIN = 'special://skin/extras/'
 XBOX = xbmc.getCondVisibility('System.Platform.UWP')
 STATE = 'special://profile/addon_data/skin.appletv.minimal/setup.json'
-VERSION = 5   # raise to apply a changed list below once more
+VERSION = 6   # raise to apply a changed list below once more
 
 KODI = {
     'locale.subtitlelanguage': 'English',
     'general.addonupdates': 1,   # notify, don't install: an update can undo the IPv4 fix
 }
+# Kodi 21 reads its stream buffer from these settings, not from advancedsettings.xml, so the
+# 100 MB set there never applied: it was Kodi's 20 MB - two seconds of a remux, and any pause
+# from the debrid server stalled the picture. 256 MB is about 25 seconds of a remux.
+KODI['filecache.memorysize'] = 256
 if XBOX:
-    # No refresh-rate switching on the Xbox. It runs the TV at 120Hz, which 24fps divides into
-    # evenly (each frame shown five times), so films are already judder-free; switching to
-    # 23.98Hz only added a resync, and on the Xbox it collided with the HDR switch at the
-    # start of playback - the renderer failed twice and the TV blanked (seen in its log).
-    KODI['videoplayer.adjustrefreshrate'] = 0
+    # Films at their own 23.98Hz, as Apple TV's "Match Frame Rate". At 120Hz Kodi on the Xbox
+    # presents at 60 frames a second, so 24fps film ran 3:2 - judder on every pan. Switching
+    # without a pause collided with the HDR switch (renderer failed twice, HDR flapped on-off-
+    # on); two seconds for the TV to settle leaves one clean switch - measured on the Xbox.
+    KODI['videoplayer.adjustrefreshrate'] = 2     # on start and stop of playback
+    KODI['videoscreen.delayrefreshchange'] = 20   # tenths of a second
 ADDONS = {
     'plugin.video.themoviedb.helper': {
         # Original-size posters (2000x3000) look best on the Mac; on the Xbox each one is a
@@ -97,6 +102,9 @@ ADDONS = {
         'source.filterebysize': 1,
         'source.min.epsize': 1.0,
         'source.max.epsize': 7.0,
+        # AI upscales are 1080p passed off as 4K ("MULTi.AI.2160p"); 3D is not wanted
+        'remove.aiupscaled.sources': True,
+        'remove.3D.sources': True,
         'source.filtermbysize': 1,
         'source.min.moviesize': 3.0,
         'source.max.moviesize': 100.0,
@@ -252,6 +260,19 @@ HELPER_FIXES = [
 ]
 
 
+UMBRELLA_SOURCES = 'special://home/addons/plugin.video.umbrella/resources/lib/modules/'
+DISC_FIND = "\t\tif getSetting('remove.hevc') == 'true':\n"
+DISC_FIXED = (
+    "\t\t# skin.appletv.minimal: no disc images. A full Blu-ray (BDMV folder or ISO, often named\n"
+    "\t\t# COMPLETE...BLURAY) is not a video file: over the internet Kodi guesses the main title,\n"
+    "\t\t# seeks slowly and stutters - it topped F1's list at 78 GB. Remuxes are the same picture.\n"
+    + "\t\tself.sources = [i for i in self.sources if not re.search(r'\\b(?:COMPLETE(?:[\\W_]+\\w+){0,3}?[\\W_]+BLU[\\W_]?RAY\\b(?![\\W_]+(?:REMUX|x26[45]|HEVC|AVC))|BDMV|ISO|BD(?:25|50|66|100))\\b', i.get('name', ''), re.I)]\n"
+    + DISC_FIND)
+UMBRELLA_FIXES = [
+    ('sources.py', 'skin.appletv.minimal: no disc images', DISC_FIND, DISC_FIXED),
+]
+
+
 def apply_fixes(folder, fixes):
     """Each fix only where its line is found exactly as expected, and only once."""
     for name, done, find, fixed in fixes:
@@ -272,6 +293,8 @@ def fix_module():
         apply_fixes(MODULE, FIXES)
     if installed('plugin.video.themoviedb.helper'):
         apply_fixes(HELPER_DB, HELPER_FIXES)
+    if installed('plugin.video.umbrella'):
+        apply_fixes(UMBRELLA_SOURCES, UMBRELLA_FIXES)
 
 
 FAILED = b'{"items":[],"pages":0,"count":0}'
