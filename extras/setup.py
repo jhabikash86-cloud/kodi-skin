@@ -34,7 +34,7 @@ import xbmcvfs
 SKIN = 'special://skin/extras/'
 XBOX = xbmc.getCondVisibility('System.Platform.UWP')
 STATE = 'special://profile/addon_data/skin.appletv.minimal/setup.json'
-VERSION = 8   # raise to apply a changed list below once more
+VERSION = 9   # raise to apply a changed list below once more
 
 KODI = {
     'locale.subtitlelanguage': 'English',
@@ -106,6 +106,10 @@ ADDONS = {
         # AI upscales are 1080p passed off as 4K ("MULTi.AI.2160p"); 3D is not wanted
         'remove.aiupscaled.sources': True,
         'remove.3D.sources': True,
+        # Dolby Vision releases on the Xbox: the QN90A cannot show DV, and DV+HDR10 hybrids made
+        # Kodi switch HDR twice at start (on-off-on, renderer failures, ~10s of black) where
+        # plain HDR10 switched once - measured there. The Mac keeps them.
+        'remove.dolby.vision': XBOX,
         'source.filtermbysize': 1,
         'source.min.moviesize': 3.0,
         'source.max.moviesize': 100.0,

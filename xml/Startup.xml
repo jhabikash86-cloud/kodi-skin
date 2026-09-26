@@ -8,6 +8,6 @@
 <window>
 	<onload condition="String.IsEmpty(Skin.String(ATVDate.today))">RunScript(special://skin/extras/dates.py,startup)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(ATVDate.today))">ReplaceWindow(home)</onload>
-	<onload condition="!String.IsEqual(Skin.String(ATVSetupVersion),0.4.3)">RunScript(special://skin/extras/setup.py)</onload>
+	<onload condition="!String.IsEqual(Skin.String(ATVSetupVersion),0.4.4)">RunScript(special://skin/extras/setup.py)</onload>
 	<controls />
 </window>
