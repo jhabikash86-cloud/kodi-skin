@@ -28,7 +28,7 @@ HEADER_TOP = 150        # where the focused row's title settles
 # Top of the Pops - so the network rows are held to recent titles with real vote counts,
 # and the "best of" rows are sorted by rating instead.
 # Date windows are filled in by Kodi from extras/dates.py, so rows never go stale.
-DATE = {n: f'$INFO[Window(home).Property(ATVDate.{n})]' for n in ('today', 'd45', 'd90', 'd365', 'd540', 'd1095', 'd3650')}
+DATE = {n: f'$INFO[Skin.String(ATVDate.{n})]' for n in ('today', 'd45', 'd90', 'd365', 'd540', 'd1095', 'd3650')}
 RECENT = DATE['d540']
 
 # Genre ids for the formats that dominate popularity in some countries but are not what

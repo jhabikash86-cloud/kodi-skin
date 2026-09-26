@@ -4,8 +4,9 @@
 <window>
     <defaultcontrol>8001</defaultcontrol>
     <menucontrol>9000</menucontrol>
-    <!-- Not once Kodi is quitting: a script started then held Kodi's quit (extras/waiting.py). -->
-    <onload condition="String.IsEmpty(Window(home).Property(ATVQuitting))">RunScript(special://skin/extras/trailer.py,watch)</onload>
+    <!-- Not once Kodi is quitting: a script started then held Kodi's quit (extras/waiting.py).
+         The trailer watcher starts from the hero's Play button, which has focus as Home opens;
+         starting it here as well ran two at once, and on the Xbox each Python start costs. -->
     <onload condition="String.IsEmpty(Window(home).Property(ATVQuitting))">RunScript(special://skin/extras/prefetch.py)</onload>
     <!-- Leaving Home ends a trailer preview - but only that. Unconditionally, this stopped
          everything: starting an episode from Continue Watching, or a film from the hero,
@@ -26,7 +27,7 @@
 			<autoscroll time="9000">System.IdleTime(5) + String.IsEmpty(Window(home).Property(ATVPreview))</autoscroll>
             <itemlayout width="1" height="1" />
             <focusedlayout width="1" height="1" />
-            <content limit="8">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;primary_release_date.gte=$INFO[Window(home).Property(ATVDate.d45)]&amp;primary_release_date.lte=$INFO[Window(home).Property(ATVDate.today)]&amp;sort_by=popularity.desc&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false</content>
+            <content limit="8">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d45)]&amp;primary_release_date.lte=$INFO[Skin.String(ATVDate.today)]&amp;sort_by=popularity.desc&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false</content>
         </control>
 
         <!-- Seed for "Because You Watched": the most recent film in your Trakt history.
@@ -148,7 +149,7 @@
                     <param name="width" value="206" />
                     <param name="label" value="Play" />
                     <param name="icon" value="atv/icon_play.png" />
-                    <onfocus condition="String.IsEmpty(Window(home).Property(ATVQuitting))">RunScript(special://skin/extras/trailer.py,watch)</onfocus>
+                    <onfocus condition="String.IsEmpty(Window(home).Property(ATVQuitting)) + String.IsEmpty(Window(home).Property(ATVPreviewWatcher))">RunScript(special://skin/extras/trailer.py,watch)</onfocus>
                     <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)],$INFO[Container(40).ListItem.Property(original_language)])</onclick>
                     <onback>SetFocus(9001)</onback>
                     <onup>9000</onup>
@@ -314,7 +315,7 @@
                         <param name="label" value="Top 10 on Netflix" />
                         <param name="onup" value="55" />
                         <param name="ondown" value="57" />
-                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=8&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Window(home).Property(ATVDate.d540)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=8&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
                     </include>
                 </control>
                 <control type="group">
@@ -327,7 +328,7 @@
                         <param name="label" value="Top 10 on Prime Video" />
                         <param name="onup" value="56" />
                         <param name="ondown" value="58" />
-                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=119&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Window(home).Property(ATVDate.d540)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=119&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
                     </include>
                 </control>
                 <control type="group">
@@ -340,7 +341,7 @@
                         <param name="label" value="Top 10 on JioHotstar" />
                         <param name="onup" value="57" />
                         <param name="ondown" value="59" />
-                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=2336&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Window(home).Property(ATVDate.d540)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_watch_providers=2336&amp;watch_region=IN&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
                     </include>
                 </control>
                 <control type="group">
@@ -351,7 +352,7 @@
                         <param name="label" value="Trending in Hindi" />
                         <param name="onup" value="58" />
                         <param name="ondown" value="60" />
-                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Window(home).Property(ATVDate.d540)]&amp;vote_count.gte=15&amp;hide_unaired=true&amp;nextpage=false" />
+                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=15&amp;hide_unaired=true&amp;nextpage=false" />
                     </include>
                 </control>
                 <control type="group">
@@ -362,7 +363,7 @@
                         <param name="label" value="Trending in Tamil" />
                         <param name="onup" value="59" />
                         <param name="ondown" value="61" />
-                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Window(home).Property(ATVDate.d540)]&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
+                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
                     </include>
                 </control>
                 <control type="group">
@@ -372,7 +373,7 @@
                         <param name="top" value="6015" />
                         <param name="label" value="World Cinema" />
                         <param name="onup" value="60" />
-                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Window(home).Property(ATVDate.d540)]&amp;vote_count.gte=30&amp;hide_unaired=true&amp;nextpage=false" />
+                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=30&amp;hide_unaired=true&amp;nextpage=false" />
                     </include>
                 </control>
             </control>

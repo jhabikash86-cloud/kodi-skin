@@ -4,8 +4,9 @@
 <window>
     <defaultcontrol>8001</defaultcontrol>
     <menucontrol>9000</menucontrol>
-    <!-- Not once Kodi is quitting: a script started then held Kodi's quit (extras/waiting.py). -->
-    <onload condition="String.IsEmpty(Window(home).Property(ATVQuitting))">RunScript(special://skin/extras/trailer.py,watch)</onload>
+    <!-- Not once Kodi is quitting: a script started then held Kodi's quit (extras/waiting.py).
+         The trailer watcher starts from the hero's Play button, which has focus as Home opens;
+         starting it here as well ran two at once, and on the Xbox each Python start costs. -->
     <onload condition="String.IsEmpty(Window(home).Property(ATVQuitting))">RunScript(special://skin/extras/prefetch.py)</onload>
     <!-- Leaving Home ends a trailer preview - but only that. Unconditionally, this stopped
          everything: starting an episode from Continue Watching, or a film from the hero,
@@ -148,7 +149,7 @@
                     <param name="width" value="206" />
                     <param name="label" value="Play" />
                     <param name="icon" value="atv/icon_play.png" />
-                    <onfocus condition="String.IsEmpty(Window(home).Property(ATVQuitting))">RunScript(special://skin/extras/trailer.py,watch)</onfocus>
+                    <onfocus condition="String.IsEmpty(Window(home).Property(ATVQuitting)) + String.IsEmpty(Window(home).Property(ATVPreviewWatcher))">RunScript(special://skin/extras/trailer.py,watch)</onfocus>
                     <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)],$INFO[Container(40).ListItem.Property(original_language)])</onclick>
                     <onback>SetFocus(9001)</onback>
                     <onup>9000</onup>

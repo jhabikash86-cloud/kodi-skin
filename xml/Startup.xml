@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- extras/dates.py sets the date windows the rows are built on, then opens Kodi's start
-     window itself - so Home never builds a row before its dates exist. extras/setup.py
-     sets up the add-ons the skin works with, on a new device. -->
+<!-- Home opens at once on the date windows saved last time (skin strings, kept between
+     runs); extras/dates.py moves them on alongside if the day has changed. Only a first
+     start, with nothing saved, waits for it - dates.py then opens the start window itself.
+     extras/setup.py sets up the add-ons the skin works with, on a new device. -->
 <window>
-	<onload>RunScript(special://skin/extras/setup.py)</onload>
 	<onload>RunScript(special://skin/extras/dates.py,startup)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(ATVDate.today))">ReplaceWindow(home)</onload>
+	<onload>RunScript(special://skin/extras/setup.py)</onload>
 	<controls />
 </window>

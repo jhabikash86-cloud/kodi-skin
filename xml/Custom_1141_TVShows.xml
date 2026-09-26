@@ -72,7 +72,7 @@
                 <param name="onup" value="9000" />
                 <param name="ondown" value="52" />
                 <param name="onback" value="9003" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=213&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=213&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_RankRow">
                 <param name="id" value="52" />
@@ -83,7 +83,7 @@
                 <param name="onup" value="51" />
                 <param name="ondown" value="53" />
                 <param name="onback" value="7001" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=1024&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=1024&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <include content="ATV_RankRow">
                 <param name="id" value="53" />
@@ -94,7 +94,7 @@
                 <param name="onup" value="52" />
                 <param name="ondown" value="54" />
                 <param name="onback" value="7001" />
-                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=49&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=49&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <control type="group">
                 <visible>ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | Control.HasFocus(56) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | ControlGroup(63).HasFocus(0) | Control.HasFocus(64) | Control.HasFocus(65)</visible>
@@ -119,7 +119,7 @@
                     <param name="onup" value="54" />
                     <param name="ondown" value="56" />
                     <param name="onback" value="7001" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=2552&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=2552&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
@@ -145,7 +145,7 @@
                     <param name="onup" value="56" />
                     <param name="ondown" value="58" />
                     <param name="onback" value="7001" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=453&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=453&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
@@ -171,7 +171,7 @@
                     <param name="onup" value="58" />
                     <param name="ondown" value="60" />
                     <param name="onback" value="7001" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=4&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_networks=4&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d1095)]&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
@@ -183,7 +183,7 @@
                     <param name="onup" value="59" />
                     <param name="ondown" value="61" />
                     <param name="onback" value="7001" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_genres=80,18&amp;without_genres=10766,10763,10767,10764,10762,16&amp;with_original_language=en&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d3650)]&amp;vote_count.gte=300&amp;sort_by=vote_average.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_genres=80,18&amp;without_genres=10766,10763,10767,10764,10762,16&amp;with_original_language=en&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=300&amp;sort_by=vote_average.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
@@ -209,7 +209,7 @@
                     <param name="onup" value="61" />
                     <param name="ondown" value="63" />
                     <param name="onback" value="7001" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d1095)]&amp;without_genres=10766,10763,10767,10764,10762&amp;with_id=True&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
@@ -235,7 +235,7 @@
                     <param name="onup" value="63" />
                     <param name="ondown" value="65" />
                     <param name="onback" value="7001" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CES%7CFR%7CIT%7CDE&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Window(home).Property(ATVDate.d1095)]&amp;without_genres=10766,10763,10767,10764,10762,16&amp;with_id=True&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CES%7CFR%7CIT%7CDE&amp;sort_by=popularity.desc&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d1095)]&amp;without_genres=10766,10763,10767,10764,10762,16&amp;with_id=True&amp;vote_count.gte=20&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">

@@ -23,7 +23,7 @@ HEADER_TOP = 150          # where the focused row's title settles
 # has no such list, so they use popularity limited to recent releases. Re-run this
 # generator now and then to move that window forward.
 # Date windows are filled in by Kodi from extras/dates.py, so rows never go stale.
-DATE = {n: f'$INFO[Window(home).Property(ATVDate.{n})]' for n in ('today', 'd45', 'd90', 'd365', 'd540', 'd1095', 'd3650', 'y3')}
+DATE = {n: f'$INFO[Skin.String(ATVDate.{n})]' for n in ('today', 'd45', 'd90', 'd365', 'd540', 'd1095', 'd3650', 'y3')}
 RECENT_SINCE = DATE['d540']
 NEW_SINCE = DATE['d90']
 YEAR_SINCE = DATE['d365']
