@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Home opens at once on the date windows saved last time (skin strings, kept between
-     runs); extras/dates.py moves them on alongside if the day has changed. Only a first
-     start, with nothing saved, waits for it - dates.py then opens the start window itself.
-     extras/setup.py sets up the add-ons the skin works with, on a new device. -->
+<!-- Home opens at once. The rows need the Xbox's CPU in the first seconds, so no Python starts
+     here unless it must: extras/dates.py only on a first start (the date windows are skin
+     strings, kept between runs; extras/prefetch.py moves them on each minute), extras/setup.py
+     only when the skin's version has changed since it last ran (tools/bump.py keeps the
+     number below in step with addon.xml) - otherwise prefetch.py runs it a minute in, so the
+     fixes to other add-ons still come back after an update. -->
 <window>
-	<onload>RunScript(special://skin/extras/dates.py,startup)</onload>
+	<onload condition="String.IsEmpty(Skin.String(ATVDate.today))">RunScript(special://skin/extras/dates.py,startup)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(ATVDate.today))">ReplaceWindow(home)</onload>
-	<onload>RunScript(special://skin/extras/setup.py)</onload>
+	<onload condition="!String.IsEqual(Skin.String(ATVSetupVersion),0.4.1)">RunScript(special://skin/extras/setup.py)</onload>
 	<controls />
 </window>

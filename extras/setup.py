@@ -385,6 +385,9 @@ def main():
     fix_module()
     clear_failed_lists()
     subtitle_service()
+    # Startup.xml runs this at start only when the skin's version differs from this record
+    xbmc.executebuiltin('Skin.SetString(ATVSetupVersion,%s)' % xbmcaddon.Addon('skin.appletv.minimal').getAddonInfo('version'))
+    xbmcgui.Window(10000).setProperty('ATVSetupRan', '1')
     if changed:
         xbmcgui.Dialog().notification('ATV Minimal', 'Set up: ' + ', '.join(changed),
                                       xbmcgui.NOTIFICATION_INFO, 6000)

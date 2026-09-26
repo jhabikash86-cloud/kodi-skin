@@ -43,6 +43,7 @@ if xbmc.getCondVisibility('System.Platform.UWP'):
     STARTUP_DELAY = 25   # the Xbox takes longer over Home, and this would compete with it
 REMEMBERED = 200     # titles fetched recently, so moving back and forth costs nothing
 DATES_EVERY = 60     # seconds between checks that the date windows are still today's
+SETUP_AFTER = 60     # extras/setup.py, a minute in, when Startup.xml had no need to run it
 
 
 
@@ -174,6 +175,7 @@ def watch():
     resting_on, since = None, 0.0
     ordered = 0.0
     started, painted = time.time(), {}   # first paint of Home after a start, for the log
+    setup_checked = False
     try:
         while not monitor.stopping():
             if len(painted) < len(FIRST_PAINT) and time.time() - started < 30:
@@ -182,8 +184,12 @@ def watch():
                         painted[name] = time.time() - started
                         xbmc.log(f'ATV timing: {name} filled {painted[name]:.1f}s after Home opened', xbmc.LOGINFO)
             save_hero()
+            if not setup_checked and time.time() - started > SETUP_AFTER:
+                setup_checked = True     # fixes to other add-ons, after an update of them
+                if HOME.getProperty('ATVSetupRan') != '1':
+                    xbmc.executebuiltin('RunScript(special://skin/extras/setup.py)')
 
-            if time.time() - ordered > DATES_EVERY:
+            if time.time() - ordered > (DATES_EVERY if ordered else 0):
                 ordered = time.time()
                 dates.refresh()        # past midnight, the date windows move on
 

@@ -254,7 +254,8 @@ def main():
     with open(os.path.join(ROOT, 'tools', 'home_template.xml')) as f:
         template = f.read()
     xml = (template.replace('{SCROLL}', build_scroll()).replace('{ROWS}', build_rows())
-           .replace('{HERO}', HERO.replace('&', '&amp;')))
+           .replace('{HERO}', HERO.replace('&', '&amp;'))
+           .replace('{SEED_VISIBLE}', ' | '.join(focus_condition(j) for j in range(1, len(ROWS)))))
     with open(os.path.join(ROOT, 'xml', 'Home.xml'), 'w') as f:
         f.write(xml)
 

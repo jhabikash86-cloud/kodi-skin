@@ -7,7 +7,11 @@
     <!-- Not once Kodi is quitting: a script started then held Kodi's quit (extras/waiting.py).
          The trailer watcher starts from the hero's Play button, which has focus as Home opens;
          starting it here as well ran two at once, and on the Xbox each Python start costs. -->
-    <onload condition="String.IsEmpty(Window(home).Property(ATVQuitting))">RunScript(special://skin/extras/prefetch.py)</onload>
+    <!-- Four seconds after Home opens, not with it: at a cold start the rows on screen need
+         the Xbox's CPU, and every Python start then slowed the others (Home's first rows
+         took 6-14s with fifteen starting in the same second). -->
+    <onload condition="String.IsEmpty(Window(home).Property(ATVQuitting)) + String.IsEmpty(Window(home).Property(ATVPrefetchWatcher))">CancelAlarm(atvprefetch,true)</onload>
+    <onload condition="String.IsEmpty(Window(home).Property(ATVQuitting)) + String.IsEmpty(Window(home).Property(ATVPrefetchWatcher))">AlarmClock(atvprefetch,RunScript(special://skin/extras/prefetch.py),00:04,silent)</onload>
     <!-- Leaving Home ends a trailer preview - but only that. Unconditionally, this stopped
          everything: starting an episode from Continue Watching, or a film from the hero,
          switches to full-screen video, which unloads Home, and the episode was stopped
@@ -34,6 +38,9 @@
              The row below reads its title and id, so the row follows what you watch. -->
         <control type="list" id="6070">
             <onfocus>SetFocus(8001)</onfocus>
+            <!-- Only once you head into the rows: it feeds a row five down, and at a cold start
+                 it was one more Trakt-bound TMDb Helper run competing with the rows on screen -->
+            <visible>{SEED_VISIBLE}</visible>
             <left>0</left><top>1078</top><width>10</width><height>2</height>
             <itemlayout width="1" height="1" />
             <focusedlayout width="1" height="1" />
@@ -149,7 +156,8 @@
                     <param name="width" value="206" />
                     <param name="label" value="Play" />
                     <param name="icon" value="atv/icon_play.png" />
-                    <onfocus condition="String.IsEmpty(Window(home).Property(ATVQuitting)) + String.IsEmpty(Window(home).Property(ATVPreviewWatcher))">RunScript(special://skin/extras/trailer.py,watch)</onfocus>
+                    <onfocus condition="String.IsEmpty(Window(home).Property(ATVQuitting)) + String.IsEmpty(Window(home).Property(ATVPreviewWatcher))">CancelAlarm(atvtrailer,true)</onfocus>
+                    <onfocus condition="String.IsEmpty(Window(home).Property(ATVQuitting)) + String.IsEmpty(Window(home).Property(ATVPreviewWatcher))">AlarmClock(atvtrailer,RunScript(special://skin/extras/trailer.py),00:03,silent)</onfocus>
                     <onclick>RunScript(special://skin/extras/play.py,movie,$INFO[Container(40).ListItem.UniqueID(tmdb)],$INFO[Container(40).ListItem.Property(original_language)])</onclick>
                     <onback>SetFocus(9001)</onback>
                     <onup>9000</onup>
