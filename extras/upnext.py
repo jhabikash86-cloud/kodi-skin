@@ -8,12 +8,15 @@ fills in the card at xml/Custom_1150_UpNext.xml and shows it.
 
     RunScript(special://skin/extras/upnext.py,<tmdb_id>,<season>,<episode>)
 
-The card counts down and then plays the next episode, unless it is dismissed. Choosing
-to keep watching stops the countdown for good, so it cannot reappear over the credits of
-something you decided to stay with.
+The card counts down ten seconds and then plays the next episode - over the credits, as
+Netflix and Apple TV do - unless it is dismissed; its Play button starts it at once. Either
+way the next episode starts on its own (Auto Play): nobody is there to pick a source.
+Choosing to keep watching stops the countdown for good, so it cannot reappear over the
+credits of something you decided to stay with.
 """
 import json
 import sys
+import time
 
 import xbmc
 import xbmcgui
@@ -23,6 +26,7 @@ from waiting import Monitor, wait_for_stream  # same folder; on sys.path for Run
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 WINDOW = 1150
 LEAD_IN = 45          # seconds before the end to offer the next episode
+COUNTDOWN = 10        # seconds the card counts down before the next episode starts
 MIN_RUNTIME = 300     # ignore anything too short to have an "end" worth calling
 POLL_MS = 1000
 ENDED_WITHIN = 3     # seconds from the end: stopping this close is the episode finishing
@@ -87,7 +91,7 @@ def play_next(item):
 
 def watch(tmdb_id, season, episode):
     monitor, player = Monitor(), xbmc.Player()
-    shown = False
+    shown, shown_at = False, 0.0
     remaining_at_last, following = LEAD_IN + 1, None
     if not wait_for_stream(player, START_WAIT, monitor):
         return
@@ -115,7 +119,11 @@ def watch(tmdb_id, season, episode):
                     HOME.clearProperty('UpNextDismissed')
                     xbmc.executebuiltin(f'Dialog.Close({WINDOW},true)')
                     return
-                HOME.setProperty('UpNextCountdown', str(max(0, int(remaining))))
+                left = COUNTDOWN - (time.time() - shown_at)
+                if left <= 0:
+                    play_next(following)
+                    return
+                HOME.setProperty('UpNextCountdown', str(max(1, int(left + 0.99))))
                 continue
             if remaining > LEAD_IN:
                 continue
@@ -123,8 +131,9 @@ def watch(tmdb_id, season, episode):
             if not following:
                 return
             fill_card(tmdb_id, following)
+            HOME.setProperty('UpNextCountdown', str(COUNTDOWN))
             xbmc.executebuiltin(f'ActivateWindow({WINDOW})')
-            shown = True
+            shown, shown_at = True, time.time()
     finally:
         if shown:
             xbmc.executebuiltin(f'Dialog.Close({WINDOW},true)')
