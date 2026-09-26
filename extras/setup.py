@@ -136,9 +136,9 @@ IPV4 = (
     '                pass\n'
 )
 CACHE_LINE = '            return self.set_cache(my_object, cache_name, cache_days, force=cache_force, fallback=cache_fallback)\n'
-FIXES = {
-    # file: (already fixed if this is in it, the line to find, what goes there instead)
-    'bcache.py': ('skin.appletv.minimal: a list',
+FIXES = [
+    # (file, already fixed if this is in it, the line to find, what goes there instead)
+    ('bcache.py', 'skin.appletv.minimal: a list',
                   CACHE_LINE,
                   '            # skin.appletv.minimal: a list with no items and no pages is a request that\n'
                   '            # failed (TMDb answers with at least one page); cached, it kept a row empty\n'
@@ -146,14 +146,14 @@ FIXES = {
                   "            if isinstance(my_object, dict) and 'items' in my_object and not my_object.get('items') and not my_object.get('pages'):\n"
                   '                return my_object\n'
                   + CACHE_LINE),
-    'reqapi.py': ('HAS_IPV6 = False',
+    ('reqapi.py', 'HAS_IPV6 = False',
                   '            self._session = self.requests.Session()\n',
                   IPV4 + '            self._session = self.requests.Session()\n'),
-    'locker.py': ('if kodi_log is not None',
+    ('locker.py', 'if kodi_log is not None',
                   '        self._kodi_log = kodi_log\n',
                   '        if kodi_log is not None:  # skin.appletv.minimal: left unset, the property below makes a logger;\n'
                   '            self._kodi_log = kodi_log  # set to None it returned None, and a lock timeout crashed the caller\n'),
-}
+]
 
 
 def log(message):
@@ -227,18 +227,21 @@ def copy_players():
 HELPER_DB = 'special://home/addons/plugin.video.themoviedb.helper/resources/tmdbhelper/lib/files/'
 UPDATE_FIND = "    @staticmethod\n    def update_if_null(table, keys, conditions='id=?'):\n        return 'UPDATE {table} SET {keys} WHERE {conditions}'.format(\n            keys=', '.join([f'{k}=ifnull(?,{k})' for k in keys]), table=table, conditions=conditions)\n"
 UPDATE_FIXED = '    @staticmethod\n    def update_if_null(table, keys, conditions=\'id=?\'):\n        # skin.appletv.minimal: SQLite before 3.35 (Kodi on the Xbox has 3.30) fails with "SQL\n        # logic error" on an UPDATE that sets id among other columns while foreign keys are on,\n        # so no details were ever saved there. id=ifnull(?,id) keeps the id the row already has;\n        # leave it out and number the placeholders, so the values still line up.\n        import re\n        import sqlite3\n        keys = list(keys)\n        if sqlite3.sqlite_version_info < (3, 35) and \'id\' in keys and len(keys) > 1:\n            sets = \', \'.join(f\'{k}=ifnull(?{i},{k})\' for i, k in enumerate(keys, 1) if k != \'id\')\n            count = [len(keys)]\n\n            def number(match):\n                count[0] += 1\n                return f\'?{count[0]}\'\n            return \'UPDATE {table} SET {sets} WHERE {conditions}\'.format(\n                table=table, sets=sets, conditions=re.sub(r\'\\?\', number, conditions))\n        return \'UPDATE {table} SET {keys} WHERE {conditions}\'.format(\n            keys=\', \'.join([f\'{k}=ifnull(?,{k})\' for k in keys]), table=table, conditions=conditions)\n'
-HELPER_FIXES = {
-    # TMDb Helper's details cache: SQLite before 3.35 - the Xbox's is 3.30 - rejects the update
-    # it saves every title with ("SQL logic error", 143 times in one evening), so details were
-    # never cached there and every title page was fetched again. On a newer SQLite the
-    # statement is built exactly as before.
-    'dbdata.py': ('skin.appletv.minimal: SQLite before 3.35', UPDATE_FIND, UPDATE_FIXED),
-}
+UPSERT_FIND = "    @staticmethod\n    def insert_or_update_if_null(table, keys=('id', ), conflict_constraint='id'):\n        return (\n            'INSERT INTO {table}({keys}) VALUES ({values}) '\n            'ON CONFLICT ({conflict_constraint}) DO UPDATE SET {update_keys} '\n        ).format(\n            table=table,\n            keys=', '.join(keys),\n            values=', '.join(['?' for _ in keys]),\n            conflict_constraint=conflict_constraint,\n            update_keys=', '.join([f'{k}=ifnull({k},excluded.{k})' for k in keys])\n        )\n"
+UPSERT_FIXED = '    @staticmethod\n    def insert_or_update_if_null(table, keys=(\'id\', ), conflict_constraint=\'id\'):\n        # skin.appletv.minimal: on SQLite before 3.35 (the Xbox\'s 3.30) the DO UPDATE failed with\n        # "SQL logic error" whenever it set the columns the row was matched on, which it always\n        # did - cast, crew, art and certifications were never saved there. Those columns are\n        # equal to the new row\'s by definition, so leave them out; nothing left, do nothing.\n        import sqlite3\n        keys = list(keys)\n        update = keys\n        if sqlite3.sqlite_version_info < (3, 35):\n            matched = {k.strip() for k in conflict_constraint.split(\',\')}\n            update = [k for k in keys if k not in matched]\n        return (\n            \'INSERT INTO {table}({keys}) VALUES ({values}) \'\n            \'ON CONFLICT ({conflict_constraint}) {action} \'\n        ).format(\n            table=table,\n            keys=\', \'.join(keys),\n            values=\', \'.join([\'?\' for _ in keys]),\n            conflict_constraint=conflict_constraint,\n            action=\'DO UPDATE SET \' + \', \'.join([f\'{k}=ifnull({k},excluded.{k})\' for k in update]) if update else \'DO NOTHING\'\n        )\n'
+HELPER_FIXES = [
+    # TMDb Helper's details cache: SQLite before 3.35 - the Xbox's is 3.30 - rejects the
+    # statements it saves every title with ("SQL logic error", 143 times in one evening), so
+    # details, cast, crew and art were never cached there and every title page was fetched
+    # again. On a newer SQLite both are built exactly as before.
+    ('dbdata.py', 'skin.appletv.minimal: SQLite before 3.35', UPDATE_FIND, UPDATE_FIXED),
+    ('dbdata.py', 'skin.appletv.minimal: on SQLite before 3.35', UPSERT_FIND, UPSERT_FIXED),
+]
 
 
 def apply_fixes(folder, fixes):
     """Each fix only where its line is found exactly as expected, and only once."""
-    for name, (done, find, fixed) in fixes.items():
+    for name, done, find, fixed in fixes:
         path = folder + name
         text = read(path)
         if not text or done in text:
