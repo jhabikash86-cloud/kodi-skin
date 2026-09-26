@@ -34,7 +34,7 @@ import xbmcvfs
 SKIN = 'special://skin/extras/'
 XBOX = xbmc.getCondVisibility('System.Platform.UWP')
 STATE = 'special://profile/addon_data/skin.appletv.minimal/setup.json'
-VERSION = 7   # raise to apply a changed list below once more
+VERSION = 8   # raise to apply a changed list below once more
 
 KODI = {
     'locale.subtitlelanguage': 'English',
@@ -95,14 +95,14 @@ ADDONS = {
         'remove.audio.mp3': True,
         'dev.disable.season.filter': True,
         'dev.disable.show.filter': True,
-        # Size, chosen with the owner: an episode between 1 and 7 GB - a 4K episode is 5-7 GB,
+        # Size, chosen with the owner: an episode between 1 and 10 GB - 4K episodes run 5-10 GB,
         # 1080p 2-3 GB; season packs (their size is the whole season's, 15-40 GB) and bloated
         # releases drop out. Films 3-100 GB: remuxes stay (the Xbox pulls 229 Mbit/s from
         # the debrid service, three times what a remux needs), fakes and tiny encodes go.
         # Within a quality, the biggest release that passes is listed - and auto-played - first.
         'source.filterebysize': 1,
         'source.min.epsize': 1.0,
-        'source.max.epsize': 7.0,
+        'source.max.epsize': 10.0,
         # AI upscales are 1080p passed off as 4K ("MULTi.AI.2160p"); 3D is not wanted
         'remove.aiupscaled.sources': True,
         'remove.3D.sources': True,

@@ -55,12 +55,11 @@
 					<param name="width" value="320" />
 					<param name="label" value="Play in $INFO[Window(home).Property(UpNextCountdown)]s" />
 					<param name="icon" value="atv/icon_play.png" />
-					<!-- the watcher stands down, or its countdown would start the episode again -->
-					<onclick>SetProperty(UpNextDismissed,1,home)</onclick>
+					<!-- extras/upnext.py starts it: it stops this episode first, then asks for the
+					     next - starting it from here, over the one still playing, ran into Kodi's
+					     "two busy dialogs" exit -->
+					<onclick>SetProperty(UpNextPlayNow,1,home)</onclick>
 					<onclick>Dialog.Close(1150,true)</onclick>
-					<!-- auto: the next episode starts by itself, as when the countdown runs out -
-					     pressing Play means "now", not "let me choose a source" -->
-					<onclick>RunScript(special://skin/extras/play.py,episode,$INFO[Window(home).Property(UpNextTmdb)],$INFO[Window(home).Property(UpNextSeason)],$INFO[Window(home).Property(UpNextEpisode)],auto)</onclick>
 					<onright>9151</onright>
 				</include>
 			</control>

@@ -129,6 +129,31 @@ class Fetcher:
 
 
 
+HERO = 'Container(40).ListItemAbsolute(0)'
+FIRST_PAINT = {'hero': 40, 'continue watching': 50, 'continue watching films': 51, 'top 10 movies': 6052}
+
+
+def quoted(text):
+    """A builtin argument that may hold commas and brackets: in quotes, quotes escaped."""
+    return '"%s"' % (text or '').replace('\\', '\\\\').replace('"', '\\"')
+
+
+def save_hero():
+    """Keep the hero's first item for next time (skin strings survive a restart), so Home
+    opens on its picture while the list is still loading."""
+    tmdb_id = xbmc.getInfoLabel(f'{HERO}.UniqueID(tmdb)')
+    if not tmdb_id or tmdb_id == xbmc.getInfoLabel('Skin.String(ATVHero.id)'):
+        return
+    info = lambda label: xbmc.getInfoLabel(f'{HERO}.{label}')
+    meta = 'Movie' + ''.join(f'  ·  {v}' for v in (info('Year'), info('Genre')) if v)
+    if info('Rating'):
+        meta += f'  ·  ★ {info("Rating")}'
+    for name, value in (('fanart', info('Art(fanart)')), ('clearlogo', info('Art(clearlogo)')),
+                        ('title', info('Title')), ('meta', meta), ('plot', info('Plot')),
+                        ('id', tmdb_id)):
+        xbmc.executebuiltin(f'Skin.SetString(ATVHero.{name},{quoted(value)})')
+
+
 def hero_titles():
     titles = []
     for index in range(int(xbmc.getInfoLabel('Container(40).NumItems') or 0)):
@@ -148,8 +173,16 @@ def watch():
     warmed = time.time() - REWARM + STARTUP_DELAY  # first walk a few seconds from now
     resting_on, since = None, 0.0
     ordered = 0.0
+    started, painted = time.time(), {}   # first paint of Home after a start, for the log
     try:
         while not monitor.stopping():
+            if len(painted) < len(FIRST_PAINT) and time.time() - started < 30:
+                for name, container in FIRST_PAINT.items():
+                    if name not in painted and xbmc.getInfoLabel(f'Container({container}).NumItems') not in ('', '0'):
+                        painted[name] = time.time() - started
+                        xbmc.log(f'ATV timing: {name} filled {painted[name]:.1f}s after Home opened', xbmc.LOGINFO)
+            save_hero()
+
             if time.time() - ordered > DATES_EVERY:
                 ordered = time.time()
                 dates.refresh()        # past midnight, the date windows move on

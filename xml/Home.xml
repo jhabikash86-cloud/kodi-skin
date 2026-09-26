@@ -57,7 +57,7 @@
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
                 <fadetime>600</fadetime>
-                <texture background="true">$INFO[Container(40).ListItem.Art(fanart)]</texture>
+                <texture background="true">$VAR[ATV_HeroFanart]</texture>
                 <animation effect="zoom" start="100" end="107" center="960,400" time="22000" tween="linear" pulse="true" condition="true">Conditional</animation>
             </control>
             <!-- Trailer preview. extras/trailer.py starts it after a couple of seconds of
@@ -114,28 +114,28 @@
                 <left>0</left><top>350</top><width>640</width><height>210</height>
                 <aspectratio align="left" aligny="bottom">keep</aspectratio>
                 <fadetime>400</fadetime>
-                <texture background="true">$INFO[Container(40).ListItem.Art(clearlogo)]</texture>
-                <visible>!String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
+                <texture background="true">$VAR[ATV_HeroLogo]</texture>
+                <visible>$EXP[ATV_HeroHasLogo]</visible>
             </control>
             <control type="textbox">
                 <left>0</left><top>390</top><width>1100</width><height>170</height>
-                <label>$INFO[Container(40).ListItem.Title]</label>
+                <label>$VAR[ATV_HeroTitle]</label>
                 <font>atv_hero</font>
                 <textcolor>FFFFFFFF</textcolor>
                 <aligny>bottom</aligny>
-                <visible>String.IsEmpty(Container(40).ListItem.Art(clearlogo))</visible>
+                <visible>!$EXP[ATV_HeroHasLogo]</visible>
             </control>
 
             <!-- Movie · 2025 · Thriller / Drama · ★ 7.8 -->
             <control type="label">
                 <left>0</left><top>580</top><width>1100</width><height>34</height>
-                <label>Movie$INFO[Container(40).ListItem.Year,  ·  ]$INFO[Container(40).ListItem.Genre,  ·  ]$INFO[Container(40).ListItem.Rating,  ·  ★ ]</label>
+                <label>$VAR[ATV_HeroMeta]</label>
                 <font>atv_meta</font>
                 <textcolor>B3FFFFFF</textcolor>
             </control>
             <control type="textbox">
                 <left>0</left><top>622</top><width>800</width><height>70</height>
-                <label>$INFO[Container(40).ListItem.Plot]</label>
+                <label>$VAR[ATV_HeroPlot]</label>
                 <font>atv_body</font>
                 <textcolor>D9FFFFFF</textcolor>
             </control>

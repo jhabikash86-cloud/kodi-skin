@@ -8,6 +8,31 @@
 	<!-- A hero trailer is on screen: everything over it fades so it plays full-screen, as on
 	     Apple TV; any press stops the preview (extras/trailer.py) and brings it all back. -->
 	<expression name="ATV_TrailerFull">!String.IsEmpty(Window(home).Property(ATVPreview)) + !String.IsEmpty(Window(home).Property(ATVPreviewShape)) + Player.HasVideo</expression>
+	<!-- The hero before its list has loaded: the first item as it was last time, saved by
+	     extras/prefetch.py - so Home opens on a picture, as Apple TV's top shelf does,
+	     instead of a dark screen for the second or two a cold start takes. -->
+	<expression name="ATV_HeroLoaded">Integer.IsGreater(Container(40).NumItems,0)</expression>
+	<expression name="ATV_HeroHasLogo">[$EXP[ATV_HeroLoaded] + !String.IsEmpty(Container(40).ListItem.Art(clearlogo))] | [!$EXP[ATV_HeroLoaded] + !String.IsEmpty(Skin.String(ATVHero.clearlogo))]</expression>
+	<variable name="ATV_HeroFanart">
+		<value condition="$EXP[ATV_HeroLoaded]">$INFO[Container(40).ListItem.Art(fanart)]</value>
+		<value>$INFO[Skin.String(ATVHero.fanart)]</value>
+	</variable>
+	<variable name="ATV_HeroLogo">
+		<value condition="$EXP[ATV_HeroLoaded]">$INFO[Container(40).ListItem.Art(clearlogo)]</value>
+		<value>$INFO[Skin.String(ATVHero.clearlogo)]</value>
+	</variable>
+	<variable name="ATV_HeroTitle">
+		<value condition="$EXP[ATV_HeroLoaded]">$INFO[Container(40).ListItem.Title]</value>
+		<value>$INFO[Skin.String(ATVHero.title)]</value>
+	</variable>
+	<variable name="ATV_HeroMeta">
+		<value condition="$EXP[ATV_HeroLoaded]">Movie$INFO[Container(40).ListItem.Year,  ·  ]$INFO[Container(40).ListItem.Genre,  ·  ]$INFO[Container(40).ListItem.Rating,  ·  ★ ]</value>
+		<value>$INFO[Skin.String(ATVHero.meta)]</value>
+	</variable>
+	<variable name="ATV_HeroPlot">
+		<value condition="$EXP[ATV_HeroLoaded]">$INFO[Container(40).ListItem.Plot]</value>
+		<value>$INFO[Skin.String(ATVHero.plot)]</value>
+	</variable>
 	<!-- The tab bar shows only while it has focus: Up at the top of a page, or Back -->
 	<expression name="ATV_TabBarHidden">!ControlGroup(9000).HasFocus()</expression>
 	<expression name="ATV_UpNextEmpty">Integer.IsEqual(Container(50).NumItems,0)</expression>

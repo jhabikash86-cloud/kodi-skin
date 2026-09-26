@@ -77,16 +77,32 @@ def fill_card(tmdb_id, item):
 
 def clear_card():
     for name in ('UpNextTitle', 'UpNextPlot', 'UpNextThumb', 'UpNextNumber',
-                 'UpNextTmdb', 'UpNextSeason', 'UpNextEpisode', 'UpNextCountdown'):
+                 'UpNextTmdb', 'UpNextSeason', 'UpNextEpisode', 'UpNextCountdown',
+                 'UpNextPlayNow'):
         HOME.clearProperty(name)
 
 
 
-def play_next(item):
-    """Start the following episode unattended - Auto Play, since nobody is choosing."""
+def play_next(item, monitor=None):
+    """Start the following episode unattended - Auto Play, since nobody is choosing.
+
+    The episode playing is stopped first, and the next asked for once it has gone. Asked for
+    while it still played, the hand-over ran alongside TMDb Helper's and Umbrella's busy
+    dialogs, and Kodi quits outright on two at once ("two concurrent busydialogs ... The
+    application will exit") - which it did on the Xbox, ten seconds into the countdown.
+    """
     xbmc.executebuiltin(f'Dialog.Close({WINDOW},true)')
+    tmdb_id = HOME.getProperty('UpNextTmdb')
+    player, monitor = xbmc.Player(), monitor or Monitor()
+    if player.isPlaying():
+        player.stop()
+        for _ in range(50):                     # up to 5s for playback to wind down
+            if not player.isPlaying() or monitor.stopping(0.1):
+                break
+    if monitor.stopping(0.5):
+        return
     xbmc.executebuiltin('RunScript(special://skin/extras/play.py,episode,{},{},{},auto)'.format(
-        HOME.getProperty('UpNextTmdb'), item.get('season'), item.get('episode')))
+        tmdb_id, item.get('season'), item.get('episode')))
 
 
 def watch(tmdb_id, season, episode):
@@ -103,7 +119,7 @@ def watch(tmdb_id, season, episode):
                     # running out, so the next episode starts - as the card promised.
                     # Stopped part-way instead, and the offer lapses with it.
                     if shown and remaining_at_last <= ENDED_WITHIN:
-                        play_next(following)
+                        play_next(following, monitor)
                     return
                 total, position = player.getTotalTime(), player.getTime()
             except RuntimeError:
@@ -113,6 +129,10 @@ def watch(tmdb_id, season, episode):
             remaining = total - position
             remaining_at_last = remaining
             if shown:
+                if HOME.getProperty('UpNextPlayNow') == '1':      # Play on the card
+                    HOME.clearProperty('UpNextPlayNow')
+                    play_next(following, monitor)
+                    return
                 # The card is up. Dismissing it, or seeking back into the episode,
                 # takes it down and ends the offer for this episode.
                 if HOME.getProperty('UpNextDismissed') == '1' or remaining > LEAD_IN + 30:
@@ -121,7 +141,7 @@ def watch(tmdb_id, season, episode):
                     return
                 left = COUNTDOWN - (time.time() - shown_at)
                 if left <= 0:
-                    play_next(following)
+                    play_next(following, monitor)
                     return
                 HOME.setProperty('UpNextCountdown', str(max(1, int(left + 0.99))))
                 continue

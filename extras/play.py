@@ -210,8 +210,8 @@ def blocked_stream():
 
 def prefer_language(code):
     """Ask POV to sort releases in this language to the top for the coming play."""
-    if not xbmc.getCondVisibility(f'System.HasAddon({POV_ADDON})'):
-        return  # Umbrella is the player now; asking for POV only logged an exception
+    if not xbmc.getCondVisibility(f'System.AddonIsEnabled({POV_ADDON})'):
+        return  # Umbrella is the player now; a disabled POV still counts as installed
     name = POV_LANGUAGES.get((code or '').lower())
     try:
         pov = xbmcaddon.Addon(POV_ADDON)
