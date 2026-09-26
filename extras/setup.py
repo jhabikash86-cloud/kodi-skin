@@ -274,6 +274,14 @@ UMBRELLA_FIXES = [
 ]
 
 
+HELPER_TRAKT = 'special://home/addons/plugin.video.themoviedb.helper/resources/tmdbhelper/lib/api/trakt/'
+TRAKT_FIND = "        winprop_traktisauth = get_property('TraktIsAuth', is_type=float)\n        winprop_traktisauth = winprop_traktisauth or self.authorization_check()  # If we dont have TraktIsAuth but were asking to check it then we're on first start so lets check that the stored token is valid\n"
+TRAKT_FIXED = "        winprop_traktisauth = get_property('TraktIsAuth', is_type=float)\n        # skin.appletv.minimal: a stored token still inside its own expiry is trusted at\n        # start rather than confirmed with Trakt - that round trip held every Trakt row on\n        # Home for 1.6-2.2s at each cold start on the Xbox. A revoked token still fails on\n        # Trakt's first reply, as it would mid-session.\n        if not winprop_traktisauth and self.access_token and self.has_valid_token:\n            self.update_traktisauth_property()\n            winprop_traktisauth = self.expires_in_timestamp\n        winprop_traktisauth = winprop_traktisauth or self.authorization_check()  # If we dont have TraktIsAuth but were asking to check it then we're on first start so lets check that the stored token is valid\n"
+HELPER_TRAKT_FIXES = [
+    ('token.py', 'skin.appletv.minimal: a stored token', TRAKT_FIND, TRAKT_FIXED),
+]
+
+
 def apply_fixes(folder, fixes):
     """Each fix only where its line is found exactly as expected, and only once."""
     for name, done, find, fixed in fixes:
@@ -294,6 +302,7 @@ def fix_module():
         apply_fixes(MODULE, FIXES)
     if installed('plugin.video.themoviedb.helper'):
         apply_fixes(HELPER_DB, HELPER_FIXES)
+        apply_fixes(HELPER_TRAKT, HELPER_TRAKT_FIXES)
     if installed('plugin.video.umbrella'):
         apply_fixes(UMBRELLA_SOURCES, UMBRELLA_FIXES)
 
