@@ -34,7 +34,7 @@ import xbmcvfs
 SKIN = 'special://skin/extras/'
 XBOX = xbmc.getCondVisibility('System.Platform.UWP')
 STATE = 'special://profile/addon_data/skin.appletv.minimal/setup.json'
-VERSION = 6   # raise to apply a changed list below once more
+VERSION = 7   # raise to apply a changed list below once more
 
 KODI = {
     'locale.subtitlelanguage': 'English',
@@ -51,6 +51,7 @@ if XBOX:
     # on); two seconds for the TV to settle leaves one clean switch - measured on the Xbox.
     KODI['videoplayer.adjustrefreshrate'] = 2     # on start and stop of playback
     KODI['videoscreen.delayrefreshchange'] = 20   # tenths of a second
+    KODI['services.wsdiscovery'] = False          # browsing Windows shares; one less service at start
 ADDONS = {
     'plugin.video.themoviedb.helper': {
         # Original-size posters (2000x3000) look best on the Mac; on the Xbox each one is a
@@ -333,6 +334,24 @@ def clear_failed_lists():
             log(f'could not check the list cache ({error})')
 
 
+SUBTITLES = 'service.subtitles.opensubtitles-com'
+
+
+def subtitle_service():
+    """Download subtitle searches OpenSubtitles.com straight away, once it is installed,
+    instead of first asking which service to use."""
+    if not installed(SUBTITLES):
+        return
+    for setting in ('subtitles.tv', 'subtitles.movie'):
+        request = {'jsonrpc': '2.0', 'id': 1, 'method': 'Settings.GetSettingValue', 'params': {'setting': setting}}
+        try:
+            current = json.loads(xbmc.executeJSONRPC(json.dumps(request)))['result']['value']
+        except (ValueError, KeyError, TypeError):
+            continue
+        if not current:
+            set_kodi(setting, SUBTITLES)
+
+
 def main():
     state = load_state()
     changed = []
@@ -365,6 +384,7 @@ def main():
     copy_players()
     fix_module()
     clear_failed_lists()
+    subtitle_service()
     if changed:
         xbmcgui.Dialog().notification('ATV Minimal', 'Set up: ' + ', '.join(changed),
                                       xbmcgui.NOTIFICATION_INFO, 6000)
