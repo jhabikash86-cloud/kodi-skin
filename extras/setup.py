@@ -34,17 +34,18 @@ import xbmcvfs
 SKIN = 'special://skin/extras/'
 XBOX = xbmc.getCondVisibility('System.Platform.UWP')
 STATE = 'special://profile/addon_data/skin.appletv.minimal/setup.json'
-VERSION = 3   # raise to apply a changed list below once more
+VERSION = 4   # raise to apply a changed list below once more
 
 KODI = {
     'locale.subtitlelanguage': 'English',
     'general.addonupdates': 1,   # notify, don't install: an update can undo the IPv4 fix
 }
 if XBOX:
-    # Apple TV's "Match Frame Rate": a film plays at its own 24 frames a second, not pulled
-    # up to the TV's 60 with an uneven 3:2 cadence (judder on pans). Needs "Allow 24 Hz" in
-    # the Xbox's video modes; the TV blanks for a moment as it switches.
-    KODI['videoplayer.adjustrefreshrate'] = 2   # on start and stop of playback
+    # No refresh-rate switching on the Xbox. It runs the TV at 120Hz, which 24fps divides into
+    # evenly (each frame shown five times), so films are already judder-free; switching to
+    # 23.98Hz only added a resync, and on the Xbox it collided with the HDR switch at the
+    # start of playback - the renderer failed twice and the TV blanked (seen in its log).
+    KODI['videoplayer.adjustrefreshrate'] = 0
 ADDONS = {
     'plugin.video.themoviedb.helper': {
         # Original-size posters (2000x3000) look best on the Mac; on the Xbox each one is a
@@ -65,7 +66,9 @@ ADDONS = {
         'preemptive.limit.tv': 10,
         'preemptive.res.tv': 0,
         'sources.sort.order': 1,
-        'source.prioritize.dolbyvisionfirst': True,
+        # Dolby Vision first suits a DV screen; the Samsung QN90A has none, and Kodi on the Xbox
+        # plays DV releases as their HDR10 layer at best - so there, HDR10 releases first.
+        'source.prioritize.dolbyvisionfirst': not XBOX,
         'remove.cam.sources': True,
         'remove.sd.sources': True,
         'bookmarks.auto': True,
@@ -221,12 +224,22 @@ def copy_players():
             log(f'added player {name}')
 
 
-def fix_module():
-    """The IPv4 and lock fixes, each only where its line is found exactly as expected."""
-    if not installed('script.module.jurialmunkey'):
-        return
-    for name, (done, find, fixed) in FIXES.items():
-        path = MODULE + name
+HELPER_DB = 'special://home/addons/plugin.video.themoviedb.helper/resources/tmdbhelper/lib/files/'
+UPDATE_FIND = "    @staticmethod\n    def update_if_null(table, keys, conditions='id=?'):\n        return 'UPDATE {table} SET {keys} WHERE {conditions}'.format(\n            keys=', '.join([f'{k}=ifnull(?,{k})' for k in keys]), table=table, conditions=conditions)\n"
+UPDATE_FIXED = '    @staticmethod\n    def update_if_null(table, keys, conditions=\'id=?\'):\n        # skin.appletv.minimal: SQLite before 3.35 (Kodi on the Xbox has 3.30) fails with "SQL\n        # logic error" on an UPDATE that sets id among other columns while foreign keys are on,\n        # so no details were ever saved there. id=ifnull(?,id) keeps the id the row already has;\n        # leave it out and number the placeholders, so the values still line up.\n        import re\n        import sqlite3\n        keys = list(keys)\n        if sqlite3.sqlite_version_info < (3, 35) and \'id\' in keys and len(keys) > 1:\n            sets = \', \'.join(f\'{k}=ifnull(?{i},{k})\' for i, k in enumerate(keys, 1) if k != \'id\')\n            count = [len(keys)]\n\n            def number(match):\n                count[0] += 1\n                return f\'?{count[0]}\'\n            return \'UPDATE {table} SET {sets} WHERE {conditions}\'.format(\n                table=table, sets=sets, conditions=re.sub(r\'\\?\', number, conditions))\n        return \'UPDATE {table} SET {keys} WHERE {conditions}\'.format(\n            keys=\', \'.join([f\'{k}=ifnull(?,{k})\' for k in keys]), table=table, conditions=conditions)\n'
+HELPER_FIXES = {
+    # TMDb Helper's details cache: SQLite before 3.35 - the Xbox's is 3.30 - rejects the update
+    # it saves every title with ("SQL logic error", 143 times in one evening), so details were
+    # never cached there and every title page was fetched again. On a newer SQLite the
+    # statement is built exactly as before.
+    'dbdata.py': ('skin.appletv.minimal: SQLite before 3.35', UPDATE_FIND, UPDATE_FIXED),
+}
+
+
+def apply_fixes(folder, fixes):
+    """Each fix only where its line is found exactly as expected, and only once."""
+    for name, (done, find, fixed) in fixes.items():
+        path = folder + name
         text = read(path)
         if not text or done in text:
             continue
@@ -235,6 +248,14 @@ def fix_module():
             continue
         write(path, text.replace(find, fixed))
         log(f'fixed {name}')
+
+
+def fix_module():
+    """The fixes to TMDb Helper and its shared module - see the lists above."""
+    if installed('script.module.jurialmunkey'):
+        apply_fixes(MODULE, FIXES)
+    if installed('plugin.video.themoviedb.helper'):
+        apply_fixes(HELPER_DB, HELPER_FIXES)
 
 
 FAILED = b'{"items":[],"pages":0,"count":0}'
