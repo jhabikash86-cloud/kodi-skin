@@ -204,12 +204,14 @@
                  Rows are 475 apart, as on Home: at 400 the "You May Also Like" heading sat
                  on top of the posters above it.
                  Totals - TV:     seasons -760, More Like This -1250, last two -1725.
-                          Movies: More Like This -750, last two -1225. -->
+                          Movies: More Like This -750, last two -1225.
+                          A film in a collection: collection -750, More Like This -1225, last two -1700. -->
             <animation effect="slide" end="0,-760" time="380" tween="sine" easing="inout" condition="$EXP[ATV_DetailScrolled] + $EXP[ATV_DetailIsTV3]">Conditional</animation>
             <animation effect="slide" end="0,-490" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailIsTV3]">Conditional</animation>
             <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailIsTV3]">Conditional</animation>
             <animation effect="slide" end="0,-750" time="380" tween="sine" easing="inout" condition="$EXP[ATV_DetailScrolled] + !$EXP[ATV_DetailIsTV3]">Conditional</animation>
             <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9640) | Control.HasFocus(9650)] + !$EXP[ATV_DetailIsTV3]">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailHasSet3]">Conditional</animation>
 
             <!-- ===== TV: SEASON PICKER + EPISODES ===== -->
             <control type="group">
@@ -282,7 +284,7 @@
                     <scrolltime tween="cubic" easing="out">420</scrolltime>
                     <preloaditems>2</preloaditems>
                     <onup>9610</onup>
-                    <ondown>9630</ondown>
+                    <ondown>9625</ondown>
                     <onclick>RunScript(special://skin/extras/play.py,item,9620)</onclick>
                     <itemlayout width="416" height="420">
                         <include content="ATV_EpisodeTile" />
@@ -307,11 +309,30 @@
             <control type="group">
                 <animation effect="slide" end="0,-500" time="0" condition="!$EXP[ATV_DetailIsTV3]">Conditional</animation>
 
+                <!-- A film's collection (Fast & Furious, Drishyam), in release order. Hidden for
+                     everything else, and then Up and Down pass straight through it. -->
+                <control type="group">
+                    <visible>$EXP[ATV_DetailHasSet3]</visible>
+                    <include content="ATV_PosterRow">
+                        <param name="id" value="9625" />
+                        <param name="top" value="1400" />
+                        <param name="label" value="$INFO[Container(9500).ListItem.Set]" />
+                        <param name="onup" value="9620" />
+                        <param name="ondown" value="9630" />
+                        <param name="onback" value="noop" />
+                        <param name="content" value="$VAR[ATV_CollectionPath3]" />
+                        <param name="stale" value="Container(9625).IsUpdating" />
+                    </include>
+                </control>
+
+                <!-- The rows below make room for it -->
+                <control type="group">
+                <animation effect="slide" end="0,475" time="0" condition="$EXP[ATV_DetailHasSet3]">Conditional</animation>
                 <include content="ATV_PosterRow">
                     <param name="id" value="9630" />
                     <param name="top" value="1400" />
                     <param name="label" value="More Like This$INFO[Container(9500).ListItem.Genre,[COLOR 80FFFFFF]   ,[/COLOR]]" />
-                    <param name="onup" value="9620" />
+                    <param name="onup" value="9625" />
                     <param name="ondown" value="9640" />
                     <param name="altup" value="$EXP[ATV_DetailNoSeasons3]" />
                     <param name="altupto" value="9601" />
@@ -322,8 +343,8 @@
                 <include content="ATV_PosterRow">
                     <param name="id" value="9640" />
                     <param name="top" value="1875" />
-                    <param name="label" value="You May Also Like" />
-                    <param name="stale" value="Container(9640).IsUpdating" />
+                    <param name="label" value="$VAR[ATV_RecommendedLabel3]" />
+                    <param name="stale" value="Container(9640).IsUpdating | String.IsEmpty(Skin.String(DetailRecommend3))" />
                     <param name="onup" value="9630" />
                     <param name="ondown" value="9650" />
                     <param name="onback" value="noop" />
@@ -362,6 +383,7 @@
                         </focusedlayout>
                         <content target="videos" limit="30">$VAR[ATV_CastPath3]</content>
                     </control>
+                </control>
                 </control>
             </control>
         </control>

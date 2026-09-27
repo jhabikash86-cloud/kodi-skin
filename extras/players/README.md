@@ -22,3 +22,10 @@ MediaFusion ships its own player file and installs it from
 *its* settings, under "Setup TMDb Helper" - no copying needed. It first needs a
 secret string, which you generate on the MediaFusion site by entering your
 debrid details there; that is a credential step, so it has to be done by hand.
+
+The Umbrella files carry a `fallback` to POV: when Umbrella hands TMDb Helper nothing to
+play (every source failed), TMDb Helper starts POV with the same title - its source list
+for Source Select, its best source for Auto Play. It only works once POV is enabled and
+signed in to a debrid service; while POV is disabled TMDb Helper skips the fallback and
+behaves as before. Backing out of Umbrella's source list also counts as "nothing to play",
+so with POV enabled, Back there opens POV's list (Back again to leave).

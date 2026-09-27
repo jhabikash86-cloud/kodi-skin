@@ -512,8 +512,9 @@ video only once it has passed.
   release with extra logos at the start could be a few seconds off.
 - **Aerial.** `extras/setup.py` asks once (Kodi's own prompt) to install Aerial
   (`screensaver.atv4`, Kodi's repository) and makes it the screensaver after 5 minutes:
-  Apple's own flights in 4K HEVC, SDR so the TV does not switch into HDR for it. A
-  screensaver you picked yourself is left alone.
+  Apple's own flights in HEVC, SDR so the TV does not switch into HDR for it - 4K on the
+  Mac, 1080p on the Xbox, where starting a 4K clip once failed in the video decoder and took
+  Kodi down. A screensaver you picked yourself is left alone.
 - **Navigation sounds.** A quiet tick as focus moves, a tap on select and a falling tone on
   back (`tools/gen_sounds.py`). Kodi 21 no longer reads a skin's own `sounds/` folder, so
   they ship as a small add-on, `resource.uisounds.atv`, which setup copies from
@@ -523,6 +524,17 @@ video only once it has passed.
 - **Banner trailers are off by default** (setup turns them off once): finding one through
   YouTube held Kodi's busy dialog and slowed Home on the Xbox. Settings -> Banner trailers
   brings them back.
+- **Title pages follow the title.** A film in a series (Fast & Furious, Drishyam, John Wick)
+  gets its whole collection, in release order, as the first row under the hero - TMDb
+  Helper's `set.tmdb_id` and its `collection` list; the rows below move down one and the
+  page scrolls one more step. *You May Also Like* is TMDb's recommendations kept to the
+  title's two main genres, without the films already in its collection row (it was half
+  Fast & Furious again on Fast X). A film tagged "based on true story" (TMDb keyword 9672,
+  read from TMDb Helper's `movie_keywords` list) gets *More True Stories* there instead:
+  true stories in its main genre and, for an Indian film, from all of India (Amaran: Uri,
+  Major, Sky Force), with documentaries and comedies left out. A row that comes back empty
+  falls back to the plain recommendations. `details.py title,<movie|tv>,<tmdb id>` opens a
+  title page without a tile to click - for testing.
 - Every hero button has an icon and a left-aligned label. A button needs its text offset
   on both sides, so "More Info" with an icon needs 290 wide.
 

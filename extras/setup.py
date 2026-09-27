@@ -130,10 +130,12 @@ ADDONS = {
         'results.list_format': 1,
         'highlight.type': 1,
     },
-    # Apple TV's Aerial screensaver (installed by aerial() below): Apple's own 4K flights,
-    # in HEVC; SDR, so the TV does not switch into HDR and back each time it starts
+    # Apple TV's Aerial screensaver (installed by aerial() below): Apple's own flights, in
+    # HEVC; SDR, so the TV does not switch into HDR and back each time it starts. 1080p on
+    # the Xbox: starting a 4K clip there, the video decoder failed to get a buffer ("DXVA ...
+    # error creating buffer") and Kodi died - Kodi on the Xbox has a small memory budget.
     'screensaver.atv4': {
-        'enable-hevc': True, 'enable-4k': True, 'enable-hdr': False, 'show-notifications': False,
+        'enable-hevc': True, 'enable-4k': not XBOX, 'enable-hdr': False, 'show-notifications': False,
     },
     'plugin.video.youtube': {
         'kodion.http.listen': '0.0.0.0',
@@ -148,7 +150,7 @@ LINKS = {
         'external_provider.name': 'magneto',   # the module Umbrella imports; the id alone is not enough
     },
 }
-PLAYERS = ('umbrella.select.json', 'umbrella.autoplay.json')
+PLAYERS = ('umbrella.select.json', 'umbrella.autoplay.json', 'pov.select.json', 'pov.autoplay.json')
 PLAYERS_DIR = 'special://profile/addon_data/plugin.video.themoviedb.helper/players/'
 ADVANCED = 'special://profile/advancedsettings.xml'
 
@@ -250,9 +252,11 @@ def copy_players():
         return
     xbmcvfs.mkdirs(PLAYERS_DIR)
     for name in PLAYERS:
-        if not xbmcvfs.exists(PLAYERS_DIR + name):
+        # and again whenever the skin's copy changes (the Umbrella files gained a fallback to
+        # POV). TMDb Helper keeps your own changes to a player elsewhere (reconfigured_players).
+        if read(SKIN + 'players/' + name) != read(PLAYERS_DIR + name):
             xbmcvfs.copy(SKIN + 'players/' + name, PLAYERS_DIR + name)
-            log(f'added player {name}')
+            log(f'player {name}')
 
 
 HELPER_DB = 'special://home/addons/plugin.video.themoviedb.helper/resources/tmdbhelper/lib/files/'

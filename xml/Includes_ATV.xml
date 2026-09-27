@@ -757,7 +757,7 @@
 
 	<!-- ===================== TITLE PAGE (window 1130) ===================== -->
 
-	<expression name="ATV_DetailScrolled">Control.HasFocus(9610) | Control.HasFocus(9620) | Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)</expression>
+	<expression name="ATV_DetailScrolled">Control.HasFocus(9610) | Control.HasFocus(9620) | Control.HasFocus(9625) | Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)</expression>
 
 	<variable name="ATV_DetailSeason">
 		<value condition="!String.IsEmpty(Container(9610).ListItem.Season)">$INFO[Container(9610).ListItem.Season]</value>

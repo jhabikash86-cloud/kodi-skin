@@ -20,8 +20,10 @@ tile read position 0 and opened the same title.
 Cast members open the search screen's twin (1121) pre-filled with that person, so Back
 returns to the title page they came from.
 """
+import json
+import re
 import sys
-from urllib.parse import quote_plus
+from urllib.parse import quote, quote_plus
 
 import xbmc
 import xbmcgui
@@ -154,6 +156,70 @@ def discover_filter(prefix, media, fallback_language=''):
     return '&'.join(parts)
 
 
+PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
+TRUE_STORY = '9672'     # TMDb's "based on true story" keyword
+NO_DOCS = '99,16,10751,35'
+INDIAN = ('hi', 'ta', 'te', 'ml', 'kn', 'bn', 'mr', 'pa')
+
+
+def listing(path, properties=('title',)):
+    request = {'jsonrpc': '2.0', 'id': 1, 'method': 'Files.GetDirectory',
+               'params': {'directory': PLUGIN + path, 'media': 'video', 'properties': list(properties)}}
+    try:
+        return json.loads(xbmc.executeJSONRPC(json.dumps(request)))['result'].get('files') or []
+    except (ValueError, KeyError, TypeError):
+        return []
+
+
+def is_true_story(tmdb_id):
+    """TMDb tags a film "based on true story". TMDb Helper lists a film's keywords (films only;
+    its keyword list has no TV route), each item carrying the keyword's id."""
+    for item in listing(f'info=movie_keywords&tmdb_type=movie&tmdb_id={tmdb_id}&nextpage=false'):
+        if re.search(r'[?&]tmdb_id=%s(?:&|$)' % TRUE_STORY, item.get('file', '')):
+            return True
+    return False
+
+
+def recommendations(item_type, tmdb_id, prefix, leave_out=()):
+    """You May Also Like, kept to this title's genres: TMDb's own recommendations, only those
+    sharing one of its two main genres - they wandered (a crime thriller's list had Pixar).
+    leave_out: titles already on the page (the film's collection row), so Fast X's list is
+    not half Fast & Furious again."""
+    path = f'info=recommendations&tmdb_type={item_type}&tmdb_id={tmdb_id}'
+    names = [g.strip() for g in info(f'{prefix}.Genre').split('/') if g.strip()][:2]
+    if names:
+        path += '&filter_key=genre&filter_value=' + quote(' / '.join(names))
+    titles = [t for t in leave_out if t and ' / ' not in t]
+    if titles:
+        path += '&exclude_key=title&exclude_value=' + quote(' / '.join(titles)) + '&exclude_operator=eq'
+    return path
+
+
+def collection_titles(set_id):
+    return [i.get('label', '') for i in listing(
+        f'info=collection&tmdb_type=collection&tmdb_id={set_id}&nextpage=false')] if set_id else []
+
+
+def true_stories(tmdb_id, prefix, fallback_language=''):
+    """More True Stories: other films tagged the same way, in this one's main genre and, for a
+    film not in English, its language (for an Indian film, all of India's) - Amaran leads to
+    Indian true stories, not Hollywood's."""
+    genres = genre_ids(prefix).split(',')[0]
+    code = language(prefix) or fallback_language
+    path = (f'info=discover&tmdb_type=movie&with_keywords={TRUE_STORY}&without_genres={NO_DOCS}'
+            f'&with_id=True&sort_by=popularity.desc&exclude_key=tmdb_id&exclude_value={tmdb_id}&exclude_operator=eq')
+    if genres:
+        path += f'&with_genres={genres}'
+    if code in INDIAN:
+        # every Indian language: in Tamil alone Amaran found four
+        path += '&with_origin_country=IN&vote_count.gte=20'
+    elif code and code != 'en':
+        path += f'&with_original_language={code}&vote_count.gte=10'
+    else:
+        path += '&vote_count.gte=150'
+    return path
+
+
 def row_came_back_empty(window, container, timeout=12):
     """True when the row finished loading with nothing in it."""
     xbmc.sleep(300)  # let the new path register before judging it
@@ -199,8 +265,9 @@ def item_type_and_id(container, index=None):
     return ('tv' if dbtype == 'tvshow' else 'movie'), tmdb_id
 
 
-def open_details(container, index=None):
-    item_type, tmdb_id = item_type_and_id(container, index)
+def open_details(container, index=None, item=None):
+    """item: (type, tmdb id) to open without a tile - RunScript(details.py,title,movie,385687)"""
+    item_type, tmdb_id = item or item_type_and_id(container, index)
     if not tmdb_id:
         return
     window = xbmcgui.getCurrentWindowId() - 10000
@@ -212,7 +279,7 @@ def open_details(container, index=None):
         page = min(int(info('Skin.String(SearchFromPage)') or -1) + 1, PAGES - 1)
     else:
         page = 0
-    tile = list_prefix(container, index)
+    tile = list_prefix(container, index) if container else 'ListItem.NoSuchTile'
     # Everything the page needs before it can open on the right picture. The tile's own
     # art goes across too, so the page never opens on the last title's backdrop.
     set_strings([
@@ -222,6 +289,9 @@ def open_details(container, index=None):
         (f'DetailLogo{page}', info(f'{tile}.Art(clearlogo)')),
         (f'DetailTitle{page}', info(f'{tile}.Title') or info(f'{tile}.Label')),
         (f'DetailDiscover{page}', ''),  # More Like This waits for the details below
+        (f'DetailRecommend{page}', ''),  # and so do You May Also Like
+        (f'DetailRecommendLabel{page}', ''),
+        (f'DetailSet{page}', ''),        # and the film's collection row
         (f'DetailNext{page}', ''),      # clear the previous title's episode first
         (f'DetailID{page}', tmdb_id),
     ])
@@ -247,7 +317,26 @@ def open_details(container, index=None):
     # Romance film arrived as "Comedy" and More Like This filled with children's films -
     # so the filter is built from the title's own details, once they are on the page.
     if wait_for_details(window, tmdb_id):
-        set_string(f'DetailDiscover{page}', discover_filter('Container(9500).ListItem', item_type, tile_language))
+        details = 'Container(9500).ListItem'
+        set_string(f'DetailDiscover{page}', discover_filter(details, item_type, tile_language))
+        in_set = []
+        if item_type == 'movie':
+            # A film in a series (Fast & Furious, Drishyam): the whole collection, in order
+            set_id = info(f'{details}.Property(set.tmdb_id)')
+            set_string(f'DetailSet{page}', set_id)
+            in_set = collection_titles(set_id)
+        # Checked before the row is filled, so it loads once, not twice
+        if item_type == 'movie' and is_true_story(tmdb_id):
+            set_string(f'DetailRecommendLabel{page}', 'More True Stories')
+            set_string(f'DetailRecommend{page}', true_stories(tmdb_id, details, tile_language))
+            if row_came_back_empty(window, 9640):
+                set_string(f'DetailRecommendLabel{page}', '')
+                set_string(f'DetailRecommend{page}', recommendations(item_type, tmdb_id, details, in_set))
+        else:
+            set_string(f'DetailRecommend{page}', recommendations(item_type, tmdb_id, details, in_set))
+        # Few of the recommendations can share the genres: then all of them
+        if row_came_back_empty(window, 9640):
+            set_string(f'DetailRecommend{page}', f'info=recommendations&tmdb_type={item_type}&tmdb_id={tmdb_id}')
         # A niche title can match nothing at this standard, which left an empty row.
         # Then TMDb's own "similar" list - broader, but never empty for a real title.
         if row_came_back_empty(window, 9630):
@@ -298,6 +387,8 @@ def main():
         open_details(args[1], args[2] if len(args) > 2 else None)
     elif action == 'person' and len(args) > 1:
         open_person(args[1])
+    elif action == 'title' and len(args) > 2:
+        open_details(None, item=(args[1], args[2]))
 
 
 main()

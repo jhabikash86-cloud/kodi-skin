@@ -53,8 +53,21 @@
 	<variable name="ATV_CastPath0">
 		<value condition="$EXP[ATV_DetailReady0]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType0)]&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;nextpage=false</value>
 	</variable>
+	<!-- You May Also Like: extras/details.py fills DetailRecommend once the details are in -
+	     TMDb's recommendations kept to this title's genres, or, for a film tagged "based on
+	     true story", other true stories (the row is then called More True Stories). -->
 	<variable name="ATV_RecommendedPath0">
-		<value condition="$EXP[ATV_DetailReady0]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType0)]&amp;tmdb_id=$INFO[Skin.String(DetailID0)]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailReady0] + !String.IsEmpty(Skin.String(DetailRecommend0))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend0)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedLabel0">
+		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel0))">$INFO[Skin.String(DetailRecommendLabel0)]</value>
+		<value>You May Also Like</value>
+	</variable>
+	<!-- A film in a series - Fast &amp; Furious, Drishyam - gets the whole collection, in release
+	     order, as the first row under the hero; the rows below move down one -->
+	<expression name="ATV_DetailHasSet0">!$EXP[ATV_DetailIsTV0] + !String.IsEmpty(Skin.String(DetailSet0))</expression>
+	<variable name="ATV_CollectionPath0">
+		<value condition="$EXP[ATV_DetailHasSet0]">plugin://plugin.video.themoviedb.helper/?info=collection&amp;tmdb_type=collection&amp;tmdb_id=$INFO[Skin.String(DetailSet0)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
 	<!-- A show TMDb has no seasons for yet - announced, not aired -->
 	<expression name="ATV_DetailNoSeasons0">$EXP[ATV_DetailIsTV0] + $EXP[ATV_DetailReady0] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>
@@ -122,8 +135,21 @@
 	<variable name="ATV_CastPath1">
 		<value condition="$EXP[ATV_DetailReady1]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;nextpage=false</value>
 	</variable>
+	<!-- You May Also Like: extras/details.py fills DetailRecommend once the details are in -
+	     TMDb's recommendations kept to this title's genres, or, for a film tagged "based on
+	     true story", other true stories (the row is then called More True Stories). -->
 	<variable name="ATV_RecommendedPath1">
-		<value condition="$EXP[ATV_DetailReady1]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType1)]&amp;tmdb_id=$INFO[Skin.String(DetailID1)]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailReady1] + !String.IsEmpty(Skin.String(DetailRecommend1))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend1)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedLabel1">
+		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel1))">$INFO[Skin.String(DetailRecommendLabel1)]</value>
+		<value>You May Also Like</value>
+	</variable>
+	<!-- A film in a series - Fast &amp; Furious, Drishyam - gets the whole collection, in release
+	     order, as the first row under the hero; the rows below move down one -->
+	<expression name="ATV_DetailHasSet1">!$EXP[ATV_DetailIsTV1] + !String.IsEmpty(Skin.String(DetailSet1))</expression>
+	<variable name="ATV_CollectionPath1">
+		<value condition="$EXP[ATV_DetailHasSet1]">plugin://plugin.video.themoviedb.helper/?info=collection&amp;tmdb_type=collection&amp;tmdb_id=$INFO[Skin.String(DetailSet1)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
 	<!-- A show TMDb has no seasons for yet - announced, not aired -->
 	<expression name="ATV_DetailNoSeasons1">$EXP[ATV_DetailIsTV1] + $EXP[ATV_DetailReady1] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>
@@ -191,8 +217,21 @@
 	<variable name="ATV_CastPath2">
 		<value condition="$EXP[ATV_DetailReady2]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType2)]&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;nextpage=false</value>
 	</variable>
+	<!-- You May Also Like: extras/details.py fills DetailRecommend once the details are in -
+	     TMDb's recommendations kept to this title's genres, or, for a film tagged "based on
+	     true story", other true stories (the row is then called More True Stories). -->
 	<variable name="ATV_RecommendedPath2">
-		<value condition="$EXP[ATV_DetailReady2]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType2)]&amp;tmdb_id=$INFO[Skin.String(DetailID2)]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailReady2] + !String.IsEmpty(Skin.String(DetailRecommend2))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend2)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedLabel2">
+		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel2))">$INFO[Skin.String(DetailRecommendLabel2)]</value>
+		<value>You May Also Like</value>
+	</variable>
+	<!-- A film in a series - Fast &amp; Furious, Drishyam - gets the whole collection, in release
+	     order, as the first row under the hero; the rows below move down one -->
+	<expression name="ATV_DetailHasSet2">!$EXP[ATV_DetailIsTV2] + !String.IsEmpty(Skin.String(DetailSet2))</expression>
+	<variable name="ATV_CollectionPath2">
+		<value condition="$EXP[ATV_DetailHasSet2]">plugin://plugin.video.themoviedb.helper/?info=collection&amp;tmdb_type=collection&amp;tmdb_id=$INFO[Skin.String(DetailSet2)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
 	<!-- A show TMDb has no seasons for yet - announced, not aired -->
 	<expression name="ATV_DetailNoSeasons2">$EXP[ATV_DetailIsTV2] + $EXP[ATV_DetailReady2] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>
@@ -260,8 +299,21 @@
 	<variable name="ATV_CastPath3">
 		<value condition="$EXP[ATV_DetailReady3]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType3)]&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;nextpage=false</value>
 	</variable>
+	<!-- You May Also Like: extras/details.py fills DetailRecommend once the details are in -
+	     TMDb's recommendations kept to this title's genres, or, for a film tagged "based on
+	     true story", other true stories (the row is then called More True Stories). -->
 	<variable name="ATV_RecommendedPath3">
-		<value condition="$EXP[ATV_DetailReady3]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType3)]&amp;tmdb_id=$INFO[Skin.String(DetailID3)]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailReady3] + !String.IsEmpty(Skin.String(DetailRecommend3))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend3)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedLabel3">
+		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel3))">$INFO[Skin.String(DetailRecommendLabel3)]</value>
+		<value>You May Also Like</value>
+	</variable>
+	<!-- A film in a series - Fast &amp; Furious, Drishyam - gets the whole collection, in release
+	     order, as the first row under the hero; the rows below move down one -->
+	<expression name="ATV_DetailHasSet3">!$EXP[ATV_DetailIsTV3] + !String.IsEmpty(Skin.String(DetailSet3))</expression>
+	<variable name="ATV_CollectionPath3">
+		<value condition="$EXP[ATV_DetailHasSet3]">plugin://plugin.video.themoviedb.helper/?info=collection&amp;tmdb_type=collection&amp;tmdb_id=$INFO[Skin.String(DetailSet3)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
 	<!-- A show TMDb has no seasons for yet - announced, not aired -->
 	<expression name="ATV_DetailNoSeasons3">$EXP[ATV_DetailIsTV3] + $EXP[ATV_DetailReady3] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>
@@ -329,8 +381,21 @@
 	<variable name="ATV_CastPath4">
 		<value condition="$EXP[ATV_DetailReady4]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;nextpage=false</value>
 	</variable>
+	<!-- You May Also Like: extras/details.py fills DetailRecommend once the details are in -
+	     TMDb's recommendations kept to this title's genres, or, for a film tagged "based on
+	     true story", other true stories (the row is then called More True Stories). -->
 	<variable name="ATV_RecommendedPath4">
-		<value condition="$EXP[ATV_DetailReady4]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType4)]&amp;tmdb_id=$INFO[Skin.String(DetailID4)]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailReady4] + !String.IsEmpty(Skin.String(DetailRecommend4))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend4)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedLabel4">
+		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel4))">$INFO[Skin.String(DetailRecommendLabel4)]</value>
+		<value>You May Also Like</value>
+	</variable>
+	<!-- A film in a series - Fast &amp; Furious, Drishyam - gets the whole collection, in release
+	     order, as the first row under the hero; the rows below move down one -->
+	<expression name="ATV_DetailHasSet4">!$EXP[ATV_DetailIsTV4] + !String.IsEmpty(Skin.String(DetailSet4))</expression>
+	<variable name="ATV_CollectionPath4">
+		<value condition="$EXP[ATV_DetailHasSet4]">plugin://plugin.video.themoviedb.helper/?info=collection&amp;tmdb_type=collection&amp;tmdb_id=$INFO[Skin.String(DetailSet4)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
 	<!-- A show TMDb has no seasons for yet - announced, not aired -->
 	<expression name="ATV_DetailNoSeasons4">$EXP[ATV_DetailIsTV4] + $EXP[ATV_DetailReady4] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>

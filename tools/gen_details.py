@@ -67,8 +67,21 @@ VARIABLES = '''
 	<variable name="ATV_CastPath{n}">
 		<value condition="$EXP[ATV_DetailReady{n}]">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=$INFO[Skin.String(DetailType{n})]&amp;tmdb_id=$INFO[Skin.String(DetailID{n})]&amp;nextpage=false</value>
 	</variable>
+	<!-- You May Also Like: extras/details.py fills DetailRecommend once the details are in -
+	     TMDb's recommendations kept to this title's genres, or, for a film tagged "based on
+	     true story", other true stories (the row is then called More True Stories). -->
 	<variable name="ATV_RecommendedPath{n}">
-		<value condition="$EXP[ATV_DetailReady{n}]">plugin://plugin.video.themoviedb.helper/?info=recommendations&amp;tmdb_type=$INFO[Skin.String(DetailType{n})]&amp;tmdb_id=$INFO[Skin.String(DetailID{n})]&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_DetailReady{n}] + !String.IsEmpty(Skin.String(DetailRecommend{n}))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend{n})]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_RecommendedLabel{n}">
+		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel{n}))">$INFO[Skin.String(DetailRecommendLabel{n})]</value>
+		<value>You May Also Like</value>
+	</variable>
+	<!-- A film in a series - Fast &amp; Furious, Drishyam - gets the whole collection, in release
+	     order, as the first row under the hero; the rows below move down one -->
+	<expression name="ATV_DetailHasSet{n}">!$EXP[ATV_DetailIsTV{n}] + !String.IsEmpty(Skin.String(DetailSet{n}))</expression>
+	<variable name="ATV_CollectionPath{n}">
+		<value condition="$EXP[ATV_DetailHasSet{n}]">plugin://plugin.video.themoviedb.helper/?info=collection&amp;tmdb_type=collection&amp;tmdb_id=$INFO[Skin.String(DetailSet{n})]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
 	<!-- A show TMDb has no seasons for yet - announced, not aired -->
 	<expression name="ATV_DetailNoSeasons{n}">$EXP[ATV_DetailIsTV{n}] + $EXP[ATV_DetailReady{n}] + Integer.IsEqual(Container(9610).NumItems,0) + !Container(9610).IsUpdating</expression>
