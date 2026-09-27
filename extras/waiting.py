@@ -55,9 +55,16 @@ def real_stream(player):
     dummy.mp4 - and swaps the real stream in once it is resolved. Taking the placeholder
     for playback meant a resume point was never applied, and the Up Next watcher quit
     before the episode began.
+
+    Nor is the Aerial screensaver's flight, which plays as a video too: pressing Play from an
+    idle Home, it was still playing, and the Up Next watcher took it for the episode - far
+    too short to be one - and quit before the episode began, so Skip Intro never showed.
     """
     try:
-        return player.isPlayingVideo() and not player.getPlayingFile().endswith('dummy.mp4')
+        if not player.isPlayingVideo():
+            return False
+        playing = player.getPlayingFile()
+        return not playing.endswith('dummy.mp4') and 'Aerials/' not in playing
     except RuntimeError:
         return False
 
