@@ -12,6 +12,9 @@
 	<controls>
 		<control type="group">
 			<left>90</left><top>920</top><width>260</width><height>68</height>
+			<!-- Above the player's title bar while it shows, and above the controls when open -->
+			<animation effect="slide" end="0,-150" time="240" tween="cubic" easing="out" condition="Window.IsVisible(seekbar) + !Window.IsVisible(videoosd)">Conditional</animation>
+			<animation effect="slide" end="0,-250" time="240" tween="cubic" easing="out" condition="Window.IsVisible(videoosd)">Conditional</animation>
 			<control type="image">
 				<left>-30</left><top>-24</top><width>320</width><height>116</height>
 				<texture border="40">atv/shadow.png</texture>
