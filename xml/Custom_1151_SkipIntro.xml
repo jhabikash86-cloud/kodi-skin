@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Skip Intro / Skip Recap, bottom right while that part of the episode plays. extras/upnext.py
-     opens it from TheIntroDB's times (extras/segments.py), seeks past the part when it is
+<!-- Skip Intro / Skip Recap, bottom left while that part of the episode plays. extras/upnext.py
+     opens it from TheIntroDB / IntroDB times (extras/segments.py) or the file's chapter names,
+     seeks past the part when it is
      pressed, and closes it when the part is over; Back dismisses it. The episode plays on
      underneath and nothing is dimmed. -->
 <window type="dialog" id="1151">
 	<defaultcontrol always="true">9160</defaultcontrol>
 	<animation effect="fade" start="0" end="100" time="260">WindowOpen</animation>
-	<animation effect="slide" start="40,0" end="0,0" time="320" tween="cubic" easing="out">WindowOpen</animation>
+	<animation effect="slide" start="-40,0" end="0,0" time="320" tween="cubic" easing="out">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 	<controls>
 		<control type="group">
-			<left>1570</left><top>920</top><width>260</width><height>68</height>
+			<left>90</left><top>920</top><width>260</width><height>68</height>
 			<control type="image">
 				<left>-30</left><top>-24</top><width>320</width><height>116</height>
 				<texture border="40">atv/shadow.png</texture>

@@ -195,9 +195,19 @@ def recommendations(item_type, tmdb_id, prefix, leave_out=()):
     return path
 
 
-def collection_titles(set_id):
-    return [i.get('label', '') for i in listing(
-        f'info=collection&tmdb_type=collection&tmdb_id={set_id}&nextpage=false')] if set_id else []
+def collection_titles(window, set_id, timeout=4):
+    """The films in the page's own collection row, once it has loaded - read off the row
+    rather than asked for again (each TMDb Helper request is about 2s on the Xbox). Only
+    once the row holds this collection: until then it can still show the last film's."""
+    for _ in range(timeout * 10):
+        if xbmcgui.getCurrentWindowId() != window:
+            return []
+        count = int(info('Container(9625).NumItems') or 0)
+        if count and info('Container(9625).ListItemAbsolute(0).Property(set.tmdb_id)') == set_id \
+                and not xbmc.getCondVisibility('Container(9625).IsUpdating'):
+            return [info(f'Container(9625).ListItemAbsolute({i}).Label') for i in range(count)]
+        xbmc.sleep(100)
+    return []
 
 
 def true_stories(tmdb_id, prefix, fallback_language=''):
@@ -319,14 +329,19 @@ def open_details(container, index=None, item=None):
     if wait_for_details(window, tmdb_id):
         details = 'Container(9500).ListItem'
         set_string(f'DetailDiscover{page}', discover_filter(details, item_type, tile_language))
-        in_set = []
+        in_set, true_story = [], [False]
         if item_type == 'movie':
+            # Whether it is a true story, asked while the collection row loads: both before
+            # the row is filled, so it loads once, not twice
+            import threading
+            asking = threading.Thread(target=lambda: true_story.__setitem__(0, is_true_story(tmdb_id)))
+            asking.start()
             # A film in a series (Fast & Furious, Drishyam): the whole collection, in order
             set_id = info(f'{details}.Property(set.tmdb_id)')
             set_string(f'DetailSet{page}', set_id)
-            in_set = collection_titles(set_id)
-        # Checked before the row is filled, so it loads once, not twice
-        if item_type == 'movie' and is_true_story(tmdb_id):
+            in_set = collection_titles(window, set_id) if set_id else []
+            asking.join(8)
+        if true_story[0]:
             set_string(f'DetailRecommendLabel{page}', 'More True Stories')
             set_string(f'DetailRecommend{page}', true_stories(tmdb_id, details, tile_language))
             if row_came_back_empty(window, 9640):

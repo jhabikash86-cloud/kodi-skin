@@ -502,10 +502,13 @@ video only once it has passed.
   one switches at once and the panel stays open. It is a script dialog because Kodi gives
   a skin no list of a file's audio tracks.
 - **Skip Intro, Skip Recap, and Up Next at the credits.** For episodes, `extras/upnext.py`
-  asks TheIntroDB (`extras/segments.py`; free, community-timed, keyed by TMDb id, no
-  account) where the intro, recap and credits are. While an intro or recap plays, a
-  "Skip Intro" button sits bottom right (`Custom_1151_SkipIntro.xml`); it takes focus, so
-  one press skips and Back dismisses it. Where the credits start between 15 s and 10 min
+  asks two free community databases where the intro, recap and credits are
+  (`extras/segments.py`): TheIntroDB (by TMDb id), then IntroDB (by IMDb id) for whatever the
+  first lacks - it had Furious, the first did not. An episode neither knows still gets the
+  button when its file names a chapter Intro, Opening or Recap; Skip then goes to the next
+  chapter. While an intro or recap plays, one "Skip Intro" button sits bottom left
+  (`Custom_1151_SkipIntro.xml`); it takes focus, so one press skips and Back dismisses it.
+  Where IntroDB knows of a scene after the credits, Up Next waits for the end instead. Where the credits start between 15 s and 10 min
   from the end, the Up Next card comes up then rather than 45 s from the end, and
   Umbrella's search for the next episode starts that much earlier. Episodes TheIntroDB has
   no entry for (it answers 404) keep the fixed 45 s. Timings are for the streaming cut; a

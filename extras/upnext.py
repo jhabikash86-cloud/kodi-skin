@@ -14,11 +14,14 @@ way the next episode starts on its own (Auto Play): nobody is there to pick a so
 Choosing to keep watching stops the countdown for good, so it cannot reappear over the
 credits of something you decided to stay with.
 
-Where TheIntroDB has timed the episode (extras/segments.py), it also offers Skip Intro and
-Skip Recap (xml/Custom_1151_SkipIntro.xml) while those play, and brings the card up as the
-credits start - as Apple TV does - instead of a fixed time before the end.
+Where TheIntroDB or IntroDB has timed the episode (extras/segments.py), it also offers
+Skip Intro and Skip Recap (xml/Custom_1151_SkipIntro.xml) while those play, and brings the
+card up as the credits start - as Apple TV does - instead of a fixed time before the end,
+unless a scene follows the credits. An episode neither knows still gets the button when its
+file names a chapter Intro, Opening or Recap, as many web releases do.
 """
 import json
+import re
 import sys
 import threading
 import time
@@ -35,6 +38,9 @@ WINDOW = 1150
 LEAD_IN = 45          # seconds before the end to offer the next episode
 CREDITS_LEAD = (15, 600)  # credits starting this far from the end: offer it then instead
 SKIP_WINDOW = 1151
+# Chapter names that mean "skippable" - the fallback when no database knows the episode
+SKIPPABLE_CHAPTER = re.compile(r'\b(?:intro|opening|op|title sequence|main titles?|theme)\b', re.I)
+RECAP_CHAPTER = re.compile(r'\b(?:recap|previously)\b', re.I)
 COUNTDOWN = 10        # seconds the card counts down before the next episode starts
 PRESCRAPE_AT = 300    # seconds before the end: Umbrella searches for the next episode now
                       # (its silent search waits for every provider - 78s on the Mac)
@@ -168,6 +174,32 @@ class SkipButton:
                 xbmc.executebuiltin(f'ActivateWindow({SKIP_WINDOW})')
                 return
 
+    def chapter(self, player):
+        """The same button from the file's chapters: while a chapter named Intro, Opening or
+        Recap plays, Skip goes to the start of the next chapter."""
+        number = xbmc.getInfoLabel('Player.Chapter')
+        if self.current:
+            if HOME.getProperty('SkipNow') == '1':
+                HOME.clearProperty('SkipNow')
+                xbmc.executebuiltin('Action(ChapterOrBigStepForward)')
+                xbmc.log(f'ATV skip: chapter {number} ({self.current[0]})', xbmc.LOGINFO)
+                self.hide()
+            elif number != self.current[1]:
+                self.hide()                                 # the chapter is over
+            elif time.time() - self.shown_at > 2 and \
+                    not xbmc.getCondVisibility(f'Window.IsVisible({SKIP_WINDOW})'):
+                self.current = None
+            return
+        if not number or ('chapter', number) in self.offered:
+            return
+        name = xbmc.getInfoLabel('Player.ChapterName')
+        label = 'Recap' if RECAP_CHAPTER.search(name) else 'Intro' if SKIPPABLE_CHAPTER.search(name) else ''
+        if label and int(xbmc.getInfoLabel('Player.ChapterCount') or 0) > int(number):
+            self.offered.add(('chapter', number))
+            self.current, self.shown_at = (label, number, None), time.time()
+            HOME.setProperty('SkipLabel', f'Skip {label}')
+            xbmc.executebuiltin(f'ActivateWindow({SKIP_WINDOW})')
+
     def hide(self):
         if self.current:
             xbmc.executebuiltin(f'Dialog.Close({SKIP_WINDOW},true)')
@@ -178,8 +210,12 @@ def watch(tmdb_id, season, episode):
     monitor, player = Monitor(), xbmc.Player()
     shown, shown_at, prescraped = False, 0.0, False
     remaining_at_last, following = LEAD_IN + 1, None
-    found, skip = {}, SkipButton()
-    threading.Thread(target=lambda: found.update(segments.fetch(tmdb_id, season, episode)), daemon=True).start()
+    found, skip, looked_up = {}, SkipButton(), [False]
+
+    def look_up():
+        found.update(segments.fetch(tmdb_id, season, episode))
+        looked_up[0] = True
+    threading.Thread(target=look_up, daemon=True).start()
     if not wait_for_stream(player, START_WAIT, monitor):
         return
     try:
@@ -199,10 +235,13 @@ def watch(tmdb_id, season, episode):
                 return
             remaining = total - position
             remaining_at_last = remaining
-            credits = found.get('credits')
+            credits = None if found.get('post_credits') else found.get('credits')  # a scene after them: wait
             lead = total - credits if credits and CREDITS_LEAD[0] <= total - credits <= CREDITS_LEAD[1] else LEAD_IN
-            if found.get('skips') and not shown:
-                skip.update(player, position, found['skips'])
+            if not shown:
+                if found.get('skips'):
+                    skip.update(player, position, found['skips'])
+                elif looked_up[0] and position < total / 3:   # nothing known: the file's chapters
+                    skip.chapter(player)
             if shown:
                 if HOME.getProperty('UpNextPlayNow') == '1':      # Play on the card
                     HOME.clearProperty('UpNextPlayNow')
