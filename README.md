@@ -314,25 +314,16 @@ Rows are for things you can watch now: every one passes `hide_unaired=true`, whi
 titles not out yet - they otherwise appeared with TMDb Helper's red italic markup in their
 names. Coming Soon, My List and Continue Watching keep them.
 
-**Continue Watching** is two rows: the episodes you paused, then the films, each Trakt's
-on-deck list, newest first. Anything under 4% watched is left out (TMDb Helper already
-zeroes progress below that), which drops false starts, and so is anything not played in 90
-days: Trakt keeps a paused position forever, and this account had 40. A show with two
-paused episodes still shows both.
-
-To take a tile off by hand, press Menu on it: the first entry, *Remove from this row*, runs
-`extras/forget.py`, which deletes that saved position on Trakt through TMDb Helper (the title
-is not marked watched), closes TMDb Helper's "successful" box and reloads both rows - about
-three seconds. A failure leaves TMDb Helper's box up, since it says why; a tile Trakt still
-lists after two reloads gets a "try again" notice. Trakt once answered a delete with success
-and kept the entry; the same delete sent again went through.
-
-They were one row for a day - two `<content>` lists in one container, which Kodi 21 merges -
-and it froze Kodi. Its multi-list provider takes a list's lock while holding the graphics
-lock; a list that has just finished loading holds its own lock while freeing the old
-artwork, which needs the graphics lock. Each waits for the other, and everything stops: the
-remote, the pages, even Quit. A row with one list does not take that path, so every row in
-the skin has one list. Checked afterwards with five cold starts in a row.
+**Continue Watching** is one row, films and episodes together, newest first, as Apple TV's
+Up Next: `extras/continuing.py` reads TMDb Helper's films and episodes in progress and the
+next episode of each show, orders them by when each was last watched or paused (TMDb
+Helper's Trakt sync table), keeps the last 90 days, and writes the tiles to skin strings the
+row's static items draw - so the row is there the moment Home opens and is rebuilt after
+every playback (not the screensaver's). Menu -> *Remove from this row* (`extras/forget.py`)
+hides a tile until that title is watched again, and deletes a saved position on Trakt when
+there is one. Two `<content>` lists in one row froze Kodi 21 (its multi-list provider and
+the graphics lock wait on each other), which is why the row is built this way and every
+other row in the skin has one list.
 
 **Genre rows** are thrillers, horror and dramas only - what this house watches; the comedy
 and sci-fi rows are gone. Two kinds, `everyone_watching()` and `must_watch()` in
@@ -354,6 +345,26 @@ the film dramas. Trakt's own all-time list was tried for Must-Watch and dropped:
 genre it returned five to thirteen titles, nearly all from this year. Trakt ignores its vote
 filter on these charts; the rating filters work. Gripping Crime Dramas and Bollywood Romance
 stay from the earlier mood rows.
+
+**True stories, Indian thrillers, international thrillers** - after thrillers, what this house
+watches most. TMDb tags a title "based on true story" (keyword 9672); documentaries are left
+out of every one of these rows, by request, as are comedies and cartoons.
+
+- *Based on a True Story* (Movies): the last ten years, 300 votes, most popular - Oppenheimer,
+  Killers of the Flower Moon, Ford v Ferrari. *True Stories from India*: the same tag, made in
+  India - Amaran, Uri, Rocketry, Raid.
+- *True Crime Stories* (TV): the tag and the crime genre together - Monster, Dahmer, Narcos,
+  American Crime Story. The tag alone brought in costume dramas and prison comedies.
+- *Must-Watch Indian Thrillers* (films, crime or thriller) and *Indian Crime & Thriller
+  Series* (crime or mystery - TMDb has no thriller genre for series): by country, so every
+  Indian language at once, best rated first - Maharaja, Drishyam, Kahaani; Scam 1992,
+  Paatal Lok, Delhi Crime, Sacred Games.
+- *International Thrillers: Must-Watch* (TV) replaced World Series, which by popularity was
+  Korean office comedies: crime and mystery from the countries whose shows travel, 1000
+  votes, best rated first - Dark, Money Heist, Squid Game, Lupin, Kingdom. *World Cinema*
+  keeps to thrillers, horror, crime and drama (no anime or romance).
+- Home has *Hindi Series Everyone's Watching*, recent and popular, no comedies - Home had no
+  Indian series before.
 
 *Top 10 Most Watched This Week* on Movies is Trakt's weekly chart of unique viewers
 (`trakt_mostviewers`). It used `trakt_mostwatched`, which despite the name is your own

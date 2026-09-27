@@ -45,13 +45,11 @@ BLOCKBUSTERS = (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;sort_by=populari
                 f'&amp;primary_release_date.gte={DECADE}&amp;primary_release_date.lte={TODAY_ISO}'
                 f'&amp;vote_count.gte=2000&amp;nextpage=false')
 
-WORLD_MOVIES = (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT'
+# Anime, romance, comedy and family left out: it was Demon Slayer and Spanish romcoms
+WORLD_MOVIES = (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT%7CDE%7CDK%7CMX'
+                f'&amp;without_genres=16,10749,35,10751,99&amp;with_id=True'
                 f'&amp;sort_by=popularity.desc&amp;primary_release_date.gte={RECENT_SINCE}'
                 f'&amp;vote_count.gte=30&amp;nextpage=false')
-
-WORLD_SHOWS = (f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_origin_country=KR%7CES%7CFR%7CIT%7CDE'
-               f'&amp;sort_by=popularity.desc&amp;first_air_date.gte={THREE_YEARS}'
-               f'&amp;without_genres={NOT_SERIALS},16&amp;with_id=True&amp;vote_count.gte=20&amp;nextpage=false')
 
 
 def language_chart(code, media='movie', votes=15, recent=True):
@@ -147,6 +145,35 @@ SERIES_GENRES = {
     'crime': mood('tv', '80,18', DECADE, 300, 'vote_average.desc', f'{NOT_SERIALS},16', ENGLISH),
 }
 
+# True stories and Indian crime - what this house watches most after thrillers. TMDb tags a
+# title "based on true story" with keyword 9672; documentaries (99) are left out everywhere,
+# by request - these rows are dramatised stories. A series is only "true crime" with the
+# crime genre as well, or the tag brought in costume dramas (Reign) and prison comedies.
+TRUE_STORY = '9672'
+NO_DOCS = '99,16,10751,35'    # and comedies: Green Book, Orange Is the New Black
+INDIA = '&amp;with_origin_country=IN'
+TRUE_FILMS = (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_keywords={TRUE_STORY}&amp;without_genres={NO_DOCS}'
+              f'&amp;primary_release_date.gte={DECADE}&amp;vote_count.gte=300&amp;sort_by=popularity.desc'
+              f'&amp;with_id=True&amp;nextpage=false')
+TRUE_FILMS_INDIA = (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_keywords={TRUE_STORY}{INDIA}'
+                    f'&amp;without_genres={NO_DOCS}&amp;primary_release_date.gte={DECADE}&amp;vote_count.gte=30'
+                    f'&amp;sort_by=popularity.desc&amp;with_id=True&amp;nextpage=false')
+TRUE_CRIME_SERIES = (f'{PLUGIN}info=discover&amp;tmdb_type=tv&amp;with_keywords={TRUE_STORY}&amp;with_genres=80'
+                     f'&amp;without_genres={NO_DOCS},{NOT_SERIALS}&amp;vote_count.gte=100&amp;sort_by=popularity.desc'
+                     f'&amp;with_id=True&amp;nextpage=false')
+# Every Indian language at once, by country: Hindi, Tamil, Telugu and Malayalam thrillers.
+# Crime or thriller (films) / crime or mystery (series - TMDb has no thriller genre for TV),
+# the best rated first, so it reads as a must-watch list: Maharaja, Drishyam, Kahaani;
+# Scam 1992, Paatal Lok, Delhi Crime.
+INDIAN_THRILLERS = must_watch('movie', '53%7C80', '16,35,99,10751', 250, INDIA)
+INDIAN_CRIME_SERIES = must_watch('tv', '80%7C9648', f'{NOT_SERIALS},16,99', 40, INDIA)
+# Foreign-language series worth the subtitles: crime and mystery from the countries whose
+# shows travel, all time, held to 1000 votes - Dark, Money Heist, Squid Game, Lupin, Kingdom,
+# Alice in Borderland. (By popularity it was this month's Korean office comedies; at 500
+# votes a fantasy romance led it.)
+FOREIGN = 'KR%7CES%7CFR%7CDE%7CJP%7CIT%7CDK%7CSE%7CNO%7CMX%7CBR%7CIL%7CTR%7CBE%7CPL'
+WORLD_THRILLERS = must_watch('tv', '80%7C9648', f'35,16,99,{NOT_SERIALS}', 1000, f'&amp;with_origin_country={FOREIGN}')
+
 PAGES = {
     1140: {
         'file': 'Custom_1140_Movies.xml',
@@ -164,13 +191,16 @@ PAGES = {
             ('poster', "Thrillers Everyone's Watching", FILM_GENRES['thrillers']),
             ('poster', "Horror Everyone's Talking About", FILM_GENRES['horror']),
             ('poster', "Dramas Everyone's Hooked On", FILM_GENRES['dramas']),
+            ('poster', 'Based on a True Story', TRUE_FILMS),
             ('poster', 'Blockbusters', BLOCKBUSTERS),
             ('rank', 'Top 10 Hindi Movies Right Now', language_chart('hi')),
             ('poster', 'Hindi Films of the Decade', best_of_language('hi', votes=120)),
+            ('poster', 'Must-Watch Indian Thrillers', INDIAN_THRILLERS),
             ('poster', 'Bollywood Romance', FILM_GENRES['romance']),
             ('poster', 'Must-Watch Thrillers: The All-Time Greats', FILM_GENRES['great_thrillers']),
             ('rank', 'Top 10 Tamil Movies Right Now', language_chart('ta', votes=10)),
             ('poster', 'Tamil Films of the Decade', best_of_language('ta', votes=60)),
+            ('poster', 'True Stories from India', TRUE_FILMS_INDIA),
             ('poster', 'Must-Watch Horror: Lights On', FILM_GENRES['great_horror']),
             ('poster', 'Must-Watch Dramas: The Classics', FILM_GENRES['great_dramas']),
             ('poster', 'World Cinema', WORLD_MOVIES),
@@ -189,6 +219,7 @@ PAGES = {
             ('rank', 'Top 10 on Prime Video', network(1024)),
             ('rank', 'Top 10 on HBO', network(49)),
             ('poster', "Thrillers Everyone's Watching", SERIES_GENRES['thrillers']),
+            ('poster', 'True Crime Stories', TRUE_CRIME_SERIES),
             ('rank', 'Top 10 on Apple TV+', network(2552)),
             ('poster', "Horror Everyone's Talking About", SERIES_GENRES['horror']),
             ('rank', 'Top 10 on Hulu', network(453)),
@@ -197,8 +228,9 @@ PAGES = {
             ('poster', 'Gripping Crime Dramas', SERIES_GENRES['crime']),
             ('poster', 'Must-Watch Drama Series', SERIES_GENRES['great_dramas']),
             ('rank', 'Top 10 Hindi Series Right Now', language_chart('hi', media='tv', votes=10)),
+            ('poster', 'Indian Crime &amp; Thriller Series', INDIAN_CRIME_SERIES),
             ('rank', 'Top 10 Tamil Series Right Now', language_chart('ta', media='tv', votes=3, recent=False)),
-            ('poster', 'World Series', WORLD_SHOWS),
+            ('poster', 'International Thrillers: Must-Watch', WORLD_THRILLERS),
             ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false'),
         ],
     },

@@ -18,8 +18,8 @@
              dark page: behind every row it competed with the posters and hid the glass and
              focus effects. -->
         <control type="group">
-            <animation effect="fade" start="100" end="0" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-320" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-320" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio align="center" aligny="top">scale</aspectratio>
@@ -45,26 +45,29 @@
             <left>90</left><top>142</top><width>900</width><height>70</height>
             <label>Movies</label>
             <font>atv_pagetitle</font><textcolor>FFFFFFFF</textcolor>
-            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
+            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
         </control>
 
         <control type="group">
-            <animation effect="slide" end="0,-585" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(66) | Control.HasFocus(67)">Conditional</animation>
-            <animation effect="slide" end="0,-40" time="380" tween="sine" easing="inout" condition="Control.HasFocus(67)">Conditional</animation>
+            <animation effect="slide" end="0,-585" time="380" tween="sine" easing="inout" condition="Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="Control.HasFocus(69) | Control.HasFocus(70)">Conditional</animation>
+            <animation effect="slide" end="0,-40" time="380" tween="sine" easing="inout" condition="Control.HasFocus(70)">Conditional</animation>
 
             <include content="ATV_RankRow">
                 <param name="id" value="51" />
@@ -96,7 +99,7 @@
                 <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;sort_by=primary_release_date.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d90)]&amp;primary_release_date.lte=$INFO[Skin.String(ATVDate.today)]&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
             </include>
             <control type="group">
-                <visible>Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
                     <param name="id" value="54" />
                     <param name="top" value="1685" />
@@ -108,7 +111,7 @@
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
                     <param name="id" value="55" />
                     <param name="top" value="2160" />
@@ -120,7 +123,7 @@
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
                     <param name="id" value="56" />
                     <param name="top" value="2635" />
@@ -132,136 +135,172 @@
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
                     <param name="id" value="57" />
                     <param name="top" value="3110" />
-                    <param name="label" value="Blockbusters" />
+                    <param name="label" value="Based on a True Story" />
                     <param name="onup" value="56" />
                     <param name="ondown" value="58" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_keywords=9672&amp;without_genres=99,16,10751,35&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=300&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="58" />
+                    <param name="top" value="3585" />
+                    <param name="label" value="Blockbusters" />
+                    <param name="onup" value="57" />
+                    <param name="ondown" value="59" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;primary_release_date.lte=$INFO[Skin.String(ATVDate.today)]&amp;vote_count.gte=2000&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_RankRow">
-                    <param name="id" value="58" />
-                    <param name="idbase" value="77" />
-                    <param name="data" value="6107" />
-                    <param name="top" value="3585" />
+                    <param name="id" value="59" />
+                    <param name="idbase" value="78" />
+                    <param name="data" value="6108" />
+                    <param name="top" value="4060" />
                     <param name="label" value="Top 10 Hindi Movies Right Now" />
-                    <param name="onup" value="57" />
-                    <param name="ondown" value="59" />
+                    <param name="onup" value="58" />
+                    <param name="ondown" value="60" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=15&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
-                    <param name="id" value="59" />
-                    <param name="top" value="4060" />
+                    <param name="id" value="60" />
+                    <param name="top" value="4535" />
                     <param name="label" value="Hindi Films of the Decade" />
-                    <param name="onup" value="58" />
-                    <param name="ondown" value="60" />
+                    <param name="onup" value="59" />
+                    <param name="ondown" value="61" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=vote_average.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=120&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
-                <visible>ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
-                    <param name="id" value="60" />
-                    <param name="top" value="4535" />
+                    <param name="id" value="61" />
+                    <param name="top" value="5010" />
+                    <param name="label" value="Must-Watch Indian Thrillers" />
+                    <param name="onup" value="60" />
+                    <param name="ondown" value="62" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=53%7C80&amp;without_genres=16,35,99,10751&amp;with_origin_country=IN&amp;vote_count.gte=250&amp;sort_by=vote_average.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="62" />
+                    <param name="top" value="5485" />
                     <param name="label" value="Bollywood Romance" />
-                    <param name="onup" value="59" />
-                    <param name="ondown" value="61" />
+                    <param name="onup" value="61" />
+                    <param name="ondown" value="63" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=10749&amp;with_original_language=hi&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=40&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
-                    <param name="id" value="61" />
-                    <param name="top" value="5010" />
+                    <param name="id" value="63" />
+                    <param name="top" value="5960" />
                     <param name="label" value="Must-Watch Thrillers: The All-Time Greats" />
-                    <param name="onup" value="60" />
-                    <param name="ondown" value="62" />
+                    <param name="onup" value="62" />
+                    <param name="ondown" value="64" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=53&amp;without_genres=16,35,27,10751&amp;vote_count.gte=6000&amp;sort_by=vote_average.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_RankRow">
-                    <param name="id" value="62" />
-                    <param name="idbase" value="711" />
-                    <param name="data" value="6111" />
-                    <param name="top" value="5485" />
+                    <param name="id" value="64" />
+                    <param name="idbase" value="713" />
+                    <param name="data" value="6113" />
+                    <param name="top" value="6435" />
                     <param name="label" value="Top 10 Tamil Movies Right Now" />
-                    <param name="onup" value="61" />
-                    <param name="ondown" value="63" />
+                    <param name="onup" value="63" />
+                    <param name="ondown" value="65" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
-                    <param name="id" value="63" />
-                    <param name="top" value="5960" />
+                    <param name="id" value="65" />
+                    <param name="top" value="6910" />
                     <param name="label" value="Tamil Films of the Decade" />
-                    <param name="onup" value="62" />
-                    <param name="ondown" value="64" />
+                    <param name="onup" value="64" />
+                    <param name="ondown" value="66" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=vote_average.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=60&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
-                <visible>ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
-                    <param name="id" value="64" />
-                    <param name="top" value="6435" />
+                    <param name="id" value="66" />
+                    <param name="top" value="7385" />
+                    <param name="label" value="True Stories from India" />
+                    <param name="onup" value="65" />
+                    <param name="ondown" value="67" />
+                    <param name="onback" value="7001" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_keywords=9672&amp;with_origin_country=IN&amp;without_genres=99,16,10751,35&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=30&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
+                </include>
+            </control>
+            <control type="group">
+                <visible>Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
+                <include content="ATV_PosterRow">
+                    <param name="id" value="67" />
+                    <param name="top" value="7860" />
                     <param name="label" value="Must-Watch Horror: Lights On" />
-                    <param name="onup" value="63" />
-                    <param name="ondown" value="65" />
+                    <param name="onup" value="66" />
+                    <param name="ondown" value="68" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=27&amp;without_genres=16,35,10751&amp;vote_count.gte=2500&amp;sort_by=vote_average.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
-                    <param name="id" value="65" />
-                    <param name="top" value="6910" />
+                    <param name="id" value="68" />
+                    <param name="top" value="8335" />
                     <param name="label" value="Must-Watch Dramas: The Classics" />
-                    <param name="onup" value="64" />
-                    <param name="ondown" value="66" />
+                    <param name="onup" value="67" />
+                    <param name="ondown" value="69" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=18&amp;without_genres=16,35,10751,10749,53&amp;vote_count.gte=12000&amp;sort_by=vote_average.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
-                    <param name="id" value="66" />
-                    <param name="top" value="7385" />
+                    <param name="id" value="69" />
+                    <param name="top" value="8810" />
                     <param name="label" value="World Cinema" />
-                    <param name="onup" value="65" />
-                    <param name="ondown" value="67" />
+                    <param name="onup" value="68" />
+                    <param name="ondown" value="70" />
                     <param name="onback" value="7001" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=30&amp;hide_unaired=true&amp;nextpage=false" />
+                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_origin_country=KR%7CJP%7CFR%7CES%7CIT%7CDE%7CDK%7CMX&amp;without_genres=16,10749,35,10751,99&amp;with_id=True&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=30&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
-                <visible>Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+                <visible>Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
                 <include content="ATV_PosterRow">
-                    <param name="id" value="67" />
-                    <param name="top" value="7860" />
+                    <param name="id" value="70" />
+                    <param name="top" value="9285" />
                     <param name="label" value="Coming Soon" />
-                    <param name="onup" value="66" />
+                    <param name="onup" value="69" />
                     <param name="ondown" value="noop" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_anticipated&amp;tmdb_type=movie&amp;nextpage=false" />
@@ -273,7 +312,7 @@
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>190</height>
             <texture>atv/grad_top.png</texture>
-            <visible>Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | ControlGroup(62).HasFocus(0) | Control.HasFocus(63) | Control.HasFocus(64) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67)</visible>
+            <visible>Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(56) | Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | ControlGroup(64).HasFocus(0) | Control.HasFocus(65) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70)</visible>
             <animation effect="fade" time="300">VisibleChange</animation>
         </control>
 

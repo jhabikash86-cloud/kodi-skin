@@ -194,7 +194,8 @@ def watch():
 
             # Continue Watching (extras/continuing.py): at start, after each playback, when a
             # tile is removed, and every so often - in a thread, it takes seconds on the Xbox
-            now_playing = player.isPlayingVideo()
+            # Aerial plays its flights as videos: those are not something you watched
+            now_playing = player.isPlayingVideo() and not xbmc.getCondVisibility('System.ScreenSaverActive')
             if playing and not now_playing:
                 stopped_at = time.time()
             playing = now_playing

@@ -36,7 +36,9 @@ RECENT = DATE['d540']
 NOT_SERIALS = '10766,10763,10767,10764,10762'
 
 # TMDb has no "language is not English" filter, so world cinema is done by origin country.
-WORLD_CINEMA = (f'{PLUGIN}info=discover&tmdb_type=movie&with_origin_country=KR%7CJP%7CFR%7CES%7CIT'
+# Anime, romance, comedy, family and documentaries left out, as on the Movies page
+WORLD_CINEMA = (f'{PLUGIN}info=discover&tmdb_type=movie&with_origin_country=KR%7CJP%7CFR%7CES%7CIT%7CDE%7CDK%7CMX'
+                f'&without_genres=16,10749,35,10751,99&with_id=True'
                 f'&sort_by=popularity.desc&primary_release_date.gte={RECENT}'
                 f'&vote_count.gte=30&nextpage=false')
 THREE_YEARS = DATE['d1095']
@@ -54,9 +56,9 @@ def provider_chart(provider_id, votes=20):
             f'&primary_release_date.gte={RECENT}&vote_count.gte={votes}&nextpage=false')
 
 
-def language_row(code, media='movie', votes=15):
+def language_row(code, media='movie', votes=15, without=''):
     date_key = 'primary_release_date' if media == 'movie' else 'first_air_date'
-    extra = '' if media == 'movie' else f'&without_genres={NOT_SERIALS}&with_id=True'
+    extra = '' if media == 'movie' else f'&without_genres={NOT_SERIALS}{without}&with_id=True'
     return (f'{PLUGIN}info=discover&tmdb_type={media}&with_original_language={code}'
             f'&sort_by=popularity.desc&{date_key}.gte={RECENT}{extra}'
             f'&vote_count.gte={votes}&nextpage=false')
@@ -99,6 +101,8 @@ ROWS = [
     ('rank', 'Top 10 on JioHotstar', provider_chart(PROVIDERS['JioHotstar'])),
     ('poster', 'Trending in Hindi', language_row('hi')),
     ('poster', 'Trending in Tamil', language_row('ta', votes=10)),
+    # Home had no Indian series at all - the TV page has the charts
+    ('poster', 'Hindi Series Everyone\'s Watching', language_row('hi', media='tv', votes=10, without=',16,35')),
     ('poster', 'World Cinema', WORLD_CINEMA),
 ]
 
