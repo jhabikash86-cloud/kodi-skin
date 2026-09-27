@@ -47,6 +47,7 @@ PRESCRAPE_AT = 300    # seconds before the end: Umbrella searches for the next e
 UMBRELLA = 'plugin://plugin.video.umbrella/?'
 MIN_RUNTIME = 300     # ignore anything too short to have an "end" worth calling
 POLL_MS = 1000
+SETTLE = 30          # seconds for Kodi to learn a stream's real length
 ENDED_WITHIN = 3     # seconds from the end: stopping this close is the episode finishing
 START_WAIT = 180     # seconds for the episode to start, not counting time in the source list
 HOME = xbmcgui.Window(10000)
@@ -219,7 +220,7 @@ def watch(tmdb_id, season, episode):
     if not wait_for_stream(player, START_WAIT, monitor):
         xbmc.log(f'ATV upnext: S{season}E{episode} never started', xbmc.LOGINFO)
         return
-    logged = False
+    logged, started = False, time.time()
     try:
         while not monitor.stopping(POLL_MS / 1000.0):
             try:
@@ -233,8 +234,10 @@ def watch(tmdb_id, season, episode):
                 total, position = player.getTotalTime(), player.getTime()
             except RuntimeError:
                 return
-            if total <= 0:
-                continue        # just started: Kodi does not know the length yet
+            # Just started, Kodi can report no length, or a wrong one (240s for a 55 minute
+            # episode on the Xbox) until the stream has been read: give it half a minute
+            if total <= 0 or (total < MIN_RUNTIME and time.time() - started < SETTLE):
+                continue
             if total < MIN_RUNTIME:
                 xbmc.log(f'ATV upnext: {total:.0f}s is too short to be an episode', xbmc.LOGINFO)
                 return
