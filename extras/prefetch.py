@@ -167,6 +167,20 @@ def hero_titles():
     return titles
 
 
+def watching(player):
+    """Playing something you chose. Aerial plays its flights as videos, in a window of its
+    own - Kodi does not count that as the screensaver (System.ScreenSaverActive is false) -
+    so it is told apart by the video's address and by that window."""
+    try:
+        if not player.isPlayingVideo():
+            return False
+        if xbmc.getCondVisibility('Window.IsVisible(screensaver-atv4.xml)'):
+            return False
+        return 'Aerials/' not in player.getPlayingFile()
+    except RuntimeError:          # stopped between the two questions
+        return False
+
+
 def watch():
     if HOME.getProperty(RUNNING) == '1':
         return
@@ -194,8 +208,7 @@ def watch():
 
             # Continue Watching (extras/continuing.py): at start, after each playback, when a
             # tile is removed, and every so often - in a thread, it takes seconds on the Xbox
-            # Aerial plays its flights as videos: those are not something you watched
-            now_playing = player.isPlayingVideo() and not xbmc.getCondVisibility('System.ScreenSaverActive')
+            now_playing = watching(player)
             if playing and not now_playing:
                 stopped_at = time.time()
             playing = now_playing

@@ -319,7 +319,7 @@ Up Next: `extras/continuing.py` reads TMDb Helper's films and episodes in progre
 next episode of each show, orders them by when each was last watched or paused (TMDb
 Helper's Trakt sync table), keeps the last 90 days, and writes the tiles to skin strings the
 row's static items draw - so the row is there the moment Home opens and is rebuilt after
-every playback (not the screensaver's). Menu -> *Remove from this row* (`extras/forget.py`)
+every playback (not Aerial's flights, told apart by their address and window). Menu -> *Remove from this row* (`extras/forget.py`)
 hides a tile until that title is watched again, and deletes a saved position on Trakt when
 there is one. Two `<content>` lists in one row froze Kodi 21 (its multi-list provider and
 the graphics lock wait on each other), which is why the row is built this way and every
