@@ -217,7 +217,9 @@ def watch(tmdb_id, season, episode):
         looked_up[0] = True
     threading.Thread(target=look_up, daemon=True).start()
     if not wait_for_stream(player, START_WAIT, monitor):
+        xbmc.log(f'ATV upnext: S{season}E{episode} never started', xbmc.LOGINFO)
         return
+    logged = False
     try:
         while not monitor.stopping(POLL_MS / 1000.0):
             try:
@@ -231,8 +233,14 @@ def watch(tmdb_id, season, episode):
                 total, position = player.getTotalTime(), player.getTime()
             except RuntimeError:
                 return
+            if total <= 0:
+                continue        # just started: Kodi does not know the length yet
             if total < MIN_RUNTIME:
+                xbmc.log(f'ATV upnext: {total:.0f}s is too short to be an episode', xbmc.LOGINFO)
                 return
+            if not logged:
+                logged = True
+                xbmc.log(f'ATV upnext: watching S{season}E{episode}, {total:.0f}s, from {position:.0f}s', xbmc.LOGINFO)
             remaining = total - position
             remaining_at_last = remaining
             credits = None if found.get('post_credits') else found.get('credits')  # a scene after them: wait
