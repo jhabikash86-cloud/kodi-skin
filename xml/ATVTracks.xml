@@ -6,12 +6,17 @@
      the picture keeps playing underneath. A script dialog, not a Custom_ window: Kodi has
      no list of a file's audio tracks a skin can show. -->
 <window>
-	<defaultcontrol always="true">100</defaultcontrol>
+	<!-- A placeholder takes focus as the window opens: the lists are still empty then, and
+	     Kodi logs an error for a list it cannot focus. tracks.py focuses a list once filled. -->
+	<defaultcontrol always="true">99</defaultcontrol>
 	<animation effect="slide" start="0,-120" end="0,0" time="300" tween="cubic" easing="out">WindowOpen</animation>
 	<animation effect="fade" start="0" end="100" time="240">WindowOpen</animation>
 	<animation effect="slide" start="0,0" end="0,-80" time="180" tween="cubic" easing="in">WindowClose</animation>
 	<animation effect="fade" start="100" end="0" time="160">WindowClose</animation>
 	<controls>
+		<control type="button" id="99">
+			<include>HiddenObject</include>
+		</control>
 		<!-- the picture behind dims a little, as on Apple TV -->
 		<control type="image">
 			<left>0</left><top>0</top><width>1920</width><height>1080</height>
