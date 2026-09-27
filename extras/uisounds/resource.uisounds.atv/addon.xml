@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="resource.uisounds.atv" version="1.0.0" name="ATV Minimal sounds" provider-name="Bikash">
+    <requires>
+        <import addon="kodi.resource" version="1.0.0"/>
+    </requires>
+    <extension point="kodi.resource.uisounds"/>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Quiet tvOS-style navigation sounds for ATV Minimal.</summary>
+        <description lang="en_GB">A soft tick as focus moves, a tap on select and a falling tone on back. Installed and kept up to date by the ATV Minimal skin.</description>
+        <platform>all</platform>
+        <license>CC BY-NC-SA 4.0</license>
+    </extension>
+</addon>

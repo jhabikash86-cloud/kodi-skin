@@ -13,20 +13,28 @@ Netflix and Apple TV do - unless it is dismissed; its Play button starts it at o
 way the next episode starts on its own (Auto Play): nobody is there to pick a source.
 Choosing to keep watching stops the countdown for good, so it cannot reappear over the
 credits of something you decided to stay with.
+
+Where TheIntroDB has timed the episode (extras/segments.py), it also offers Skip Intro and
+Skip Recap (xml/Custom_1151_SkipIntro.xml) while those play, and brings the card up as the
+credits start - as Apple TV does - instead of a fixed time before the end.
 """
 import json
 import sys
+import threading
 import time
 from urllib.parse import quote, urlencode
 
 import xbmc
 import xbmcgui
 
+import segments
 from waiting import Monitor, wait_for_stream  # same folder; on sys.path for RunScript
 
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 WINDOW = 1150
 LEAD_IN = 45          # seconds before the end to offer the next episode
+CREDITS_LEAD = (15, 600)  # credits starting this far from the end: offer it then instead
+SKIP_WINDOW = 1151
 COUNTDOWN = 10        # seconds the card counts down before the next episode starts
 PRESCRAPE_AT = 300    # seconds before the end: Umbrella searches for the next episode now
                       # (its silent search waits for every provider - 78s on the Mac)
@@ -127,10 +135,47 @@ def play_next(item, monitor=None):
         tmdb_id, item.get('season'), item.get('episode')))
 
 
+class SkipButton:
+    """Skip Intro / Skip Recap, shown while that part plays. Pressed, it seeks past it;
+    Back dismisses it; either way it is not offered again for that part."""
+
+    def __init__(self):
+        self.current, self.shown_at, self.offered = None, 0.0, set()
+
+    def update(self, player, position, skips):
+        if self.current:
+            label, start, end = self.current
+            if HOME.getProperty('SkipNow') == '1':
+                HOME.clearProperty('SkipNow')
+                player.seekTime(end)
+                self.hide()
+            elif not (start - 2 <= position < end - 1):
+                self.hide()
+            elif time.time() - self.shown_at > 2 and \
+                    not xbmc.getCondVisibility(f'Window.IsVisible({SKIP_WINDOW})'):
+                self.current = None                         # dismissed with Back
+            return
+        for part in skips:
+            label, start, end = part
+            if part not in self.offered and start <= position < end - 3:
+                self.offered.add(part)
+                self.current, self.shown_at = part, time.time()
+                HOME.setProperty('SkipLabel', f'Skip {label}')
+                xbmc.executebuiltin(f'ActivateWindow({SKIP_WINDOW})')
+                return
+
+    def hide(self):
+        if self.current:
+            xbmc.executebuiltin(f'Dialog.Close({SKIP_WINDOW},true)')
+        self.current = None
+
+
 def watch(tmdb_id, season, episode):
     monitor, player = Monitor(), xbmc.Player()
     shown, shown_at, prescraped = False, 0.0, False
     remaining_at_last, following = LEAD_IN + 1, None
+    found, skip = {}, SkipButton()
+    threading.Thread(target=lambda: found.update(segments.fetch(tmdb_id, season, episode)), daemon=True).start()
     if not wait_for_stream(player, START_WAIT, monitor):
         return
     try:
@@ -150,6 +195,10 @@ def watch(tmdb_id, season, episode):
                 return
             remaining = total - position
             remaining_at_last = remaining
+            credits = found.get('credits')
+            lead = total - credits if credits and CREDITS_LEAD[0] <= total - credits <= CREDITS_LEAD[1] else LEAD_IN
+            if found.get('skips') and not shown:
+                skip.update(player, position, found['skips'])
             if shown:
                 if HOME.getProperty('UpNextPlayNow') == '1':      # Play on the card
                     HOME.clearProperty('UpNextPlayNow')
@@ -157,7 +206,7 @@ def watch(tmdb_id, season, episode):
                     return
                 # The card is up. Dismissing it, or seeking back into the episode,
                 # takes it down and ends the offer for this episode.
-                if HOME.getProperty('UpNextDismissed') == '1' or remaining > LEAD_IN + 30:
+                if HOME.getProperty('UpNextDismissed') == '1' or remaining > lead + 30:
                     HOME.clearProperty('UpNextDismissed')
                     xbmc.executebuiltin(f'Dialog.Close({WINDOW},true)')
                     return
@@ -167,13 +216,14 @@ def watch(tmdb_id, season, episode):
                     return
                 HOME.setProperty('UpNextCountdown', str(max(1, int(left + 0.99))))
                 continue
-            if remaining <= PRESCRAPE_AT and not prescraped:
+            if remaining <= PRESCRAPE_AT + lead - LEAD_IN and not prescraped:
                 prescraped = True
                 following = following or episode_after(tmdb_id, season, episode)
                 if following and xbmc.getCondVisibility('System.AddonIsEnabled(plugin.video.umbrella)'):
                     prescrape(tmdb_id, following)
-            if remaining > LEAD_IN:
+            if remaining > lead:
                 continue
+            skip.hide()
             following = following or episode_after(tmdb_id, season, episode)
             if not following:
                 return
@@ -182,6 +232,8 @@ def watch(tmdb_id, season, episode):
             xbmc.executebuiltin(f'ActivateWindow({WINDOW})')
             shown, shown_at = True, time.time()
     finally:
+        skip.hide()
+        HOME.clearProperty('SkipNow')
         if shown:
             xbmc.executebuiltin(f'Dialog.Close({WINDOW},true)')
         clear_card()

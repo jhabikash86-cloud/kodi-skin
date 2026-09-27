@@ -477,6 +477,41 @@ video only once it has passed.
   hero's text and buttons and the rows below fade away (`ATV_TrailerFull`), over black, so a
   trailer wider than the screen is letterboxed rather than framed by strips of the still
   backdrop. The first press stops it and brings everything back; the next goes on as usual.
+- **Pages open, they do not cut.** Home, Movies, TV and My List fade in from 98% scale
+  (`Animation_ATVPage`); title pages grow in from 92%, the "zoom into the poster" of tvOS
+  (`Animation_ATVTitlePage`), and shrink slightly as they close.
+- **Play says where you are.** On a title part-way through, the Play button reads
+  "Resume S1 E6 · 23 min left" (or "Resume · 65 min left" for a film), from the
+  Continue Watching tiles (`extras/details.py`).
+- **Audio & Subtitles in one panel.** The subtitles button on the player opens
+  `xml/ATVTracks.xml` (filled by `extras/tracks.py`): the file's audio tracks, its subtitles
+  and three options side by side, the ones in use ticked, dropping from the top as on Apple
+  TV. Tracks are named as people say them - "English", "Dolby TrueHD Atmos · 7.1 · Original" -
+  and the track's own title is shown only where two share a language (a commentary). Picking
+  one switches at once and the panel stays open. It is a script dialog because Kodi gives
+  a skin no list of a file's audio tracks.
+- **Skip Intro, Skip Recap, and Up Next at the credits.** For episodes, `extras/upnext.py`
+  asks TheIntroDB (`extras/segments.py`; free, community-timed, keyed by TMDb id, no
+  account) where the intro, recap and credits are. While an intro or recap plays, a
+  "Skip Intro" button sits bottom right (`Custom_1151_SkipIntro.xml`); it takes focus, so
+  one press skips and Back dismisses it. Where the credits start between 15 s and 10 min
+  from the end, the Up Next card comes up then rather than 45 s from the end, and
+  Umbrella's search for the next episode starts that much earlier. Episodes TheIntroDB has
+  no entry for (it answers 404) keep the fixed 45 s. Timings are for the streaming cut; a
+  release with extra logos at the start could be a few seconds off.
+- **Aerial.** `extras/setup.py` asks once (Kodi's own prompt) to install Aerial
+  (`screensaver.atv4`, Kodi's repository) and makes it the screensaver after 5 minutes:
+  Apple's own flights in 4K HEVC, SDR so the TV does not switch into HDR for it. A
+  screensaver you picked yourself is left alone.
+- **Navigation sounds.** A quiet tick as focus moves, a tap on select and a falling tone on
+  back (`tools/gen_sounds.py`). Kodi 21 no longer reads a skin's own `sounds/` folder, so
+  they ship as a small add-on, `resource.uisounds.atv`, which setup copies from
+  `extras/uisounds/` into Kodi's add-ons and switches on; Settings -> Navigation sounds
+  turns them on and off (`extras/sounds.py`). As with Kodi's own sounds, nothing plays
+  over a video.
+- **Banner trailers are off by default** (setup turns them off once): finding one through
+  YouTube held Kodi's busy dialog and slowed Home on the Xbox. Settings -> Banner trailers
+  brings them back.
 - Every hero button has an icon and a left-aligned label. A button needs its text offset
   on both sides, so "More Info" with an icon needs 290 wide.
 

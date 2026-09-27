@@ -59,6 +59,19 @@
 					<onclick>Skin.ToggleSetting(atv.notrailers)</onclick>
 					<icon>icons/settings/player.png</icon>
 				</item>
+				<!-- The skin's quiet navigation ticks (resource.uisounds.atv, extras/sounds.py) -->
+				<item>
+					<label>Navigation sounds  ·  on</label>
+					<visible>!Skin.HasSetting(atv.nosounds)</visible>
+					<onclick>RunScript(special://skin/extras/sounds.py,off)</onclick>
+					<icon>icons/settings/interface.png</icon>
+				</item>
+				<item>
+					<label>Navigation sounds  ·  off</label>
+					<visible>Skin.HasSetting(atv.nosounds)</visible>
+					<onclick>RunScript(special://skin/extras/sounds.py,on)</onclick>
+					<icon>icons/settings/interface.png</icon>
+				</item>
 				<item>
 					<label>$LOCALIZE[14206]</label>
 					<onclick>ActivateWindow(InterfaceSettings)</onclick>

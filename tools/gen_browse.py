@@ -350,6 +350,7 @@ def build_page(window_id, spec):
      {spec['title']}: the shared tab bar, a page title and rows. Numbered rows come from
      tools/gen_rank.py. The page stops scrolling once the last row is at the bottom. -->
 <window id="{window_id}">
+    <include>Animation_ATVPage</include>
     <defaultcontrol>{row_id(0)}</defaultcontrol>
     <controls>
 

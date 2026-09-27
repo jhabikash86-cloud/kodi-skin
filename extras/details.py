@@ -237,7 +237,12 @@ def open_details(container, index=None):
         # wait on them. The Play button reads "Play" until this lands a moment later.
         season, episode, resume = play.next_episode(tmdb_id)
         verb = 'Resume' if resume else 'Play'
-        set_string(f'DetailNext{page}', f'{verb} S{season} E{episode}')
+        left = time_left('episode', tmdb_id, season, episode) if resume else None
+        set_string(f'DetailNext{page}', f'{verb} S{season} E{episode}' + (f'  ·  {left} min left' if left else ''))
+    else:
+        left = time_left('movie', tmdb_id)
+        if left:
+            set_string(f'DetailNext{page}', f'Resume  ·  {left} min left')
     # The tile that was clicked can carry only its first genre - a Comedy / Horror /
     # Romance film arrived as "Comedy" and More Like This filled with children's films -
     # so the filter is built from the title's own details, once they are on the page.
@@ -247,6 +252,26 @@ def open_details(container, index=None):
         # Then TMDb's own "similar" list - broader, but never empty for a real title.
         if row_came_back_empty(window, 9630):
             set_string(f'DetailDiscover{page}', 'similar')
+
+
+def time_left(kind, tmdb_id, season='', episode=''):
+    """Minutes left of a title in progress, from the Continue Watching tiles the skin keeps
+    (extras/continuing.py) - so the Play button can say so, as Apple's does, without a
+    lookup of its own. None when it is not in progress there."""
+    for slot in range(1, 16):
+        tile = lambda field: xbmc.getInfoLabel(f'Skin.String(ATVCW.{slot}.{field})')
+        if tile('tmdb') != str(tmdb_id) or tile('kind') != kind:
+            continue
+        if kind == 'episode' and (tile('season'), tile('episode')) != (str(season), str(episode)):
+            return None
+        try:
+            resume, percent = int(tile('resume') or 0), int(tile('percent') or 0)
+        except ValueError:
+            return None
+        if not resume or not percent:
+            return None
+        return max(1, round((resume * 100 / percent - resume) / 60))
+    return None
 
 
 def open_person(container):

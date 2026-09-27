@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ATV Minimal's navigation sounds (made by tools/gen_sounds.py): a quiet tick as focus
+     moves, a tap on select, a falling tone on back - as tvOS. extras/setup.py installs
+     this add-on; Settings -> Navigation sounds turns it on and off. Nothing plays over a
+     video, as Kodi's own GUI sound setting keeps it. -->
+<sounds>
+  <actions>
+    <action><name>left</name><file>cursor.wav</file></action>
+    <action><name>right</name><file>cursor.wav</file></action>
+    <action><name>up</name><file>cursor.wav</file></action>
+    <action><name>down</name><file>cursor.wav</file></action>
+    <action><name>select</name><file>select.wav</file></action>
+    <action><name>back</name><file>back.wav</file></action>
+    <action><name>parentdir</name><file>back.wav</file></action>
+    <action><name>previousmenu</name><file>back.wav</file></action>
+  </actions>
+  <windows>
+    <window><name>contextmenu</name><activate>open.wav</activate></window>
+  </windows>
+</sounds>

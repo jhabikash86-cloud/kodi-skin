@@ -2,6 +2,7 @@
 <!-- TEMPLATE for tools/gen_home.py, which fills in the scroll steps and the row list.
      Edit this file for the hero and the chrome; edit the generator for the rows. -->
 <window>
+    <include>Animation_ATVPage</include>
     <defaultcontrol>8001</defaultcontrol>
     <menucontrol>9000</menucontrol>
     <!-- Not once Kodi is quitting: a script started then held Kodi's quit (extras/waiting.py).

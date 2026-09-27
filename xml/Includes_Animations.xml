@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
+	<!-- Page transitions, Apple TV style. Short on purpose: Kodi plays the page's close before the
+	     next one opens, so the close is 150ms and the next page is drawn while it fades in. -->
+	<include name="Animation_ATVPage">
+		<animation type="WindowOpen" reversible="false">
+			<effect type="fade" start="0" end="100" time="250" tween="cubic" easing="out" />
+			<effect type="zoom" start="98" end="100" center="auto" time="250" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowClose" reversible="false">
+			<effect type="fade" start="100" end="0" time="150" tween="sine" easing="in" />
+		</animation>
+	</include>
+	<!-- A title page grows out of the tile it was opened from, and settles back on the way out -->
+	<include name="Animation_ATVTitlePage">
+		<animation type="WindowOpen" reversible="false">
+			<effect type="fade" start="0" end="100" time="300" tween="cubic" easing="out" />
+			<effect type="zoom" start="92" end="100" center="auto" time="340" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowClose" reversible="false">
+			<effect type="fade" start="100" end="0" time="180" tween="sine" easing="in" />
+			<effect type="zoom" start="100" end="96" center="auto" time="180" tween="sine" easing="in" />
+		</animation>
+	</include>
 	<include name="Animation_FocusTextureFade">
 		<animation effect="fade" start="0" end="100" time="200" tween="sine">Focus</animation>
 		<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>

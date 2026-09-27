@@ -1083,4 +1083,93 @@
 		</focusedlayout>
 	</include>
 
+	<!-- A row of the Audio & Subtitles panel (ATVTracks.xml): a tick on the track in use, its
+	     name, and what it is (codec and channels, or SDH / forced) underneath. -->
+	<include name="ATV_TrackLayout">
+		<param name="list" />
+		<definition>
+		<itemlayout height="80" width="452">
+			<control type="image">
+				<left>18</left><top>26</top><width>28</width><height>28</height>
+				<texture colordiffuse="FFFFFFFF">atv/icon_check.png</texture>
+				<visible>String.IsEqual(ListItem.Property(selected),true)</visible>
+			</control>
+			<control type="label">
+				<left>62</left><top>8</top><width>370</width><height>36</height>
+				<label>$INFO[ListItem.Label]</label>
+				<font>atv_body</font><textcolor>FFFFFFFF</textcolor>
+				<visible>!String.IsEmpty(ListItem.Label2)</visible>
+			</control>
+			<control type="label">
+				<left>62</left><top>0</top><width>370</width><height>80</height><aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<font>atv_body</font><textcolor>FFFFFFFF</textcolor>
+				<visible>String.IsEmpty(ListItem.Label2)</visible>
+			</control>
+			<control type="label">
+				<left>62</left><top>42</top><width>370</width><height>28</height>
+				<label>$INFO[ListItem.Label2]</label>
+				<font>atv_small</font><textcolor>80FFFFFF</textcolor>
+			</control>
+		</itemlayout>
+		<focusedlayout height="80" width="452">
+			<control type="group">
+				<visible>Control.HasFocus($PARAM[list])</visible>
+				<animation effect="zoom" start="98" end="100" center="auto" time="160" tween="cubic" easing="out">Focus</animation>
+				<control type="image">
+					<left>0</left><top>2</top><width>452</width><height>76</height>
+					<texture border="16" colordiffuse="FFFFFFFF">atv/rounded16.png</texture>
+				</control>
+			<control type="image">
+				<left>18</left><top>26</top><width>28</width><height>28</height>
+				<texture colordiffuse="FF0B0B0D">atv/icon_check.png</texture>
+				<visible>String.IsEqual(ListItem.Property(selected),true)</visible>
+			</control>
+			<control type="label">
+				<left>62</left><top>8</top><width>370</width><height>36</height>
+				<label>$INFO[ListItem.Label]</label>
+				<font>atv_body</font><textcolor>FF0B0B0D</textcolor><scroll>true</scroll>
+				<visible>!String.IsEmpty(ListItem.Label2)</visible>
+			</control>
+			<control type="label">
+				<left>62</left><top>0</top><width>370</width><height>80</height><aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<font>atv_body</font><textcolor>FF0B0B0D</textcolor><scroll>true</scroll>
+				<visible>String.IsEmpty(ListItem.Label2)</visible>
+			</control>
+			<control type="label">
+				<left>62</left><top>42</top><width>370</width><height>28</height>
+				<label>$INFO[ListItem.Label2]</label>
+				<font>atv_small</font><textcolor>990B0B0D</textcolor>
+			</control>
+			</control>
+			<control type="group">
+				<visible>!Control.HasFocus($PARAM[list])</visible>
+			<control type="image">
+				<left>18</left><top>26</top><width>28</width><height>28</height>
+				<texture colordiffuse="FFFFFFFF">atv/icon_check.png</texture>
+				<visible>String.IsEqual(ListItem.Property(selected),true)</visible>
+			</control>
+			<control type="label">
+				<left>62</left><top>8</top><width>370</width><height>36</height>
+				<label>$INFO[ListItem.Label]</label>
+				<font>atv_body</font><textcolor>FFFFFFFF</textcolor>
+				<visible>!String.IsEmpty(ListItem.Label2)</visible>
+			</control>
+			<control type="label">
+				<left>62</left><top>0</top><width>370</width><height>80</height><aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<font>atv_body</font><textcolor>FFFFFFFF</textcolor>
+				<visible>String.IsEmpty(ListItem.Label2)</visible>
+			</control>
+			<control type="label">
+				<left>62</left><top>42</top><width>370</width><height>28</height>
+				<label>$INFO[ListItem.Label2]</label>
+				<font>atv_small</font><textcolor>80FFFFFF</textcolor>
+			</control>
+			</control>
+		</focusedlayout>
+		</definition>
+	</include>
+
 </includes>

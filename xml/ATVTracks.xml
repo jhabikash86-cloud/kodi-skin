@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Audio & Subtitles, as Apple TV's player: one panel that drops from the top, the audio
+     tracks, the subtitles and a few options side by side, the one in use ticked.
+     extras/tracks.py opens it (the subtitles button on the player controls) and fills the
+     three lists from what the playing file has; picking a row switches to it at once and
+     the picture keeps playing underneath. A script dialog, not a Custom_ window: Kodi has
+     no list of a file's audio tracks a skin can show. -->
+<window>
+	<defaultcontrol always="true">100</defaultcontrol>
+	<animation effect="slide" start="0,-120" end="0,0" time="300" tween="cubic" easing="out">WindowOpen</animation>
+	<animation effect="fade" start="0" end="100" time="240">WindowOpen</animation>
+	<animation effect="slide" start="0,0" end="0,-80" time="180" tween="cubic" easing="in">WindowClose</animation>
+	<animation effect="fade" start="100" end="0" time="160">WindowClose</animation>
+	<controls>
+		<!-- the picture behind dims a little, as on Apple TV -->
+		<control type="image">
+			<left>0</left><top>0</top><width>1920</width><height>1080</height>
+			<texture colordiffuse="66000000">white.png</texture>
+		</control>
+
+		<control type="group">
+			<left>250</left><top>56</top><width>1420</width><height>600</height>
+
+			<!-- as tall as the longest column: extras/tracks.py sets ATVTracksRows -->
+			<control type="group">
+				<visible>Integer.IsLessOrEqual(Window(home).Property(ATVTracksRows),3)</visible>
+				<control type="image">
+					<left>-40</left><top>-32</top><width>1500</width><height>450</height>
+					<texture border="64">atv/shadow.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left><top>0</top><width>1420</width><height>370</height>
+					<texture border="24" colordiffuse="F21C1C1F">atv/rounded24.png</texture>
+				</control>
+				<control type="image">
+					<left>480</left><top>84</top><width>1</width><height>260</height>
+					<texture colordiffuse="1FFFFFFF">white.png</texture>
+				</control>
+				<control type="image">
+					<left>940</left><top>84</top><width>1</width><height>260</height>
+					<texture colordiffuse="1FFFFFFF">white.png</texture>
+				</control>
+			</control>
+			<control type="group">
+				<visible>String.IsEqual(Window(home).Property(ATVTracksRows),4)</visible>
+				<control type="image">
+					<left>-40</left><top>-32</top><width>1500</width><height>530</height>
+					<texture border="64">atv/shadow.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left><top>0</top><width>1420</width><height>450</height>
+					<texture border="24" colordiffuse="F21C1C1F">atv/rounded24.png</texture>
+				</control>
+				<control type="image">
+					<left>480</left><top>84</top><width>1</width><height>340</height>
+					<texture colordiffuse="1FFFFFFF">white.png</texture>
+				</control>
+				<control type="image">
+					<left>940</left><top>84</top><width>1</width><height>340</height>
+					<texture colordiffuse="1FFFFFFF">white.png</texture>
+				</control>
+			</control>
+			<control type="group">
+				<visible>String.IsEqual(Window(home).Property(ATVTracksRows),5)</visible>
+				<control type="image">
+					<left>-40</left><top>-32</top><width>1500</width><height>610</height>
+					<texture border="64">atv/shadow.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left><top>0</top><width>1420</width><height>530</height>
+					<texture border="24" colordiffuse="F21C1C1F">atv/rounded24.png</texture>
+				</control>
+				<control type="image">
+					<left>480</left><top>84</top><width>1</width><height>420</height>
+					<texture colordiffuse="1FFFFFFF">white.png</texture>
+				</control>
+				<control type="image">
+					<left>940</left><top>84</top><width>1</width><height>420</height>
+					<texture colordiffuse="1FFFFFFF">white.png</texture>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVTracksRows),6)</visible>
+				<control type="image">
+					<left>-40</left><top>-32</top><width>1500</width><height>690</height>
+					<texture border="64">atv/shadow.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left><top>0</top><width>1420</width><height>610</height>
+					<texture border="24" colordiffuse="F21C1C1F">atv/rounded24.png</texture>
+				</control>
+				<control type="image">
+					<left>480</left><top>84</top><width>1</width><height>500</height>
+					<texture colordiffuse="1FFFFFFF">white.png</texture>
+				</control>
+				<control type="image">
+					<left>940</left><top>84</top><width>1</width><height>500</height>
+					<texture colordiffuse="1FFFFFFF">white.png</texture>
+				</control>
+			</control>
+
+			<control type="label">
+				<left>40</left><top>30</top><width>440</width><height>34</height>
+				<label>Audio</label>
+				<font>atv_caption</font><textcolor>80FFFFFF</textcolor>
+			</control>
+			<control type="label">
+				<left>500</left><top>30</top><width>440</width><height>34</height>
+				<label>Subtitles</label>
+				<font>atv_caption</font><textcolor>80FFFFFF</textcolor>
+			</control>
+			<control type="label">
+				<left>960</left><top>30</top><width>420</width><height>34</height>
+				<label>Options</label>
+				<font>atv_caption</font><textcolor>80FFFFFF</textcolor>
+			</control>
+
+			<control type="list" id="100">
+				<left>24</left><top>78</top><width>452</width><height>496</height>
+				<onleft>noop</onleft>
+				<onright>200</onright>
+				<orientation>vertical</orientation>
+				<scrolltime tween="cubic" easing="out">200</scrolltime>
+				<include content="ATV_TrackLayout"><param name="list" value="100" /></include>
+			</control>
+			<control type="list" id="200">
+				<left>484</left><top>78</top><width>452</width><height>496</height>
+				<onleft>100</onleft>
+				<onright>300</onright>
+				<orientation>vertical</orientation>
+				<scrolltime tween="cubic" easing="out">200</scrolltime>
+				<include content="ATV_TrackLayout"><param name="list" value="200" /></include>
+			</control>
+			<control type="list" id="300">
+				<left>944</left><top>78</top><width>452</width><height>496</height>
+				<onleft>200</onleft>
+				<onright>noop</onright>
+				<orientation>vertical</orientation>
+				<scrolltime tween="cubic" easing="out">200</scrolltime>
+				<include content="ATV_TrackLayout"><param name="list" value="300" /></include>
+			</control>
+
+		</control>
+	</controls>
+</window>

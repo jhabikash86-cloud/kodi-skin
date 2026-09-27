@@ -216,8 +216,8 @@
 						<include content="ATV_OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
 						</include>
-						<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
-						<visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasSubtitles</visible>
+						<!-- Audio & Subtitles in one panel, as Apple TV (extras/tracks.py) -->
+						<onclick>RunScript(special://skin/extras/tracks.py)</onclick>
 					</control>
 					<control type="radiobutton" id="70047">
 						<include content="ATV_OSDButton">

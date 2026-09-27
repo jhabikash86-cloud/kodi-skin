@@ -130,6 +130,11 @@ ADDONS = {
         'results.list_format': 1,
         'highlight.type': 1,
     },
+    # Apple TV's Aerial screensaver (installed by aerial() below): Apple's own 4K flights,
+    # in HEVC; SDR, so the TV does not switch into HDR and back each time it starts
+    'screensaver.atv4': {
+        'enable-hevc': True, 'enable-4k': True, 'enable-hdr': False, 'show-notifications': False,
+    },
     'plugin.video.youtube': {
         'kodion.http.listen': '0.0.0.0',
     },
@@ -364,13 +369,99 @@ def subtitle_service():
     if not installed(SUBTITLES):
         return
     for setting in ('subtitles.tv', 'subtitles.movie'):
-        request = {'jsonrpc': '2.0', 'id': 1, 'method': 'Settings.GetSettingValue', 'params': {'setting': setting}}
-        try:
-            current = json.loads(xbmc.executeJSONRPC(json.dumps(request)))['result']['value']
-        except (ValueError, KeyError, TypeError):
-            continue
-        if not current:
+        if get_kodi(setting) == '':
             set_kodi(setting, SUBTITLES)
+
+
+AERIAL = 'screensaver.atv4'
+PLAIN_SCREENSAVERS = ('', 'screensaver.xbmc.builtin.dim', 'screensaver.xbmc.builtin.black')
+
+
+def get_kodi(setting):
+    request = {'jsonrpc': '2.0', 'id': 1, 'method': 'Settings.GetSettingValue', 'params': {'setting': setting}}
+    try:
+        return json.loads(xbmc.executeJSONRPC(json.dumps(request)))['result']['value']
+    except (ValueError, KeyError, TypeError):
+        return None
+
+
+SOUNDS = 'resource.uisounds.atv'
+SOUNDS_FROM = SKIN + 'uisounds/' + SOUNDS + '/'
+SOUNDS_TO = 'special://home/addons/' + SOUNDS + '/'
+
+
+def rpc(method, params):
+    request = {'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': params}
+    try:
+        return json.loads(xbmc.executeJSONRPC(json.dumps(request))).get('result')
+    except (ValueError, TypeError):
+        return None
+
+
+def install_sounds():
+    """The skin's navigation sounds as the small add-on Kodi 21 needs them in (a skin's own
+    sounds folder is no longer read): copied from the skin whenever the skin's copy is
+    different, then found and switched on. True once Kodi has it."""
+    if read(SOUNDS_FROM + 'addon.xml') != read(SOUNDS_TO + 'addon.xml') or \
+            read(SOUNDS_FROM + 'resources/sounds.xml') != read(SOUNDS_TO + 'resources/sounds.xml'):
+        xbmcvfs.mkdirs(SOUNDS_TO + 'resources/')
+        xbmcvfs.copy(SOUNDS_FROM + 'addon.xml', SOUNDS_TO + 'addon.xml')
+        for name in xbmcvfs.listdir(SOUNDS_FROM + 'resources/')[1]:
+            xbmcvfs.copy(SOUNDS_FROM + 'resources/' + name, SOUNDS_TO + 'resources/' + name)
+        xbmc.executebuiltin('UpdateLocalAddons')
+        log('sounds copied')
+    monitor = xbmc.Monitor()
+    for _ in range(20):
+        details = (rpc('Addons.GetAddonDetails', {'addonid': SOUNDS, 'properties': ['enabled']}) or {}).get('addon')
+        if details:
+            if not details.get('enabled'):          # Kodi finds a copied add-on switched off
+                rpc('Addons.SetAddonEnabled', {'addonid': SOUNDS, 'enabled': True})
+            return True
+        if monitor.waitForAbort(1):
+            break
+    return False
+
+
+def once_defaults(state):
+    """Skin choices made once, then yours to change in Settings: the skin's quiet
+    navigation sounds in place of Kodi's stock ones, and no banner trailers - finding one
+    through YouTube held Kodi's busy dialog, and on the Xbox it slowed Home."""
+    if install_sounds() and not state.get('sounds'):
+        if get_kodi('lookandfeel.soundskin') == 'resource.uisounds.kodi':
+            set_kodi('lookandfeel.soundskin', SOUNDS)
+        if get_kodi('lookandfeel.soundskin') != SOUNDS:
+            xbmc.executebuiltin('Skin.SetBool(atv.nosounds)')     # off, or sounds you chose
+        state['sounds'] = 1
+    if not state.get('notrailers'):
+        xbmc.executebuiltin('Skin.SetBool(atv.notrailers)')
+        state['notrailers'] = 1
+    save_state(state)
+
+
+def aerial(state):
+    """The Aerial screensaver after 5 minutes, as Apple TV. Kodi asks once whether to
+    download it (from Kodi's own repository); a screensaver you chose yourself is kept."""
+    if not installed(AERIAL):
+        if state.get('aerial'):
+            return                      # asked before, and the answer was no
+        state['aerial'] = 1
+        save_state(state)
+        xbmc.executebuiltin(f'InstallAddon({AERIAL})')
+        monitor = xbmc.Monitor()
+        for _ in range(180):            # the question, then the download
+            if installed(AERIAL) or monitor.waitForAbort(1):
+                break
+        if not installed(AERIAL):
+            return
+        addon = xbmcaddon.Addon(AERIAL)
+        for key, value in ADDONS[AERIAL].items():
+            set_value(addon, key, value)
+        state[AERIAL] = VERSION
+        save_state(state)
+    if get_kodi('screensaver.mode') in PLAIN_SCREENSAVERS:
+        set_kodi('screensaver.mode', AERIAL)
+        set_kodi('screensaver.time', 5)
+        log('screensaver: Aerial')
 
 
 def main():
@@ -401,7 +492,7 @@ def main():
             set_value(addon, setting, value)
         state[key] = VERSION
         log(f'linked {addon_id} to {needs}')
-    save_state(state)
+    once_defaults(state)
     copy_players()
     fix_module()
     clear_failed_lists()
@@ -412,6 +503,7 @@ def main():
     if changed:
         xbmcgui.Dialog().notification('ATV Minimal', 'Set up: ' + ', '.join(changed),
                                       xbmcgui.NOTIFICATION_INFO, 6000)
+    aerial(state)
 
 
 if __name__ == '__main__':
