@@ -137,7 +137,8 @@ def play_next(item, monitor=None):
 
 class SkipButton:
     """Skip Intro / Skip Recap, shown while that part plays. Pressed, it seeks past it;
-    Back dismisses it; either way it is not offered again for that part."""
+    Back dismisses it; either way it is not offered again for that part - unless you go
+    back to before it, as on Apple TV."""
 
     def __init__(self):
         self.current, self.shown_at, self.offered = None, 0.0, set()
@@ -148,6 +149,7 @@ class SkipButton:
             if HOME.getProperty('SkipNow') == '1':
                 HOME.clearProperty('SkipNow')
                 player.seekTime(end)
+                xbmc.log(f'ATV skip: {label} {start:.0f}s -> {end:.0f}s', xbmc.LOGINFO)
                 self.hide()
             elif not (start - 2 <= position < end - 1):
                 self.hide()
@@ -157,7 +159,9 @@ class SkipButton:
             return
         for part in skips:
             label, start, end = part
-            if part not in self.offered and start <= position < end - 3:
+            if position < start - 1:
+                self.offered.discard(part)                  # went back to before it
+            elif part not in self.offered and position < end - 3:
                 self.offered.add(part)
                 self.current, self.shown_at = part, time.time()
                 HOME.setProperty('SkipLabel', f'Skip {label}')

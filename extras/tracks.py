@@ -56,7 +56,7 @@ def language(code):
 
 
 NOISE = re.compile(r'(?<!\w)(dolby|truehd|true-hd|atmos|dts(-?hd)?|ma|hra|x|e-?ac-?3|ac-?3|dd\+?|ddp|digital|plus|'
-                   r'aac(-lc)?|flac|opus|pcm|lpcm|mp3|stereo|mono|surround|audio|\d\.\d(ch)?|\d+ ?ch|\d+ ?kbps|\d+)(?!\w)', re.I)
+                   r'aac(-lc)?|flac|opus|pcm|lpcm|mp3|stereo|mono|surround|side|audio|\d\.\d(ch)?|\d+ ?ch|\d+ ?kbps|\d+)(?!\w)', re.I)
 
 
 def own_words(title):
@@ -87,7 +87,7 @@ def audio_row(stream, others):
 
 def subtitle_row(stream):
     name = language(stream.get('language'))
-    title = (stream.get('name') or '').strip()
+    title = (stream.get('name') or '').strip().strip('[]()').strip()
     tags = []
     if stream.get('isimpaired') or 'sdh' in title.lower():
         tags.append('SDH')
