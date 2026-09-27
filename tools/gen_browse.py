@@ -68,6 +68,14 @@ def language_chart(code, media='movie', votes=15, recent=True):
             f'&amp;vote_count.gte={votes}&amp;nextpage=false')
 
 
+def new_releases(code):
+    """A language's films of the last three months, released, most popular first - with a
+    vote floor of one, since a new Hindi or Tamil film has few votes for weeks."""
+    return (f'{PLUGIN}info=discover&amp;tmdb_type=movie&amp;with_original_language={code}'
+            f'&amp;primary_release_date.gte={NEW_SINCE}&amp;primary_release_date.lte={DATE["today"]}'
+            f'&amp;vote_count.gte=1&amp;sort_by=popularity.desc&amp;with_id=True&amp;nextpage=false')
+
+
 def best_of_language(code, media='movie', votes=120):
     """Highest rated of a language since DECADE - the "of the decade" rows."""
     date_key = 'primary_release_date' if media == 'movie' else 'first_air_date'
@@ -194,11 +202,13 @@ PAGES = {
             ('poster', 'Based on a True Story', TRUE_FILMS),
             ('poster', 'Blockbusters', BLOCKBUSTERS),
             ('rank', 'Top 10 Hindi Movies Right Now', language_chart('hi')),
+            ('poster', 'New Hindi Releases', new_releases('hi')),
             ('poster', 'Hindi Films of the Decade', best_of_language('hi', votes=120)),
             ('poster', 'Must-Watch Indian Thrillers', INDIAN_THRILLERS),
             ('poster', 'Bollywood Romance', FILM_GENRES['romance']),
             ('poster', 'Must-Watch Thrillers: The All-Time Greats', FILM_GENRES['great_thrillers']),
             ('rank', 'Top 10 Tamil Movies Right Now', language_chart('ta', votes=10)),
+            ('poster', 'New Tamil Releases', new_releases('ta')),
             ('poster', 'Tamil Films of the Decade', best_of_language('ta', votes=60)),
             ('poster', 'True Stories from India', TRUE_FILMS_INDIA),
             ('poster', 'Must-Watch Horror: Lights On', FILM_GENRES['great_horror']),

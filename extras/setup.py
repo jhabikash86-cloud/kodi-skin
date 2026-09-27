@@ -443,7 +443,7 @@ def once_defaults(state):
 
 
 def aerial(state):
-    """The Aerial screensaver after 5 minutes, as Apple TV. Kodi asks once whether to
+    """The Aerial screensaver after 10 minutes idle. Kodi asks once whether to
     download it (from Kodi's own repository); a screensaver you chose yourself is kept."""
     if not installed(AERIAL):
         if state.get('aerial'):
@@ -464,7 +464,7 @@ def aerial(state):
         save_state(state)
     if get_kodi('screensaver.mode') in PLAIN_SCREENSAVERS:
         set_kodi('screensaver.mode', AERIAL)
-        set_kodi('screensaver.time', 5)
+        set_kodi('screensaver.time', 10)
         log('screensaver: Aerial')
 
 

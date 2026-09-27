@@ -76,14 +76,23 @@ def autopick():
     return xbmc.getCondVisibility(AUTOPICK)
 
 
-def player(unattended=False):
+def player(kind='movie', unattended=False):
     """TMDb Helper's player for this press: its default (Source Select), or Auto Play.
 
-    Unattended - the Up Next countdown running out - always takes Auto Play: nobody is
-    at the remote to choose, and a source list waiting on the screen would end the
-    evening's run of episodes rather than continue it.
+    Episodes always take Auto Play - the best source Umbrella has, within the episode size
+    limits, falling through to the next if one will not play: nobody wants to choose a
+    release for every episode of a series. Films open the source list, where the choice is
+    worth making, unless Settings says to pick for films too. Unattended - the Up Next
+    countdown running out - is an episode anyway.
     """
-    return AUTOPLAY if unattended or autopick() else ''
+    return AUTOPLAY if kind == 'episode' or unattended or autopick() else ''
+
+
+def with_player(path):
+    """A TMDb Helper play path, sent to the player for its kind (see player())."""
+    if 'player=' in path or 'info=play' not in path:
+        return path
+    return path + player('episode' if 'tmdb_type=tv' in path else 'movie')
 
 # Release names are all POV has to go on, and a lot of titles share a name: searching for
 # the Hindi "Animal" (2023) also turns up the French "Le Regne Animal" (2023), which wins
@@ -292,7 +301,7 @@ def play_item(container):
         show = re.search(r'tmdb_id=(\d+).*?season=(\d+).*?episode=(\d+)', built)
         if show:
             watch_for_next(*show.groups())
-        play(built, resume)
+        play(with_player(built), resume)
         return
     path = xbmc.getInfoLabel(f'{prefix}.FileNameAndPath')
     if not path:
@@ -309,7 +318,7 @@ def play_item(container):
     show = re.search(r'tmdb_id=(\d+).*?season=(\d+).*?episode=(\d+)', path)
     if show:
         watch_for_next(*show.groups())
-    play(path, resume)
+    play(with_player(path), resume)
 
 
 def watch_for_next(tmdb_id, season, episode):
@@ -324,7 +333,7 @@ def play_episode(tmdb_id, season, episode, lang=None, unattended=False):
         return
     watch_for_next(tmdb_id, season, episode)
     prefer_language(lang)
-    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}{player(unattended)}',
+    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}{player("episode", unattended)}',
          title=expected_title('tv', tmdb_id))
 
 
@@ -335,7 +344,7 @@ def play_show(tmdb_id, lang=None):
     watch_for_next(tmdb_id, season, episode)
     prefer_language(lang)
     show_title = expected_title('tv', tmdb_id)
-    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}{player()}',
+    play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}{player("episode")}',
          resume, title=show_title)
 
 
@@ -345,7 +354,7 @@ def play_movie(tmdb_id, lang=None):
     resume = movie_resume(tmdb_id)
     prefer_language(lang)
     film_title = expected_title('movie', tmdb_id)
-    play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}{player()}', resume, title=film_title)
+    play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}{player("movie")}', resume, title=film_title)
 
 
 def main():

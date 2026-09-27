@@ -325,6 +325,15 @@ xml = f'''<?xml version="1.0" encoding="UTF-8"?>
 
 {poster_row(8130, 704, "ATV_SearchTVHeader", "ATV_SearchTVPath", "            <onleft>8200</onleft>\n            <onup>8120</onup>")}
 
+        <!-- The title search, off screen: when it finds nothing and People has someone, the
+             query was a name - see ATV_SearchNamedPerson -->
+        <control type="list" id="8190">
+            <left>-3000</left><top>0</top><width>10</width><height>10</height>
+            <itemlayout width="10" height="10" />
+            <focusedlayout width="10" height="10" />
+            <content target="videos">$VAR[ATV_SearchProbePath]</content>
+        </control>
+
         <!-- Nothing found -->
         <control type="label">
             <left>700</left><top>420</top><width>1100</width><height>120</height>
@@ -348,7 +357,7 @@ WINDOWS = {
     1121: {'suffix': 'B', 'default': 8120, 'onload': ''},
 }
 STRINGS = r'(Skin\.(?:String|SetString|Reset)\()(SearchQueryURL|SearchQuery|SearchPersonID|SearchPersonName)\b'
-NAMES = r'(\$(?:VAR|EXP)\[|<(?:variable|expression) name=")(ATV_Search(?:HasQuery|HasPerson|PeoplePath|MoviesPath|TVPath|PeopleHeader|MoviesHeader|TVHeader))\b'
+NAMES = r'(\$(?:VAR|EXP)\[|<(?:variable|expression) name=")(ATV_Search(?:HasQuery|HasPerson|NamedPerson|ProbePath|PeoplePath|MoviesPath|TVPath|PeopleHeader|MoviesHeader|TVHeader))\b'
 
 
 def suffixed(text, suffix):

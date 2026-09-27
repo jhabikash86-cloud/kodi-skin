@@ -345,10 +345,10 @@
                     <include content="ATV_PosterRow">
                         <param name="id" value="58" />
                         <param name="top" value="4590" />
-                        <param name="label" value="Trending in Hindi" />
+                        <param name="label" value="New in Hindi" />
                         <param name="onup" value="57" />
                         <param name="ondown" value="59" />
-                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=15&amp;hide_unaired=true&amp;nextpage=false" />
+                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d90)]&amp;primary_release_date.lte=$INFO[Skin.String(ATVDate.today)]&amp;vote_count.gte=1&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
                     </include>
                 </control>
                 <control type="group">
@@ -356,10 +356,10 @@
                     <include content="ATV_PosterRow">
                         <param name="id" value="59" />
                         <param name="top" value="5065" />
-                        <param name="label" value="Trending in Tamil" />
+                        <param name="label" value="New in Tamil" />
                         <param name="onup" value="58" />
                         <param name="ondown" value="60" />
-                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=10&amp;hide_unaired=true&amp;nextpage=false" />
+                        <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d90)]&amp;primary_release_date.lte=$INFO[Skin.String(ATVDate.today)]&amp;vote_count.gte=1&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;nextpage=false" />
                     </include>
                 </control>
                 <control type="group">

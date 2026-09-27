@@ -346,6 +346,21 @@ genre it returned five to thirteen titles, nearly all from this year. Trakt igno
 filter on these charts; the rating filters work. Gripping Crime Dramas and Bollywood Romance
 stay from the earlier mood rows.
 
+**New Hindi and Tamil films.** The trending language rows need 10-15 TMDb votes, which a
+new Hindi or Tamil film only gathers weeks after it opens, so fresh releases were missing.
+Home's *New in Hindi* / *New in Tamil* and the Movies page's *New Hindi Releases* / *New Tamil
+Releases* are the last three months, released, most popular first, with a vote floor of one.
+
+**Search by actor.** Typing an actor's name - "kareena kapoor" - found no titles and left the
+rows empty; her films were one more click away (People), and sorted by popularity (2009
+first). Now, when the title search (a hidden probe list, 8190) finds nothing but People has
+someone, the Movies and TV rows show that person's work; every filmography is newest first
+(`sort_by=year&sort_how=desc`) - Daayra, Dining with the Kapoors, The Buckingham Murders.
+
+**Play: episodes pick, films ask.** An episode always goes to Umbrella's Auto Play - the best
+source within the episode size limits, the next if one fails; a film opens the source list
+unless Settings -> *Movies · pick the best automatically* is on (`extras/play.py`).
+
 **True stories, Indian thrillers, international thrillers** - after thrillers, what this house
 watches most. TMDb tags a title "based on true story" (keyword 9672); documentaries are left
 out of every one of these rows, by request, as are comedies and cartoons.
@@ -514,7 +529,7 @@ video only once it has passed.
   no entry for (it answers 404) keep the fixed 45 s. Timings are for the streaming cut; a
   release with extra logos at the start could be a few seconds off.
 - **Aerial.** `extras/setup.py` asks once (Kodi's own prompt) to install Aerial
-  (`screensaver.atv4`, Kodi's repository) and makes it the screensaver after 5 minutes:
+  (`screensaver.atv4`, Kodi's repository) and makes it the screensaver after 10 minutes idle:
   Apple's own flights in HEVC, SDR so the TV does not switch into HDR for it - 4K on the
   Mac, 1080p on the Xbox, where starting a 4K clip once failed in the video decoder and took
   Kodi down. A screensaver you picked yourself is left alone.

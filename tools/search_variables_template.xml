@@ -1,16 +1,26 @@
 	<expression name="ATV_SearchHasPerson">!String.IsEmpty(Skin.String(SearchPersonID))</expression>
 	<expression name="ATV_SearchHasQuery">!String.IsEmpty(Skin.String(SearchQueryURL))</expression>
+	<!-- An actor's name typed as the query: no film is called that (the hidden probe, 8190,
+	     runs the title search), but someone in People is - so Movies and TV show that person's
+	     work, newest first, as Netflix does. "kareena kapoor" found no titles and left the
+	     rows empty; her films were one extra click away, and sorted by popularity (2009). -->
+	<expression name="ATV_SearchNamedPerson">$EXP[ATV_SearchHasQuery] + !$EXP[ATV_SearchHasPerson] + Integer.IsEqual(Container(8190).NumItems,0) + !Container(8190).IsUpdating + Integer.IsGreater(Container(8110).NumItems,0) + !Container(8110).IsUpdating</expression>
+	<variable name="ATV_SearchProbePath">
+		<value condition="$EXP[ATV_SearchHasQuery]">plugin://plugin.video.themoviedb.helper/?info=search&amp;tmdb_type=movie&amp;query=$INFO[Skin.String(SearchQueryURL)]&amp;exclude_key=popularity&amp;exclude_value=1&amp;exclude_operator=lt&amp;nextpage=false</value>
+	</variable>
 	<variable name="ATV_SearchPeoplePath">
 		<value condition="$EXP[ATV_SearchHasQuery]">plugin://plugin.video.themoviedb.helper/?info=search&amp;tmdb_type=person&amp;query=$INFO[Skin.String(SearchQueryURL)]&amp;exclude_key=popularity&amp;exclude_value=1&amp;exclude_operator=lt&amp;nextpage=false</value>
 		<value>plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;tmdb_type=person&amp;nextpage=false</value>
 	</variable>
 	<variable name="ATV_SearchMoviesPath">
-		<value condition="$EXP[ATV_SearchHasPerson]">plugin://plugin.video.themoviedb.helper/?info=stars_in_movies&amp;tmdb_type=person&amp;tmdb_id=$INFO[Skin.String(SearchPersonID)]&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_SearchHasPerson]">plugin://plugin.video.themoviedb.helper/?info=stars_in_movies&amp;tmdb_type=person&amp;tmdb_id=$INFO[Skin.String(SearchPersonID)]&amp;sort_by=year&amp;sort_how=desc&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_SearchNamedPerson]">plugin://plugin.video.themoviedb.helper/?info=stars_in_movies&amp;tmdb_type=person&amp;tmdb_id=$INFO[Container(8110).ListItemAbsolute(0).UniqueID(tmdb)]&amp;sort_by=year&amp;sort_how=desc&amp;hide_unaired=true&amp;nextpage=false</value>
 		<value condition="$EXP[ATV_SearchHasQuery]">plugin://plugin.video.themoviedb.helper/?info=search&amp;tmdb_type=movie&amp;query=$INFO[Skin.String(SearchQueryURL)]&amp;exclude_key=popularity&amp;exclude_value=1&amp;exclude_operator=lt&amp;nextpage=false</value>
 		<value>plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;tmdb_type=movie&amp;nextpage=false</value>
 	</variable>
 	<variable name="ATV_SearchTVPath">
-		<value condition="$EXP[ATV_SearchHasPerson]">plugin://plugin.video.themoviedb.helper/?info=stars_in_tvshows&amp;tmdb_type=person&amp;tmdb_id=$INFO[Skin.String(SearchPersonID)]&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_SearchHasPerson]">plugin://plugin.video.themoviedb.helper/?info=stars_in_tvshows&amp;tmdb_type=person&amp;tmdb_id=$INFO[Skin.String(SearchPersonID)]&amp;sort_by=year&amp;sort_how=desc&amp;hide_unaired=true&amp;nextpage=false</value>
+		<value condition="$EXP[ATV_SearchNamedPerson]">plugin://plugin.video.themoviedb.helper/?info=stars_in_tvshows&amp;tmdb_type=person&amp;tmdb_id=$INFO[Container(8110).ListItemAbsolute(0).UniqueID(tmdb)]&amp;sort_by=year&amp;sort_how=desc&amp;hide_unaired=true&amp;nextpage=false</value>
 		<value condition="$EXP[ATV_SearchHasQuery]">plugin://plugin.video.themoviedb.helper/?info=search&amp;tmdb_type=tv&amp;query=$INFO[Skin.String(SearchQueryURL)]&amp;exclude_key=popularity&amp;exclude_value=1&amp;exclude_operator=lt&amp;nextpage=false</value>
 		<value>plugin://plugin.video.themoviedb.helper/?info=trending_week&amp;tmdb_type=tv&amp;nextpage=false</value>
 	</variable>
@@ -20,11 +30,13 @@
 	</variable>
 	<variable name="ATV_SearchMoviesHeader">
 		<value condition="$EXP[ATV_SearchHasPerson]">Movies with $INFO[Skin.String(SearchPersonName)]</value>
+		<value condition="$EXP[ATV_SearchNamedPerson]">Movies with $INFO[Container(8110).ListItemAbsolute(0).Label]</value>
 		<value condition="$EXP[ATV_SearchHasQuery]">Movies</value>
 		<value>Popular Movies</value>
 	</variable>
 	<variable name="ATV_SearchTVHeader">
 		<value condition="$EXP[ATV_SearchHasPerson]">TV Shows with $INFO[Skin.String(SearchPersonName)]</value>
+		<value condition="$EXP[ATV_SearchNamedPerson]">TV Shows with $INFO[Container(8110).ListItemAbsolute(0).Label]</value>
 		<value condition="$EXP[ATV_SearchHasQuery]">TV Shows</value>
 		<value>Popular TV Shows</value>
 	</variable>

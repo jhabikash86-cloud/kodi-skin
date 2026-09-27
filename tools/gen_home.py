@@ -64,6 +64,15 @@ def language_row(code, media='movie', votes=15, without=''):
             f'&vote_count.gte={votes}&nextpage=false')
 
 
+def new_language_row(code):
+    """A language's films of the last three months, released, most popular first. The
+    trending rows need 10-15 votes on TMDb, which a Hindi or Tamil film only has weeks after
+    it opens - new films were missing (Lust Stories 3, Alpha, Dhamaal 4)."""
+    return (f'{PLUGIN}info=discover&tmdb_type=movie&with_original_language={code}'
+            f'&primary_release_date.gte={DATE["d90"]}&primary_release_date.lte={DATE["today"]}'
+            f'&vote_count.gte=1&sort_by=popularity.desc&with_id=True&nextpage=false')
+
+
 # The hero shows what is in cinemas. TMDb's now_playing carried re-releases (Avengers:
 # Endgame, 2019), so it is films that opened in the last six weeks, as on the Movies page.
 CINEMA_SINCE = DATE['d45']
@@ -99,8 +108,8 @@ ROWS = [
     ('rank', 'Top 10 on Netflix', provider_chart(PROVIDERS['Netflix'])),
     ('rank', 'Top 10 on Prime Video', provider_chart(PROVIDERS['Prime Video'])),
     ('rank', 'Top 10 on JioHotstar', provider_chart(PROVIDERS['JioHotstar'])),
-    ('poster', 'Trending in Hindi', language_row('hi')),
-    ('poster', 'Trending in Tamil', language_row('ta', votes=10)),
+    ('poster', 'New in Hindi', new_language_row('hi')),
+    ('poster', 'New in Tamil', new_language_row('ta')),
     # Home had no Indian series at all - the TV page has the charts
     ('poster', 'Hindi Series Everyone\'s Watching', language_row('hi', media='tv', votes=10, without=',16,35')),
     ('poster', 'World Cinema', WORLD_CINEMA),
