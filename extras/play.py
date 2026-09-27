@@ -283,6 +283,17 @@ def play_item(container):
     err on.
     """
     prefix = f'Container({container}).ListItem'
+    built = xbmc.getInfoLabel(f'{prefix}.Property(cw.path)')
+    if built:   # a Continue Watching tile (extras/continuing.py): path and position as properties
+        resume = int(xbmc.getInfoLabel(f'{prefix}.Property(cw.resume)') or 0)
+        percent = int(xbmc.getInfoLabel(f'{prefix}.Property(cw.percent)') or 0)
+        if resume < RESUME_FLOOR or percent > NEARLY_DONE * 100:
+            resume = 0
+        show = re.search(r'tmdb_id=(\d+).*?season=(\d+).*?episode=(\d+)', built)
+        if show:
+            watch_for_next(*show.groups())
+        play(built, resume)
+        return
     path = xbmc.getInfoLabel(f'{prefix}.FileNameAndPath')
     if not path:
         return

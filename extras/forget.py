@@ -20,7 +20,7 @@ import xbmcgui
 HOME = xbmcgui.Window(10000)
 HELPER = 'plugin.video.themoviedb.helper'
 RELOAD = 'ATVContinueReload'   # Continue Watching's rows carry it in their path
-ROWS = (50, 51)                # Continue Watching, Continue Watching Films
+ROWS = (50,)                   # Continue Watching - one row since it was built by the skin
 REPLY_WAIT = 15                # seconds for TMDb Helper to answer: it asks Trakt twice
 OK_DIALOG = 'Window.IsActive(okdialog)'
 
@@ -31,6 +31,10 @@ def info(label):
 
 def focused_item():
     """(kind, tmdb id, season, episode) of the tile the menu was opened on."""
+    kind = info('ListItem.Property(cw.kind)')   # a Continue Watching tile (extras/continuing.py)
+    if kind:
+        return ('tv' if kind == 'episode' else 'movie', info('ListItem.Property(cw.tmdb)'),
+                info('ListItem.Property(cw.season)'), info('ListItem.Property(cw.episode)'))
     if info('ListItem.DBType') == 'episode':
         return ('tv', info('ListItem.Property(tvshow.tmdb_id)'),
                 info('ListItem.Season'), info('ListItem.Episode'))
@@ -70,14 +74,19 @@ def main():
     kind, tmdb_id, season, episode = focused_item()
     if not tmdb_id:
         return
-    args = f'tmdb_type={kind},tmdb_id={tmdb_id}'
-    if kind == 'tv':
-        args += f',season={season},episode={episode}'
     before = remaining()
-    xbmc.executebuiltin(f'RunScript({HELPER},sync_trakt,{args},sync_type=progress)')
     monitor = xbmc.Monitor()
-    if not await_reply(monitor):
-        return
+    # Hidden here at once, until the title is watched again (extras/continuing.py); a show's
+    # next episode has no saved position on Trakt to delete, so this is all it needs
+    import continuing
+    continuing.hide(kind, tmdb_id)
+    if int(info('ListItem.Property(cw.percent)') or info('ListItem.PercentPlayed') or 0) > 0:
+        args = f'tmdb_type={kind},tmdb_id={tmdb_id}'
+        if kind == 'tv':
+            args += f',season={season},episode={episode}'
+        xbmc.executebuiltin(f'RunScript({HELPER},sync_trakt,{args},sync_type=progress)')
+        if not await_reply(monitor):
+            return
     # A changed path makes Kodi fetch the rows again, and TMDb Helper re-reads Trakt after a
     # sync. Twice, in case the first is too early.
     for wait in (1, 5):

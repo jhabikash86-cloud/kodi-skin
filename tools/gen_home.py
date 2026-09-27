@@ -82,8 +82,8 @@ def paused(kind):
 
 
 ROWS = [
-    ('upnext', 'Continue Watching', paused('tv')),
-    ('upnext', 'Continue Watching Films', paused('movie')),
+    # One row for films and episodes, built by extras/continuing.py (static items)
+    ('continue', 'Continue Watching', ''),
     ('rank', 'Top 10 Movies Right Now',
      f'{PLUGIN}info=trakt_trending&tmdb_type=movie&nextpage=false'),
     ('rank', 'Top 10 Shows Right Now',
@@ -142,7 +142,7 @@ def build_scroll():
             continue
         at_or_below = ' | '.join(focus_condition(j) for j in range(i, len(ROWS)))
         guard = ''
-        if i == 1 and ROWS[0][0] == 'upnext':
+        if i == 1 and ROWS[0][0] in ('upnext', 'continue'):
             # With no Continue Watching row the rows below have already moved up into its
             # place, so this step would double up.
             guard = '!$EXP[ATV_UpNextEmpty] + '
@@ -169,6 +169,13 @@ def build_row(index, top):
     content = watchable(content).replace('&', '&amp;')
     onup = 8001 if index == 0 else row_id(index - 1)
     ondown = f'\n                    <param name="ondown" value="{row_id(index + 1)}" />' if index < len(ROWS) - 1 else ''
+    if kind == 'continue':
+        return f'''            <include content="ATV_ContinueRow">
+                <param name="id" value="{row_id(index)}" />
+                <param name="top" value="{top}" />
+                <param name="label" value="{label}" />
+                <param name="onup" value="{onup}" />{ondown.replace(chr(10) + " " * 20, chr(10) + " " * 16)}
+            </include>'''
     if kind == 'upnext':
         # the first row's emptiness collapses the page (ATV_UpNextEmpty); a later one only hides its title
         empty = '' if index == 0 else f'\n                <param name="empty" value="Integer.IsEqual(Container({row_id(index)}).NumItems,0)" />'
@@ -217,7 +224,7 @@ def lazy(index, xml):
 
 def build_rows():
     t = tops()
-    has_upnext = ROWS[0][0] == 'upnext'
+    has_upnext = ROWS[0][0] in ('upnext', 'continue')
     out = ['            <!-- ===== ROWS ===== -->']
     start = 0
     if has_upnext:

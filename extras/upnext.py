@@ -17,6 +17,7 @@ credits of something you decided to stay with.
 import json
 import sys
 import time
+from urllib.parse import quote, urlencode
 
 import xbmc
 import xbmcgui
@@ -27,6 +28,9 @@ PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 WINDOW = 1150
 LEAD_IN = 45          # seconds before the end to offer the next episode
 COUNTDOWN = 10        # seconds the card counts down before the next episode starts
+PRESCRAPE_AT = 300    # seconds before the end: Umbrella searches for the next episode now
+                      # (its silent search waits for every provider - 78s on the Mac)
+UMBRELLA = 'plugin://plugin.video.umbrella/?'
 MIN_RUNTIME = 300     # ignore anything too short to have an "end" worth calling
 POLL_MS = 1000
 ENDED_WITHIN = 3     # seconds from the end: stopping this close is the episode finishing
@@ -52,11 +56,29 @@ def episode_after(tmdb_id, season, episode):
     path = (f'{PLUGIN}info=episodes&tmdb_type=tv&tmdb_id={tmdb_id}'
             f'&season={season}&nextpage=false')
     result = jsonrpc('Files.GetDirectory', directory=path, media='video',
-                     properties=['title', 'season', 'episode', 'art', 'plot'])
+                     properties=['title', 'season', 'episode', 'art', 'plot', 'premiered', 'uniqueid', 'showtitle'])
     for item in result.get('files') or []:
         if str(item.get('episode')) == str(int(episode) + 1):
             return item
     return None
+
+
+def prescrape(tmdb_id, item):
+    """Umbrella's search for the next episode, now, in the background - so when it is played
+    Umbrella finds it in its cache (kept 48h) and skips a search that took 11-22s on the
+    Xbox. The values are the ones TMDb Helper's player hands Umbrella (players/umbrella.*.json),
+    since they are the cache's key; the action is the skin's patch to Umbrella (setup.py)."""
+    ids = item.get('uniqueid') or {}
+    show = jsonrpc('Files.GetDirectory', directory=f'{PLUGIN}info=details&tmdb_type=tv&tmdb_id={tmdb_id}&nextpage=false',
+                   media='video', properties=['year'])
+    year = str(((show.get('files') or [{}])[0]).get('year') or '')
+    values = {'title': item.get('title') or '', 'year': year, 'imdb': ids.get('tvshow.imdb', ''),
+              'tmdb': str(tmdb_id), 'tvdb': ids.get('tvshow.tvdb', ''), 'season': str(item.get('season')),
+              'episode': str(item.get('episode')), 'tvshowtitle': item.get('showtitle') or '',
+              'premiered': item.get('premiered') or ''}
+    meta = dict(values, code=values['imdb'], label=values['title'], mediatype='episode')
+    query = urlencode(dict(values, action='atv_prescrape', meta=json.dumps(meta)), quote_via=quote)
+    xbmc.executebuiltin(f'RunPlugin({UMBRELLA}{query})')
 
 
 def fill_card(tmdb_id, item):
@@ -107,7 +129,7 @@ def play_next(item, monitor=None):
 
 def watch(tmdb_id, season, episode):
     monitor, player = Monitor(), xbmc.Player()
-    shown, shown_at = False, 0.0
+    shown, shown_at, prescraped = False, 0.0, False
     remaining_at_last, following = LEAD_IN + 1, None
     if not wait_for_stream(player, START_WAIT, monitor):
         return
@@ -145,9 +167,14 @@ def watch(tmdb_id, season, episode):
                     return
                 HOME.setProperty('UpNextCountdown', str(max(1, int(left + 0.99))))
                 continue
+            if remaining <= PRESCRAPE_AT and not prescraped:
+                prescraped = True
+                following = following or episode_after(tmdb_id, season, episode)
+                if following and xbmc.getCondVisibility('System.AddonIsEnabled(plugin.video.umbrella)'):
+                    prescrape(tmdb_id, following)
             if remaining > LEAD_IN:
                 continue
-            following = episode_after(tmdb_id, season, episode)
+            following = following or episode_after(tmdb_id, season, episode)
             if not following:
                 return
             fill_card(tmdb_id, following)

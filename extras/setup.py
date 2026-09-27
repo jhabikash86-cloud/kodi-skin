@@ -273,8 +273,16 @@ DISC_FIXED = (
     "\t\t# seeks slowly and stutters - it topped F1's list at 78 GB. Remuxes are the same picture.\n"
     + "\t\tself.sources = [i for i in self.sources if not re.search(r'\\b(?:COMPLETE(?:[\\W_]+\\w+){0,3}?[\\W_]+BLU[\\W_]?RAY\\b(?![\\W_]+(?:REMUX|x26[45]|HEVC|AVC))|BDMV|ISO|BD(?:25|50|66|100))\\b', i.get('name', ''), re.I)]\n"
     + DISC_FIND)
+PRESCRAPE_FIND = '\t\t\titems = providerscache.get(self.getSources, self.providercache_hours, title, year, imdb, tmdb, tvdb, season, episode, tvshowtitle, premiered)\n'
+PRESCRAPE_FIXED = "\t\t\tif getattr(self, 'atv_prescrape', False):  # skin.appletv.minimal: search only, silently, into the\n\t\t\t\t# cache this very line reads when the episode is played - see action atv_prescrape\n\t\t\t\treturn providerscache.get(self.getSources, self.providercache_hours, title, year, imdb, tmdb, tvdb, season, episode, tvshowtitle, premiered, self.meta, True)\n\t\t\titems = providerscache.get(self.getSources, self.providercache_hours, title, year, imdb, tmdb, tvdb, season, episode, tvshowtitle, premiered)\n"
+ROUTER_FIND = "\telif action == 'play': # for support of old style .strm library files\n"
+ROUTER_FIXED = "\telif action == 'atv_prescrape': # skin.appletv.minimal: the next episode's search, run during the\n\t\t# credits of this one by the skin's Up Next, so Play finds it cached (48h) - Play's own code,\n\t\t# stopped at the cache: the same title fixes, so the same cache key\n\t\tfrom resources.lib.modules import sources\n\t\tprescrape = sources.Sources(params.get('all_providers'))\n\t\tprescrape.atv_prescrape = True\n\t\tprescrape.play(title, year, imdb, tmdb, tvdb, season, episode, tvshowtitle, params.get('premiered'), params.get('meta'), params.get('select'))\n\telif action == 'play': # for support of old style .strm library files\n"
 UMBRELLA_FIXES = [
     ('sources.py', 'skin.appletv.minimal: no disc images', DISC_FIND, DISC_FIXED),
+    # The next episode starts about 40s after the countdown on the Xbox, 11-22s of it
+    # Umbrella's search. Umbrella keeps a search 48h; the skin's Up Next runs it early.
+    ('sources.py', 'skin.appletv.minimal: search only', PRESCRAPE_FIND, PRESCRAPE_FIXED),
+    ('router.py', 'skin.appletv.minimal: the next episode', ROUTER_FIND, ROUTER_FIXED),
 ]
 
 

@@ -29,6 +29,7 @@ from waiting import Monitor  # same folder; Kodi puts a RunScript's directory on
 import xbmcvfs
 
 import dates  # same folder; Kodi puts a RunScript's directory on sys.path
+import continuing
 
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 HOME = xbmcgui.Window(10000)
@@ -131,7 +132,9 @@ class Fetcher:
 
 
 HERO = 'Container(40).ListItemAbsolute(0)'
-FIRST_PAINT = {'hero': 40, 'continue watching': 50, 'continue watching films': 51, 'top 10 movies': 6052}
+FIRST_PAINT = {'hero': 40, 'continue watching': 50, 'top 10 movies': 6052}
+CONTINUE_EVERY = 15 * 60   # Continue Watching rebuilt at least this often ...
+AFTER_PLAYBACK = 5         # ... and this long after anything stops, once Trakt has it
 
 
 def quoted(text):
@@ -176,6 +179,10 @@ def watch():
     ordered = 0.0
     started, painted = time.time(), {}   # first paint of Home after a start, for the log
     setup_checked = False
+    player = xbmc.Player()
+    playing, stopped_at, rebuilt_at = False, 0.0, 0.0
+    reload_seen = HOME.getProperty('ATVContinueReload')
+    rebuilding = []                       # the thread doing it, while it runs
     try:
         while not monitor.stopping():
             if len(painted) < len(FIRST_PAINT) and time.time() - started < 30:
@@ -184,6 +191,21 @@ def watch():
                         painted[name] = time.time() - started
                         xbmc.log(f'ATV timing: {name} filled {painted[name]:.1f}s after Home opened', xbmc.LOGINFO)
             save_hero()
+
+            # Continue Watching (extras/continuing.py): at start, after each playback, when a
+            # tile is removed, and every so often - in a thread, it takes seconds on the Xbox
+            now_playing = player.isPlayingVideo()
+            if playing and not now_playing:
+                stopped_at = time.time()
+            playing = now_playing
+            reload_now = HOME.getProperty('ATVContinueReload')
+            due = (not rebuilt_at or time.time() - rebuilt_at > CONTINUE_EVERY
+                   or (stopped_at and time.time() - stopped_at > AFTER_PLAYBACK)
+                   or reload_now != reload_seen)
+            if due and not playing and not (rebuilding and rebuilding[0].is_alive()):
+                rebuilt_at, stopped_at, reload_seen = time.time(), 0.0, reload_now
+                rebuilding[:] = [threading.Thread(target=continuing.refresh, daemon=True)]
+                rebuilding[0].start()
             if not setup_checked and time.time() - started > SETUP_AFTER:
                 setup_checked = True     # fixes to other add-ons, after an update of them
                 if HOME.getProperty('ATVSetupRan') != '1':

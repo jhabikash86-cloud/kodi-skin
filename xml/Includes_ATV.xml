@@ -4,7 +4,7 @@
 
 	<!-- ===================== EXPRESSIONS ===================== -->
 
-	<expression name="ATV_RowsFocused">Control.HasFocus(50) | Control.HasFocus(51) | ControlGroup(52).HasFocus(0) | ControlGroup(53).HasFocus(0) | Control.HasFocus(54) | Control.HasFocus(55) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)</expression>
+	<expression name="ATV_RowsFocused">Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59) | Control.HasFocus(60)</expression>
 	<!-- A hero trailer is on screen: everything over it fades so it plays full-screen, as on
 	     Apple TV; any press stops the preview (extras/trailer.py) and brings it all back. -->
 	<expression name="ATV_TrailerFull">!String.IsEmpty(Window(home).Property(ATVPreview)) + !String.IsEmpty(Window(home).Property(ATVPreviewShape)) + Player.HasVideo</expression>
@@ -83,6 +83,7 @@
 	</variable>
 
 	<variable name="ATV_UpNextSubtitle">
+		<value condition="!String.IsEmpty(ListItem.Property(cw.subtitle))">$INFO[ListItem.Property(cw.subtitle)]</value>
 		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.Season,Season ,  ·  ]$INFO[ListItem.Episode,Episode ]</value>
 		<value>Movie$INFO[ListItem.Year,  ·  ]</value>
 	</variable>
@@ -307,6 +308,19 @@
 				<midtexture border="3,0,3,0" colordiffuse="FFFFFFFF">atv/bar6.png</midtexture>
 				<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
 			</control>
+			<!-- Tiles built by extras/continuing.py carry their progress as a property -->
+			<control type="image">
+				<left>20</left><top>138</top><width>384</width><height>108</height>
+				<texture diffuse="atv/mask_landscape.png" colordiffuse="B3FFFFFF">atv/grad_bottom.png</texture>
+				<visible>Integer.IsGreater(ListItem.Property(cw.percent),0)</visible>
+			</control>
+			<control type="progress">
+				<left>40</left><top>222</top><width>344</width><height>6</height>
+				<info>ListItem.Property(cw.percent)</info>
+				<texturebg border="3,0,3,0" colordiffuse="4DFFFFFF">atv/bar6.png</texturebg>
+				<midtexture border="3,0,3,0" colordiffuse="FFFFFFFF">atv/bar6.png</midtexture>
+				<visible>Integer.IsGreater(ListItem.Property(cw.percent),0)</visible>
+			</control>
 			<control type="label">
 				<left>20</left><top>262</top><width>384</width><height>32</height>
 				<label>$VAR[ATV_UpNextTitle]</label>
@@ -380,6 +394,254 @@
 					<onfocus>SetProperty(ATVContinueFocus,1,home)</onfocus>
 					<onunfocus>ClearProperty(ATVContinueFocus,home)</onunfocus>
 					<content>$PARAM[content]</content>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- Continue Watching as one row: films and episodes in progress and each show's next
+	     episode, newest first. extras/continuing.py builds the tiles into skin strings - Kodi
+	     keeps them between runs, so the row is there as Home opens - and rebuilds them after
+	     each playback. One row of static items, not two lists in one row: that froze Kodi. -->
+	<include name="ATV_ContinueRow">
+		<param name="id" />
+		<param name="top" />
+		<param name="label" />
+		<param name="empty">$EXP[ATV_UpNextEmpty]</param>
+		<param name="onup" />
+		<param name="ondown" />
+		<definition>
+			<control type="group">
+				<top>$PARAM[top]</top>
+				<control type="label">
+					<left>90</left><top>0</top><width>1400</width><height>44</height>
+					<label>$PARAM[label]</label>
+					<font>atv_row</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<visible>!$PARAM[empty]</visible>
+				</control>
+				<control type="list" id="$PARAM[id]">
+					<left>70</left><top>34</top><width>1850</width><height>340</height>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">420</scrolltime>
+					<onup>$PARAM[onup]</onup>
+					<ondown>$PARAM[ondown]</ondown>
+					<onback>SetFocus(8001)</onback>
+					<onclick>RunScript(special://skin/extras/play.py,item,$PARAM[id])</onclick>
+					<itemlayout width="416" height="340">
+						<include content="ATV_UpNextTile" />
+					</itemlayout>
+					<focusedlayout width="416" height="340">
+						<control type="group">
+							<include content="ATV_Lift"><param name="center" value="212,138" /><param name="zoom" value="106" /></include>
+							<control type="image">
+								<left>-24</left><top>-4</top><width>472</width><height>290</height>
+								<texture border="64">atv/shadow.png</texture>
+								<animation effect="fade" start="0" end="100" time="220">Focus</animation>
+								<animation effect="fade" start="100" end="0" time="160">Unfocus</animation>
+							</control>
+							<include content="ATV_UpNextTile"><param name="focused" value="true" /></include>
+						</control>
+					</focusedlayout>
+					<onfocus>SetProperty(ATVContinueFocus,1,home)</onfocus>
+					<onunfocus>ClearProperty(ATVContinueFocus,home)</onunfocus>
+					<content>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.1.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.1.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.1.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.1.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.1.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.1.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.1.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.1.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.1.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.1.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.1.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.2.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.2.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.2.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.2.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.2.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.2.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.2.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.2.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.2.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.2.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.2.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.3.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.3.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.3.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.3.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.3.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.3.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.3.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.3.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.3.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.3.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.3.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.4.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.4.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.4.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.4.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.4.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.4.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.4.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.4.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.4.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.4.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.4.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.5.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.5.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.5.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.5.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.5.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.5.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.5.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.5.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.5.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.5.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.5.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.6.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.6.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.6.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.6.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.6.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.6.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.6.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.6.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.6.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.6.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.6.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.7.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.7.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.7.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.7.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.7.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.7.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.7.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.7.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.7.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.7.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.7.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.8.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.8.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.8.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.8.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.8.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.8.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.8.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.8.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.8.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.8.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.8.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.9.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.9.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.9.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.9.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.9.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.9.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.9.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.9.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.9.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.9.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.9.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.10.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.10.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.10.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.10.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.10.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.10.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.10.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.10.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.10.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.10.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.10.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.11.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.11.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.11.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.11.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.11.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.11.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.11.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.11.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.11.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.11.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.11.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.12.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.12.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.12.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.12.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.12.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.12.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.12.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.12.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.12.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.12.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.12.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.13.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.13.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.13.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.13.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.13.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.13.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.13.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.13.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.13.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.13.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.13.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.14.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.14.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.14.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.14.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.14.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.14.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.14.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.14.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.14.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.14.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.14.title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVCW.15.title)]</label>
+							<thumb>$INFO[Skin.String(ATVCW.15.art)]</thumb>
+							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.15.subtitle)]</property>
+							<property name="cw.percent">$INFO[Skin.String(ATVCW.15.percent)]</property>
+							<property name="cw.kind">$INFO[Skin.String(ATVCW.15.kind)]</property>
+							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.15.tmdb)]</property>
+							<property name="cw.season">$INFO[Skin.String(ATVCW.15.season)]</property>
+							<property name="cw.episode">$INFO[Skin.String(ATVCW.15.episode)]</property>
+							<property name="cw.path">$INFO[Skin.String(ATVCW.15.path)]</property>
+							<property name="cw.resume">$INFO[Skin.String(ATVCW.15.resume)]</property>
+							<visible>!String.IsEmpty(Skin.String(ATVCW.15.title))</visible>
+						</item>
+					</content>
 				</control>
 			</control>
 		</definition>
