@@ -226,6 +226,8 @@ def ask_resume(resume, total=0, title='', subtitle='', art=''):
     for _ in range(40):                       # opening is asynchronous
         if xbmc.getCondVisibility(visible) or monitor.waitForAbort(0.05):
             break
+    else:
+        return 'resume'   # the card never opened (a skin not yet reloaded): resume, as before
     while xbmc.getCondVisibility(visible) and not monitor.waitForAbort(0.1):
         pass
     choice = home.getProperty('ATVResumeChoice')
