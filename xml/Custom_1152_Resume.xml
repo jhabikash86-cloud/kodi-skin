@@ -8,6 +8,11 @@
 	<animation effect="fade" start="0" end="100" time="220">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="160">WindowClose</animation>
 	<controls>
+		<!-- solid first: the page behind never shows through while the backdrop loads -->
+		<control type="image">
+			<left>0</left><top>0</top><width>1920</width><height>1080</height>
+			<texture colordiffuse="FF0B0B0D">white.png</texture>
+		</control>
 		<control type="image">
 			<left>0</left><top>0</top><width>1920</width><height>1080</height>
 			<texture background="true">$INFO[Window(home).Property(ATVResumeArt)]</texture>
@@ -15,7 +20,7 @@
 		</control>
 		<control type="image">
 			<left>0</left><top>0</top><width>1920</width><height>1080</height>
-			<texture colordiffuse="D90B0B0D">white.png</texture>
+			<texture colordiffuse="C80B0B0D">white.png</texture>
 		</control>
 		<control type="group">
 			<left>160</left><top>300</top>
