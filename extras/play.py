@@ -34,6 +34,7 @@ from waiting import wait_for_stream  # same folder; Kodi puts a RunScript's dire
 
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 RESUME_FLOOR = 60      # ignore a resume point this small - it is a false start
+RESUME_WINDOW = 1152   # xml/Custom_1152_Resume.xml - Resume / Play from Beginning
 NEARLY_DONE = 0.92     # past this much of the runtime, treat the episode as finished
 START_TIMEOUT = 180    # seconds to wait for the player add-on to resolve a stream,
                        # not counting time spent with the source list open
@@ -126,7 +127,7 @@ def directory(path):
     """
     result = jsonrpc(
         'Files.GetDirectory', directory=path, media='video',
-        properties=['season', 'episode', 'resume', 'uniqueid', 'file'])
+        properties=['season', 'episode', 'resume', 'uniqueid', 'file', 'art'])
     return result.get('files') or []
 
 
@@ -134,10 +135,14 @@ def show_id(item):
     return (item.get('uniqueid') or {}).get('tvshow.tmdb')
 
 
+LENGTH = {}   # runtime of the last item resume_seconds looked at, for the resume card
+
+
 def resume_seconds(item):
     """Where to pick this item up, or 0 for the beginning."""
     resume = item.get('resume') or {}
     position, total = resume.get('position') or 0, resume.get('total') or 0
+    LENGTH['total'] = total
     if position < RESUME_FLOOR or (total and position / total > NEARLY_DONE):
         return 0
     return int(position)
@@ -183,11 +188,49 @@ def release_name(path):
     return unquote_plus(path.rsplit('/', 1)[-1].split('?')[0])
 
 
+ART = {}      # backdrop of the last title expected_title looked up, for the resume card
+
+
 def expected_title(kind, tmdb_id):
     items = directory(f'{PLUGIN}info=details&tmdb_type={kind}&tmdb_id={tmdb_id}&nextpage=false')
     if not items:
         return ''
+    art = items[0].get('art') or {}
+    ART['fanart'] = art.get('fanart') or art.get('landscape') or ''
     return items[0].get('label') or ''
+
+
+def clock(seconds):
+    seconds = int(seconds)
+    return f'{seconds // 3600}:{seconds % 3600 // 60:02d}:{seconds % 60:02d}' if seconds >= 3600 \
+        else f'{seconds // 60}:{seconds % 60:02d}'
+
+
+def spoken(seconds):
+    minutes = int(seconds) // 60
+    return f'{minutes // 60} h {minutes % 60} min' if minutes >= 60 else f'{minutes} min'
+
+
+def ask_resume(resume, total=0, title='', subtitle='', art=''):
+    """Resume or start again - Apple TV's choice, on a card of its own (Custom_1152). Asked
+    before anything is fetched. 'resume', 'start', or None when it was backed out of."""
+    home = xbmcgui.Window(10000)
+    detail = f'{spoken(resume)} watched' + (f'  ·  {spoken(total - resume)} left' if total > resume else '')
+    for name, value in (('ATVResumeTitle', title), ('ATVResumeSubtitle', subtitle), ('ATVResumeArt', art),
+                        ('ATVResumeFrom', clock(resume)), ('ATVResumeDetail', detail),
+                        ('ATVResumePercent', str(int(resume * 100 / total)) if total else '')):
+        home.setProperty(name, value)
+    home.clearProperty('ATVResumeChoice')
+    xbmc.executebuiltin(f'ActivateWindow({RESUME_WINDOW})')
+    monitor, visible = xbmc.Monitor(), f'Window.IsVisible({RESUME_WINDOW})'
+    for _ in range(40):                       # opening is asynchronous
+        if xbmc.getCondVisibility(visible) or monitor.waitForAbort(0.05):
+            break
+    while xbmc.getCondVisibility(visible) and not monitor.waitForAbort(0.1):
+        pass
+    choice = home.getProperty('ATVResumeChoice')
+    home.clearProperty('ATVResumeChoice')
+    return choice or None
 
 
 def looks_like_another_film(path, title):
@@ -232,13 +275,29 @@ def prefer_language(code):
 
 
 
-def play(path, resume=0, title=''):
+def play(path, resume=0, title='', total=0, subtitle='', art=''):
     """Start `path`, then put it right: report a dead source, and resume where asked.
 
     Failures say what happened and stop there. Throwing the source picker up by itself
     is the one thing a play button should never do - it is the interruption this skin
     exists to avoid. The Sources button is a deliberate act.
     """
+    if resume:
+        choice = ask_resume(resume, total or LENGTH.get('total', 0), title if isinstance(title, str) else '',
+                            subtitle, art or ART.get('fanart', ''))
+        if not choice:
+            return
+        if choice == 'start':
+            resume = -1                   # from the start, even if the player add-on would resume
+    player = xbmc.Player()
+    if player.isPlaying():
+        # A press while something is still opening: stop that first. Two streams opening
+        # at once made Kodi quit - a stalled F1 start, then Play pressed again.
+        player.stop()
+        monitor = xbmc.Monitor()
+        for _ in range(100):
+            if not player.isPlaying() or monitor.waitForAbort(0.1):
+                break
     home = xbmcgui.Window(10000)
     home.setProperty(RESOLVING, '1')
     try:
@@ -261,6 +320,8 @@ def play(path, resume=0, title=''):
                 'Source would not play', 'Nothing was cached for it - try Sources',
                 xbmcgui.NOTIFICATION_INFO, 4000)
             return
+        if callable(title):
+            title = title()           # looked up while the stream started
         if title and looks_like_another_film(xbmc.getInfoLabel('Player.Filenameandpath'), title):
             # Only a warning. Getting this wrong must never cost a film that would play.
             xbmcgui.Dialog().notification(
@@ -271,6 +332,10 @@ def play(path, resume=0, title=''):
             xbmcgui.Dialog().notification(
                 'Source blocked', 'That release was taken down - try Sources',
                 xbmcgui.NOTIFICATION_INFO, 4000)
+            return
+        if resume < 0:
+            if player.getTime() > RESUME_FLOOR:
+                player.seekTime(0)        # Play from Beginning, though the add-on resumed
             return
         if not resume:
             return
@@ -301,7 +366,10 @@ def play_item(container):
         show = re.search(r'tmdb_id=(\d+).*?season=(\d+).*?episode=(\d+)', built)
         if show:
             watch_for_next(*show.groups())
-        play(with_player(built), resume)
+        play(with_player(built), resume, title=xbmc.getInfoLabel(f'{prefix}.Label'),
+             total=int(resume * 100 / percent) if percent else 0,
+             subtitle=xbmc.getInfoLabel(f'{prefix}.Property(cw.subtitle)'),
+             art=xbmc.getInfoLabel(f'{prefix}.Art(thumb)'))
         return
     path = xbmc.getInfoLabel(f'{prefix}.FileNameAndPath')
     if not path:
@@ -318,7 +386,9 @@ def play_item(container):
     show = re.search(r'tmdb_id=(\d+).*?season=(\d+).*?episode=(\d+)', path)
     if show:
         watch_for_next(*show.groups())
-    play(with_player(path), resume)
+    play(with_player(path), resume, title=xbmc.getInfoLabel(f'{prefix}.TVShowTitle') or xbmc.getInfoLabel(f'{prefix}.Title'),
+         total=duration, subtitle=xbmc.getInfoLabel(f'{prefix}.Title') if show else '',
+         art=xbmc.getInfoLabel(f'{prefix}.Art(fanart)') or xbmc.getInfoLabel(f'{prefix}.Art(thumb)'))
 
 
 def watch_for_next(tmdb_id, season, episode):
@@ -337,24 +407,57 @@ def play_episode(tmdb_id, season, episode, lang=None, unattended=False):
          title=expected_title('tv', tmdb_id))
 
 
+def continue_tile(kind, tmdb_id):
+    """This title's Continue Watching tile (extras/continuing.py), or None - where it is up to,
+    read from the skin strings the row draws, with no request at all. Asking Trakt for the
+    same thing, then TMDb Helper for the title, came to 3.7s of an 11.4s start on the Xbox."""
+    for slot in range(1, 16):
+        field = lambda name: xbmc.getInfoLabel(f'Skin.String(ATVCW.{slot}.{name})')
+        if field('tmdb') == str(tmdb_id) and field('kind') == kind:
+            tile = {name: field(name) for name in ('title', 'subtitle', 'art', 'percent', 'season', 'episode', 'resume')}
+            resume, percent = int(tile['resume'] or 0), int(tile['percent'] or 0)
+            tile['resume'] = 0 if resume < RESUME_FLOOR or percent > NEARLY_DONE * 100 else resume
+            tile['total'] = int(resume * 100 / percent) if percent else 0
+            return tile
+    return None
+
+
+def look_up_title(kind, tmdb_id):
+    """The title, looked up while the stream starts - needed only once it plays, to check
+    the release is the right film. Returns a function that waits for it."""
+    import threading
+    found = {}
+    thread = threading.Thread(target=lambda: found.update(title=expected_title(kind, tmdb_id)), daemon=True)
+    thread.start()
+    return lambda: (thread.join(15), found.get('title', ''))[1]
+
+
 def play_show(tmdb_id, lang=None):
     if not tmdb_id:
         return
-    season, episode, resume = next_episode(tmdb_id)
+    tile = continue_tile('episode', tmdb_id)
+    if tile and tile['season'] and tile['episode']:
+        season, episode, resume = tile['season'], tile['episode'], tile['resume']
+    else:   # not on the row - a show not watched for months, or a new one: ask Trakt
+        season, episode, resume = next_episode(tmdb_id)
     watch_for_next(tmdb_id, season, episode)
     prefer_language(lang)
-    show_title = expected_title('tv', tmdb_id)
+    title = tile['title'] if tile else look_up_title('tv', tmdb_id)
     play(f'{PLUGIN}info=play&tmdb_type=tv&tmdb_id={tmdb_id}&season={season}&episode={episode}{player("episode")}',
-         resume, title=show_title)
+         resume, title=title, subtitle=f'Season {season}  ·  Episode {episode}',
+         total=tile['total'] if tile else 0, art=tile['art'] if tile else '')
 
 
 def play_movie(tmdb_id, lang=None):
     if not tmdb_id:
         return
-    resume = movie_resume(tmdb_id)
+    # A film part-watched is on the Continue Watching row; one that is not starts at the
+    # beginning - no Trakt request to find that out
+    tile = continue_tile('movie', tmdb_id)
     prefer_language(lang)
-    film_title = expected_title('movie', tmdb_id)
-    play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}{player("movie")}', resume, title=film_title)
+    play(f'{PLUGIN}info=play&tmdb_type=movie&tmdb_id={tmdb_id}{player("movie")}',
+         tile['resume'] if tile else 0, title=tile['title'] if tile else look_up_title('movie', tmdb_id),
+         total=tile['total'] if tile else 0, art=tile['art'] if tile else '')
 
 
 def main():

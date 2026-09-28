@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Resume or start again, as Apple TV asks: extras/play.py opens this when Play is pressed on
+     something you are part-way through (a Continue Watching tile, a title page, an episode),
+     before anything is fetched. The two buttons set Window(home).Property(ATVResumeChoice) and
+     close it; Back closes it with no choice, and nothing plays. -->
+<window type="dialog" id="1152">
+	<defaultcontrol always="true">9180</defaultcontrol>
+	<animation effect="fade" start="0" end="100" time="220">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="160">WindowClose</animation>
+	<controls>
+		<control type="image">
+			<left>0</left><top>0</top><width>1920</width><height>1080</height>
+			<texture background="true">$INFO[Window(home).Property(ATVResumeArt)]</texture>
+			<aspectratio>scale</aspectratio>
+		</control>
+		<control type="image">
+			<left>0</left><top>0</top><width>1920</width><height>1080</height>
+			<texture colordiffuse="D90B0B0D">white.png</texture>
+		</control>
+		<control type="group">
+			<left>160</left><top>300</top>
+			<animation effect="slide" start="0,40" end="0,0" time="320" tween="cubic" easing="out">WindowOpen</animation>
+			<control type="label">
+				<left>0</left><top>-10</top><width>1500</width><height>100</height>
+				<label>$INFO[Window(home).Property(ATVResumeTitle)]</label>
+				<font>atv_hero</font><textcolor>FFFFFFFF</textcolor>
+			</control>
+			<control type="label">
+				<left>0</left><top>92</top><width>1500</width><height>44</height>
+				<label>$INFO[Window(home).Property(ATVResumeSubtitle)]</label>
+				<font>atv_meta</font><textcolor>B3FFFFFF</textcolor>
+			</control>
+			<!-- how far in: a bar, and the time watched and left -->
+			<control type="group">
+				<top>170</top>
+				<visible>!String.IsEmpty(Window(home).Property(ATVResumePercent))</visible>
+				<control type="image">
+					<left>0</left><top>0</top><width>700</width><height>8</height>
+					<texture colordiffuse="40FFFFFF">white.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),3)</visible>
+				</control>
+				<control type="image">
+					<left>35</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),8)</visible>
+				</control>
+				<control type="image">
+					<left>70</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),13)</visible>
+				</control>
+				<control type="image">
+					<left>105</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),18)</visible>
+				</control>
+				<control type="image">
+					<left>140</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),23)</visible>
+				</control>
+				<control type="image">
+					<left>175</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),28)</visible>
+				</control>
+				<control type="image">
+					<left>210</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),33)</visible>
+				</control>
+				<control type="image">
+					<left>245</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),38)</visible>
+				</control>
+				<control type="image">
+					<left>280</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),43)</visible>
+				</control>
+				<control type="image">
+					<left>315</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),48)</visible>
+				</control>
+				<control type="image">
+					<left>350</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),53)</visible>
+				</control>
+				<control type="image">
+					<left>385</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),58)</visible>
+				</control>
+				<control type="image">
+					<left>420</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),63)</visible>
+				</control>
+				<control type="image">
+					<left>455</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),68)</visible>
+				</control>
+				<control type="image">
+					<left>490</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),73)</visible>
+				</control>
+				<control type="image">
+					<left>525</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),78)</visible>
+				</control>
+				<control type="image">
+					<left>560</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),83)</visible>
+				</control>
+				<control type="image">
+					<left>595</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),88)</visible>
+				</control>
+				<control type="image">
+					<left>630</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),93)</visible>
+				</control>
+				<control type="image">
+					<left>665</left><top>0</top><width>35</width><height>8</height>
+					<texture colordiffuse="FFFFFFFF">white.png</texture>
+					<visible>Integer.IsGreaterOrEqual(Window(home).Property(ATVResumePercent),98)</visible>
+				</control>
+			</control>
+			<control type="label">
+				<left>0</left><top>196</top><width>1200</width><height>40</height>
+				<label>$INFO[Window(home).Property(ATVResumeDetail)]</label>
+				<font>atv_small</font><textcolor>99FFFFFF</textcolor>
+			</control>
+
+			<control type="group">
+				<top>280</top><width>620</width><height>84</height>
+				<include content="ATV_CapsuleButton">
+					<param name="id" value="9180" />
+					<param name="width" value="620" />
+					<param name="label" value="Resume from $INFO[Window(home).Property(ATVResumeFrom)]" />
+					<param name="icon" value="atv/icon_play.png" />
+					<onclick>SetProperty(ATVResumeChoice,resume,home)</onclick>
+					<onclick>Dialog.Close(1152,true)</onclick>
+					<ondown>9181</ondown>
+					<onup>noop</onup>
+				</include>
+			</control>
+			<control type="group">
+				<top>376</top><width>620</width><height>84</height>
+				<include content="ATV_CapsuleButton">
+					<param name="id" value="9181" />
+					<param name="width" value="620" />
+					<param name="label" value="Play from Beginning" />
+					<onclick>SetProperty(ATVResumeChoice,start,home)</onclick>
+					<onclick>Dialog.Close(1152,true)</onclick>
+					<onup>9180</onup>
+					<ondown>noop</ondown>
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ATV Minimal: in the player, Up and Down show the controls and the progress bar, as on
+     Apple TV, instead of Kodi's "chapter or big step" - on a Blu-ray remux with chapters
+     every ten minutes, Down threw the film back ten minutes. Left / Right still skip.
+     extras/setup.py copies this into userdata/keymaps and reloads the key maps. -->
+<keymap>
+  <FullscreenVideo>
+    <joystick profile="game.controller.default">
+      <up>OSD</up>
+      <down>OSD</down>
+    </joystick>
+    <gamepad>
+      <dpadup>OSD</dpadup>
+      <dpaddown>OSD</dpaddown>
+    </gamepad>
+    <keyboard>
+      <up>OSD</up>
+      <down>OSD</down>
+    </keyboard>
+    <remote>
+      <up>OSD</up>
+      <down>OSD</down>
+    </remote>
+  </FullscreenVideo>
+</keymap>

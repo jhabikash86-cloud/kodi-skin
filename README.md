@@ -357,6 +357,20 @@ first). Now, when the title search (a hidden probe list, 8190) finds nothing but
 someone, the Movies and TV rows show that person's work; every filmography is newest first
 (`sort_by=year&sort_how=desc`) - Daayra, Dining with the Kapoors, The Buckingham Murders.
 
+**Resume or start again.** Play on something part-watched - a Continue Watching tile, a
+title page, an episode - first shows a card (`Custom_1152_Resume.xml`): the backdrop, a
+progress bar, "24 min watched · 2 h 19 min left", and two big buttons, *Resume from 24:41*
+(focused) and *Play from Beginning*; Back plays nothing. Up Next's own hand-offs never ask.
+Where it is up to comes from the Continue Watching tiles, with no request - asking Trakt, then
+TMDb Helper for the title, was 3.7s of an 11.4s start on the Xbox; the title is now looked up
+while the stream starts. A second Play while one is still opening stops the first: two streams
+opening at once made Kodi quit (a stalled F1 start, then Play again).
+
+**Up and Down in the player show the controls**, not Kodi's "chapter or big step" - on a
+Blu-ray remux with chapters every ten minutes, Down threw F1 back ten minutes.
+`extras/keymaps/atv_player.xml`, which setup copies into `userdata/keymaps` (controller,
+keyboard and remote).
+
 **Play: episodes pick, films ask.** An episode always goes to Umbrella's Auto Play - the best
 source within the episode size limits, the next if one fails; a film opens the source list
 unless Settings -> *Movies · pick the best automatically* is on (`extras/play.py`).

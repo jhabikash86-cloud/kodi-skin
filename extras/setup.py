@@ -389,6 +389,20 @@ def get_kodi(setting):
         return None
 
 
+KEYMAP_FROM = SKIN + 'keymaps/atv_player.xml'
+KEYMAP_TO = 'special://profile/keymaps/atv_player.xml'
+
+
+def install_keymap():
+    """Up and Down in the player show the controls instead of jumping ten minutes (see
+    extras/keymaps/atv_player.xml) - copied whenever the skin's copy differs, then live at once."""
+    if read(KEYMAP_FROM) != read(KEYMAP_TO):
+        xbmcvfs.mkdirs('special://profile/keymaps/')
+        xbmcvfs.copy(KEYMAP_FROM, KEYMAP_TO)
+        xbmc.executebuiltin('Action(reloadkeymaps)')
+        log('player key map installed')
+
+
 SOUNDS = 'resource.uisounds.atv'
 SOUNDS_FROM = SKIN + 'uisounds/' + SOUNDS + '/'
 SOUNDS_TO = 'special://home/addons/' + SOUNDS + '/'
@@ -497,6 +511,7 @@ def main():
         state[key] = VERSION
         log(f'linked {addon_id} to {needs}')
     once_defaults(state)
+    install_keymap()
     copy_players()
     fix_module()
     clear_failed_lists()
