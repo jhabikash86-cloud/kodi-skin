@@ -8,8 +8,11 @@ step-based page scroll and the bottom stop are all worked out from ROWS below, s
 adding a row is one line - the rest follows.
 """
 import os
+import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, 'extras'))
+from moods import MOODS  # noqa: E402  Browse by Mood: Home's tiles and the page behind them
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 
 FIRST_ROW_TOP = 260
@@ -254,6 +257,18 @@ PAGES = {
             ('poster', 'TV Shows', f'{PLUGIN}info=trakt_watchlist&amp;tmdb_type=tv&amp;sort_by=added&amp;sort_how=desc&amp;nextpage=false'),
         ],
     },
+    # Browse by Mood: one page for every mood. Home's tile sets Skin.String(ATVMood) and
+    # opens it; the title and both rows are variables on that string (mood_variables).
+    1143: {
+        'file': 'Custom_1143_Mood.xml',
+        'title': '$VAR[ATV_MoodName]',
+        'kicker': 'BROWSE BY MOOD',
+        'tab': 'noop',          # Back from the first row goes back to Home
+        'rows': [
+            ('poster', 'Films', '$VAR[ATV_MoodMovies]'),
+            ('poster', 'Series', '$VAR[ATV_MoodSeries]'),
+        ],
+    },
 }
 
 
@@ -305,6 +320,112 @@ def lazy(index, rows, xml):
 
 
 TABS = {1140: 9002, 1141: 9003, 1142: 9006}   # each page's own tab in the tab bar
+
+
+def mood_variables():
+    """The mood page's title and rows, chosen by Skin.String(ATVMood)."""
+    out = []
+    for name, part in (('ATV_MoodName', 0), ('ATV_MoodMovies', 1), ('ATV_MoodSeries', 2)):
+        values = []
+        for key, mood in MOODS.items():
+            value = mood[part] if not part else with_slot(watchable(mood[part].replace('&', '&amp;')))
+            values.append(f'\t\t<value condition="String.IsEqual(Skin.String(ATVMood),{key})">{value}</value>')
+        out.append(f'\t<variable name="{name}">\n' + '\n'.join(values) + '\n\t</variable>\n')
+    return ''.join(out)
+
+
+TILE_WIDTH, TILE_HEIGHT, TILE_GAP = 272, 300, 20
+
+
+def mood_tile(focused):
+    """A dark glass card, three of the mood's posters fanned across it, its name underneath."""
+    base = 'FF2A2B30' if focused else 'FF1C1D21'
+    edge = 'FFFFFFFF' if focused else '29FFFFFF'
+    zoom = ('\n\t\t\t\t\t\t\t<animation effect="zoom" start="100" end="107" center="136,150" time="220" '
+            'tween="cubic" easing="out">Focus</animation>') if focused else ''
+    lift = '<animation effect="slide" end="0,-8" time="260" tween="cubic" easing="out">Focus</animation>' if focused else ''
+
+    def poster(n, left, top, width, height, angle, shade):
+        turn = f'<animation effect="rotate" end="{angle}" center="auto" condition="true">Conditional</animation>' if angle else ''
+        return f'''
+							<control type="group">
+								<left>{left}</left><top>{top}</top>{turn}{lift}
+								<control type="image">
+									<width>{width}</width><height>{height}</height>
+									<texture colordiffuse="{shade}" diffuse="atv/mask_poster.png">white.png</texture>
+								</control>
+								<control type="image">
+									<width>{width}</width><height>{height}</height>
+									<aspectratio scalediffuse="false">scale</aspectratio>
+									<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Property(p{n})]</texture>
+								</control>
+							</control>'''
+    # the sides first, the middle one over them
+    posters = (poster(1, 34, 50, 88, 132, 8, 'FF2E3035') + poster(3, 150, 50, 88, 132, -8, 'FF2E3035')
+               + poster(2, 84, 28, 104, 156, 0, 'FF3A3C42'))
+    return f'''
+						<control type="group">{zoom}
+							<control type="image">
+								<width>{TILE_WIDTH}</width><height>{TILE_HEIGHT}</height>
+								<texture border="16" colordiffuse="{base}">atv/rounded16.png</texture>
+							</control>{posters}
+							<control type="textbox">
+								<left>22</left><top>196</top><width>{TILE_WIDTH - 40}</width><height>88</height>
+								<label>$INFO[ListItem.Label]</label>
+								<font>atv_mood</font><textcolor>FFFFFFFF</textcolor>
+								<aligny>bottom</aligny>
+							</control>
+							<control type="image">
+								<width>{TILE_WIDTH}</width><height>{TILE_HEIGHT}</height>
+								<texture border="16" colordiffuse="{edge}">atv/ring16.png</texture>
+							</control>
+						</control>'''
+
+
+def mood_row():
+    """Home's Browse by Mood row: the six tiles, all on screen at once."""
+    items = ''.join(f'''
+					<item>
+						<label>{name}</label>
+						<property name="p1">$INFO[Skin.String(ATVMood.{key}.p1)]</property>
+						<property name="p2">$INFO[Skin.String(ATVMood.{key}.p2)]</property>
+						<property name="p3">$INFO[Skin.String(ATVMood.{key}.p3)]</property>
+						<onclick>Skin.SetString(ATVMood,{key})</onclick>
+						<onclick>ActivateWindow(1143)</onclick>
+					</item>''' for key, (name, _, _) in MOODS.items())
+    step = TILE_WIDTH + TILE_GAP
+    return f'''	<include name="ATV_MoodRow">
+		<param name="id" />
+		<param name="top" />
+		<param name="label" />
+		<param name="onup" />
+		<param name="ondown">noop</param>
+		<definition>
+			<control type="group">
+				<top>$PARAM[top]</top>
+				<control type="label">
+					<left>90</left><top>0</top><width>1400</width><height>44</height>
+					<label>$PARAM[label]</label>
+					<font>atv_row</font><textcolor>FFFFFFFF</textcolor>
+				</control>
+				<control type="list" id="$PARAM[id]">
+					<left>90</left><top>78</top><width>{step * len(MOODS)}</width><height>{TILE_HEIGHT + 20}</height>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">380</scrolltime>
+					<onup>$PARAM[onup]</onup>
+					<ondown>$PARAM[ondown]</ondown>
+					<onback>SetFocus(8001)</onback>
+					<itemlayout width="{step}" height="{TILE_HEIGHT}">{mood_tile(False)}
+					</itemlayout>
+					<focusedlayout width="{step}" height="{TILE_HEIGHT}">{mood_tile(True)}
+					</focusedlayout>
+					<content>{items}
+					</content>
+				</control>
+			</control>
+		</definition>
+	</include>
+'''
 
 
 def build_rows(rows, tab=9000):
@@ -403,6 +524,19 @@ def backdrop_variable(window_id, rows):
     return f'\t<variable name="ATV_BrowseFanart{window_id}">\n' + '\n'.join(values) + '\n\t</variable>\n'
 
 
+def kicker(spec, scrolled):
+    if not spec.get('kicker'):
+        return ''
+    return f'''        <control type="label">
+            <left>92</left><top>104</top><width>900</width><height>36</height>
+            <label>{spec['kicker']}</label>
+            <font>atv_meta</font><textcolor>99FFFFFF</textcolor>
+            <animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="{scrolled}">Conditional</animation>
+        </control>
+
+'''
+
+
 def build_page(window_id, spec):
     rows = spec['rows']
     scroll, offsets = build_scroll(rows)
@@ -451,7 +585,7 @@ def build_page(window_id, spec):
             </control>
         </control>
 
-        <!-- Page title: fades away as soon as you move into the rows -->
+{kicker(spec, scrolled)}        <!-- Page title: fades away as soon as you move into the rows -->
         <control type="label">
             <left>90</left><top>142</top><width>900</width><height>70</height>
             <label>{spec['title']}</label>
@@ -462,7 +596,7 @@ def build_page(window_id, spec):
         <control type="group">
 {scroll}
 
-{build_rows(rows, TABS.get(window_id, 9000))}
+{build_rows(rows, spec.get('tab', TABS.get(window_id, 9000)))}
         </control>
 
         <!-- Rows above the focused one dissolve into the top edge -->
@@ -488,7 +622,7 @@ def main():
     with open(os.path.join(ROOT, 'xml', 'Includes_ATV_Browse.xml'), 'w') as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
                 '<!-- GENERATED by tools/gen_browse.py - the Movies and TV pages\' backdrops -->\n'
-                '<includes>\n' + variables + '</includes>\n')
+                '<includes>\n' + variables + mood_variables() + mood_row() + '</includes>\n')
     for window_id, spec in PAGES.items():
         path = os.path.join(ROOT, 'xml', spec['file'])
         with open(path, 'w') as f:

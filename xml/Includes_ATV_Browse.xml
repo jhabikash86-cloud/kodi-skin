@@ -31,4 +31,216 @@
 		<value condition="Control.HasFocus(51)">$INFO[Container(51).ListItem.Art(fanart)]</value>
 		<value>$INFO[Container(51).ListItemAbsolute(0).Art(fanart)]</value>
 	</variable>
+	<variable name="ATV_BrowseFanart1143">
+		<value condition="Control.HasFocus(51)">$INFO[Container(51).ListItem.Art(fanart)]</value>
+		<value>$INFO[Container(51).ListItemAbsolute(0).Art(fanart)]</value>
+	</variable>
+	<variable name="ATV_MoodName">
+		<value condition="String.IsEqual(Skin.String(ATVMood),truecrime)">True Crime</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),thrillers)">Edge-of-Seat Thrillers</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),horror)">Horror Night</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),bollywood)">Bollywood Blockbusters</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),tamil)">Tamil Hits</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),truestories)">Based on True Stories</value>
+	</variable>
+	<variable name="ATV_MoodMovies">
+		<value condition="String.IsEqual(Skin.String(ATVMood),truecrime)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_keywords=9672&amp;with_genres=80&amp;without_genres=99,16,35&amp;vote_count.gte=150&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),thrillers)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=53&amp;without_genres=16,35,10751,27&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d1095)]&amp;vote_count.gte=300&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),horror)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_genres=27&amp;without_genres=16,35,10751&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=300&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),bollywood)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;without_genres=99,16&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=150&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),tamil)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;without_genres=99,16&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=60&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),truestories)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_keywords=9672&amp;without_genres=99,16,10751,35&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=300&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+	</variable>
+	<variable name="ATV_MoodSeries">
+		<value condition="String.IsEqual(Skin.String(ATVMood),truecrime)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_keywords=9672&amp;with_genres=80&amp;without_genres=99,16,35,10766,10763,10767,10764,10762&amp;vote_count.gte=50&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),thrillers)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_genres=80%7C9648&amp;without_genres=16,35,99,10766,10763,10767,10764,10762&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d1095)]&amp;vote_count.gte=100&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),horror)">plugin://plugin.video.themoviedb.helper/?info=trakt_mostviewers&amp;tmdb_type=tv&amp;genres=horror,-anime,-animation,-comedy&amp;ratings=70-100&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),bollywood)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=hi&amp;without_genres=99,16,35,10766,10763,10767,10764,10762&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=30&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),tamil)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=ta&amp;without_genres=99,16,10766,10763,10767,10764,10762&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=5&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+		<value condition="String.IsEqual(Skin.String(ATVMood),truestories)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_keywords=9672&amp;without_genres=99,16,35,10766,10763,10767,10764,10762&amp;vote_count.gte=50&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
+	</variable>
+	<include name="ATV_MoodRow">
+		<param name="id" />
+		<param name="top" />
+		<param name="label" />
+		<param name="onup" />
+		<param name="ondown">noop</param>
+		<definition>
+			<control type="group">
+				<top>$PARAM[top]</top>
+				<control type="label">
+					<left>90</left><top>0</top><width>1400</width><height>44</height>
+					<label>$PARAM[label]</label>
+					<font>atv_row</font><textcolor>FFFFFFFF</textcolor>
+				</control>
+				<control type="list" id="$PARAM[id]">
+					<left>90</left><top>78</top><width>1752</width><height>320</height>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">380</scrolltime>
+					<onup>$PARAM[onup]</onup>
+					<ondown>$PARAM[ondown]</ondown>
+					<onback>SetFocus(8001)</onback>
+					<itemlayout width="292" height="300">
+						<control type="group">
+							<control type="image">
+								<width>272</width><height>300</height>
+								<texture border="16" colordiffuse="FF1C1D21">atv/rounded16.png</texture>
+							</control>
+							<control type="group">
+								<left>34</left><top>50</top><animation effect="rotate" end="8" center="auto" condition="true">Conditional</animation>
+								<control type="image">
+									<width>88</width><height>132</height>
+									<texture colordiffuse="FF2E3035" diffuse="atv/mask_poster.png">white.png</texture>
+								</control>
+								<control type="image">
+									<width>88</width><height>132</height>
+									<aspectratio scalediffuse="false">scale</aspectratio>
+									<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Property(p1)]</texture>
+								</control>
+							</control>
+							<control type="group">
+								<left>150</left><top>50</top><animation effect="rotate" end="-8" center="auto" condition="true">Conditional</animation>
+								<control type="image">
+									<width>88</width><height>132</height>
+									<texture colordiffuse="FF2E3035" diffuse="atv/mask_poster.png">white.png</texture>
+								</control>
+								<control type="image">
+									<width>88</width><height>132</height>
+									<aspectratio scalediffuse="false">scale</aspectratio>
+									<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Property(p3)]</texture>
+								</control>
+							</control>
+							<control type="group">
+								<left>84</left><top>28</top>
+								<control type="image">
+									<width>104</width><height>156</height>
+									<texture colordiffuse="FF3A3C42" diffuse="atv/mask_poster.png">white.png</texture>
+								</control>
+								<control type="image">
+									<width>104</width><height>156</height>
+									<aspectratio scalediffuse="false">scale</aspectratio>
+									<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Property(p2)]</texture>
+								</control>
+							</control>
+							<control type="textbox">
+								<left>22</left><top>196</top><width>232</width><height>88</height>
+								<label>$INFO[ListItem.Label]</label>
+								<font>atv_mood</font><textcolor>FFFFFFFF</textcolor>
+								<aligny>bottom</aligny>
+							</control>
+							<control type="image">
+								<width>272</width><height>300</height>
+								<texture border="16" colordiffuse="29FFFFFF">atv/ring16.png</texture>
+							</control>
+						</control>
+					</itemlayout>
+					<focusedlayout width="292" height="300">
+						<control type="group">
+							<animation effect="zoom" start="100" end="107" center="136,150" time="220" tween="cubic" easing="out">Focus</animation>
+							<control type="image">
+								<width>272</width><height>300</height>
+								<texture border="16" colordiffuse="FF2A2B30">atv/rounded16.png</texture>
+							</control>
+							<control type="group">
+								<left>34</left><top>50</top><animation effect="rotate" end="8" center="auto" condition="true">Conditional</animation><animation effect="slide" end="0,-8" time="260" tween="cubic" easing="out">Focus</animation>
+								<control type="image">
+									<width>88</width><height>132</height>
+									<texture colordiffuse="FF2E3035" diffuse="atv/mask_poster.png">white.png</texture>
+								</control>
+								<control type="image">
+									<width>88</width><height>132</height>
+									<aspectratio scalediffuse="false">scale</aspectratio>
+									<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Property(p1)]</texture>
+								</control>
+							</control>
+							<control type="group">
+								<left>150</left><top>50</top><animation effect="rotate" end="-8" center="auto" condition="true">Conditional</animation><animation effect="slide" end="0,-8" time="260" tween="cubic" easing="out">Focus</animation>
+								<control type="image">
+									<width>88</width><height>132</height>
+									<texture colordiffuse="FF2E3035" diffuse="atv/mask_poster.png">white.png</texture>
+								</control>
+								<control type="image">
+									<width>88</width><height>132</height>
+									<aspectratio scalediffuse="false">scale</aspectratio>
+									<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Property(p3)]</texture>
+								</control>
+							</control>
+							<control type="group">
+								<left>84</left><top>28</top><animation effect="slide" end="0,-8" time="260" tween="cubic" easing="out">Focus</animation>
+								<control type="image">
+									<width>104</width><height>156</height>
+									<texture colordiffuse="FF3A3C42" diffuse="atv/mask_poster.png">white.png</texture>
+								</control>
+								<control type="image">
+									<width>104</width><height>156</height>
+									<aspectratio scalediffuse="false">scale</aspectratio>
+									<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Property(p2)]</texture>
+								</control>
+							</control>
+							<control type="textbox">
+								<left>22</left><top>196</top><width>232</width><height>88</height>
+								<label>$INFO[ListItem.Label]</label>
+								<font>atv_mood</font><textcolor>FFFFFFFF</textcolor>
+								<aligny>bottom</aligny>
+							</control>
+							<control type="image">
+								<width>272</width><height>300</height>
+								<texture border="16" colordiffuse="FFFFFFFF">atv/ring16.png</texture>
+							</control>
+						</control>
+					</focusedlayout>
+					<content>
+					<item>
+						<label>True Crime</label>
+						<property name="p1">$INFO[Skin.String(ATVMood.truecrime.p1)]</property>
+						<property name="p2">$INFO[Skin.String(ATVMood.truecrime.p2)]</property>
+						<property name="p3">$INFO[Skin.String(ATVMood.truecrime.p3)]</property>
+						<onclick>Skin.SetString(ATVMood,truecrime)</onclick>
+						<onclick>ActivateWindow(1143)</onclick>
+					</item>
+					<item>
+						<label>Edge-of-Seat Thrillers</label>
+						<property name="p1">$INFO[Skin.String(ATVMood.thrillers.p1)]</property>
+						<property name="p2">$INFO[Skin.String(ATVMood.thrillers.p2)]</property>
+						<property name="p3">$INFO[Skin.String(ATVMood.thrillers.p3)]</property>
+						<onclick>Skin.SetString(ATVMood,thrillers)</onclick>
+						<onclick>ActivateWindow(1143)</onclick>
+					</item>
+					<item>
+						<label>Horror Night</label>
+						<property name="p1">$INFO[Skin.String(ATVMood.horror.p1)]</property>
+						<property name="p2">$INFO[Skin.String(ATVMood.horror.p2)]</property>
+						<property name="p3">$INFO[Skin.String(ATVMood.horror.p3)]</property>
+						<onclick>Skin.SetString(ATVMood,horror)</onclick>
+						<onclick>ActivateWindow(1143)</onclick>
+					</item>
+					<item>
+						<label>Bollywood Blockbusters</label>
+						<property name="p1">$INFO[Skin.String(ATVMood.bollywood.p1)]</property>
+						<property name="p2">$INFO[Skin.String(ATVMood.bollywood.p2)]</property>
+						<property name="p3">$INFO[Skin.String(ATVMood.bollywood.p3)]</property>
+						<onclick>Skin.SetString(ATVMood,bollywood)</onclick>
+						<onclick>ActivateWindow(1143)</onclick>
+					</item>
+					<item>
+						<label>Tamil Hits</label>
+						<property name="p1">$INFO[Skin.String(ATVMood.tamil.p1)]</property>
+						<property name="p2">$INFO[Skin.String(ATVMood.tamil.p2)]</property>
+						<property name="p3">$INFO[Skin.String(ATVMood.tamil.p3)]</property>
+						<onclick>Skin.SetString(ATVMood,tamil)</onclick>
+						<onclick>ActivateWindow(1143)</onclick>
+					</item>
+					<item>
+						<label>Based on True Stories</label>
+						<property name="p1">$INFO[Skin.String(ATVMood.truestories.p1)]</property>
+						<property name="p2">$INFO[Skin.String(ATVMood.truestories.p2)]</property>
+						<property name="p3">$INFO[Skin.String(ATVMood.truestories.p3)]</property>
+						<onclick>Skin.SetString(ATVMood,truestories)</onclick>
+						<onclick>ActivateWindow(1143)</onclick>
+					</item>
+					</content>
+				</control>
+			</control>
+		</definition>
+	</include>
 </includes>

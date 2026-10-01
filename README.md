@@ -13,6 +13,7 @@ Watching row hides itself and everything else still works.
 | --- | --- | --- |
 | Home | `xml/Home.xml` | Hero billboard, Continue Watching, a numbered Top 10, genre rows |
 | Movies / TV Shows | `xml/Custom_114*.xml` | Generated browse pages |
+| Mood page | `xml/Custom_1143_Mood.xml` | Behind each Browse by Mood tile: that mood's films and series |
 | Search | `xml/Custom_1120.xml`, `Custom_1121.xml` | Titles, shows and people; 1121 is the twin used for a cast member |
 | Title pages | `xml/Custom_113*.xml` | Five chained pages, so Back walks out the way you came in |
 | Settings | `xml/Settings.xml`, `xml/SettingsCategory.xml` | Kodi's own settings, restyled |
@@ -26,7 +27,7 @@ generator, not the XML** - the files carry a header saying so.
 python3 tools/gen_textures.py .   # media/atv/*.png
 python3 tools/gen_icon.py         # resources/icon.png, fanart.png
 python3 tools/gen_rank.py         # the numbered Top 10 row
-python3 tools/gen_browse.py       # Movies and TV Shows pages
+python3 tools/gen_browse.py       # Movies, TV Shows and the mood page; Home's mood tiles
 python3 tools/gen_details.py      # the five title pages
 python3 tools/gen_search.py .     # the two search screens
 ```
@@ -287,6 +288,17 @@ strings (`ATVTop.<chart>.<n>.*`), so the rows are there the moment Home opens.
 The rank sits on the poster, in a dark glass badge in its top-left corner
 (`tools/gen_rank.py`). It was an outlined numeral beside the poster, which read as a second,
 emptier column; a big numeral on the poster's foot covered the title most posters print there.
+
+## Browse by Mood
+
+Six tiles on Home - True Crime, Edge-of-Seat Thrillers, Horror Night, Bollywood Blockbusters,
+Tamil Hits, Based on True Stories - all on screen at once, each a dark glass card with three of
+that mood's posters fanned across it. A tile opens one page (`Custom_1143_Mood.xml`) with the
+mood's films and series; the page's title and both rows are variables on
+`Skin.String(ATVMood)`, which the tile sets. The moods and their lists are one table,
+`extras/moods.py`: `tools/gen_browse.py` writes the tiles and the page from it, and
+`extras/charts.py` fetches each tile's posters once a day (`ATVMood.<mood>.p1-3`). Indian series
+are held to the last ten years, or the Bollywood row led with C.I.D. (1998).
 
 ## Rows stay current while Kodi runs
 

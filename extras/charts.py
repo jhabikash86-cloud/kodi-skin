@@ -47,6 +47,8 @@ SPOT = 'ATVSpot'               # Home's Spotlight: India's number one, a film on
 STARS = ['Kareena Kapoor Khan', 'Shah Rukh Khan', 'Vijay', 'Rajinikanth', 'Alia Bhatt', 'Fahadh Faasil',
          'Vijay Sethupathi', 'Ranbir Kapoor', 'Deepika Padukone', 'Nayanthara']
 STARS_EVERY = 7 * 86400
+MOOD = 'ATVMood'              # Browse by Mood's tiles: three posters each (extras/moods.py)
+MOODS_EVERY = 86400
 SPOT_FIELDS = ('tmdb', 'type', 'title', 'kicker', 'fanart', 'logo', 'plot', 'year', 'rating', 'genre1', 'genre2')
 
 # chart -> (media type, language or None for every language)
@@ -224,6 +226,25 @@ def stars(state):
     return found
 
 
+def moods(state):
+    """Three posters for each Browse by Mood tile: the first films of that mood's page, daily."""
+    if time.time() - state.get('moods_at', 0) < MOODS_EVERY and state.get('moods'):
+        return state['moods']
+    import dates
+    import moods as mood_lists
+    today = dates.values()
+    found = {}
+    for key, (_, films, _) in mood_lists.MOODS.items():
+        path = re.sub(r'\$INFO\[Skin\.String\(ATVDate\.(\w+)\)\]', lambda m: today.get(m.group(1), ''), films)
+        query = path[len(PLUGIN):].replace('&nextpage=false', '')
+        posters = [(f.get('art') or {}).get('poster') for f in listing(query, ('title', 'art'))]
+        found[key] = [p for p in posters if p][:3]
+    if any(found.values()):
+        state.update(moods=found, moods_at=time.time())
+    log('moods: ' + ', '.join(f'{k} {len(v)}' for k, v in found.items()))
+    return found
+
+
 def set_string(name, value):
     if xbmc.getInfoLabel(f'Skin.String({name})') != value:
         if value:
@@ -296,6 +317,9 @@ def refresh(force=False):
     for slot, star in enumerate(stars(state), 1):
         for field in ('id', 'name', 'thumb', 'latest'):
             set_string(f'ATVStar.{slot}.{field}', star.get(field, ''))
+    for key, posters in moods(state).items():
+        for n in range(3):
+            set_string(f'{MOOD}.{key}.p{n + 1}', posters[n] if n < len(posters) else '')
     save(state)
     spot = spotlight(charts)
     if spot:

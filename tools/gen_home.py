@@ -13,6 +13,7 @@ Row kinds:
     chart   a numbered Top 10 from what people watch, India first (extras/charts.py)
     spotlight  one wide feature card between the rows (ATVSpot.*, extras/charts.py)
     stars   Stars You Love: circle portraits (ATVStar.*, extras/charts.py)
+    moods   Browse by Mood: six tiles, each opening a page (extras/moods.py, tools/gen_browse.py)
     poster  an ordinary poster row
 """
 import os
@@ -112,6 +113,7 @@ ROWS = [
     ('rank', 'Top 10 on Netflix', provider_chart(PROVIDERS['Netflix'])),
     ('rank', 'Top 10 on Prime Video', provider_chart(PROVIDERS['Prime Video'])),
     ('rank', 'Top 10 on JioHotstar', provider_chart(PROVIDERS['JioHotstar'])),
+    ('moods', 'Browse by Mood', ''),
     ('poster', 'New in Hindi', new_language_row('hi')),
     ('poster', 'New in Tamil', new_language_row('ta')),
     ('stars', 'Stars You Love', ''),
@@ -216,6 +218,13 @@ def build_row(index, top):
             </include>'''
     if kind == 'stars':
         return f'''                <include content="ATV_StarsRow">
+                    <param name="id" value="{row_id(index)}" />
+                    <param name="top" value="{top}" />
+                    <param name="label" value="{label}" />
+                    <param name="onup" value="{onup}" />{ondown}
+                </include>'''
+    if kind == 'moods':
+        return f'''                <include content="ATV_MoodRow">
                     <param name="id" value="{row_id(index)}" />
                     <param name="top" value="{top}" />
                     <param name="label" value="{label}" />

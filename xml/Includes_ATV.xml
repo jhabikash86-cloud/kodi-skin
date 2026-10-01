@@ -4,7 +4,7 @@
 
 	<!-- ===================== EXPRESSIONS ===================== -->
 
-	<expression name="ATV_RowsFocused">Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63)</expression>
+	<expression name="ATV_RowsFocused">Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | Control.HasFocus(64)</expression>
 	<!-- A hero trailer is on screen: everything over it fades so it plays full-screen, as on
 	     Apple TV; any press stops the preview (extras/trailer.py) and brings it all back. -->
 	<expression name="ATV_TrailerFull">!String.IsEmpty(Window(home).Property(ATVPreview)) + !String.IsEmpty(Window(home).Property(ATVPreviewShape)) + Player.HasVideo</expression>

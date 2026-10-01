@@ -221,6 +221,11 @@
 			<size>46</size>
 		</font>
 		<font>
+			<name>atv_mood</name>
+			<filename>Inter-Bold.ttf</filename>
+			<size>32</size>
+		</font>
+		<font>
 			<name>atv_pagetitle</name>
 			<filename>Inter-Bold.ttf</filename>
 			<size>54</size>
@@ -458,6 +463,11 @@
 			<name>atv_rank_on</name>
 			<filename>Inter-Bold.ttf</filename>
 			<size>46</size>
+		</font>
+		<font>
+			<name>atv_mood</name>
+			<filename>Inter-Bold.ttf</filename>
+			<size>32</size>
 		</font>
 		<font>
 			<name>atv_pagetitle</name>
