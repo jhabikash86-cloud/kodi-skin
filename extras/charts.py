@@ -43,6 +43,10 @@ MATCHING = 2                  # raised when the matching rules change: older mat
 HEADERS = {'User-Agent': 'Mozilla/5.0 (ATV Minimal Kodi skin)'}
 FIELDS = ('tmdb', 'type', 'title', 'poster', 'fanart')
 SPOT = 'ATVSpot'               # Home's Spotlight: India's number one, a film one day, a show the next
+# Home's Stars You Love: whose films this house watches, Hindi and Tamil. Edit freely.
+STARS = ['Kareena Kapoor Khan', 'Shah Rukh Khan', 'Vijay', 'Rajinikanth', 'Alia Bhatt', 'Fahadh Faasil',
+         'Vijay Sethupathi', 'Ranbir Kapoor', 'Deepika Padukone', 'Nayanthara']
+STARS_EVERY = 7 * 86400
 SPOT_FIELDS = ('tmdb', 'type', 'title', 'kicker', 'fanart', 'logo', 'plot', 'year', 'rating', 'genre1', 'genre2')
 
 # chart -> (media type, language or None for every language)
@@ -194,6 +198,32 @@ def spotlight(charts):
             'genre1': genres[0] if genres else '', 'genre2': genres[1] if len(genres) > 1 else ''}
 
 
+def stars(state):
+    """Each star's TMDb id and photo, and their newest released film, weekly."""
+    if time.time() - state.get('stars_at', 0) < STARS_EVERY and state.get('stars') and state.get('stars_v') == 2:
+        return state['stars']
+    found = []
+    for name in STARS:
+        people = listing(f'info=search&tmdb_type=person&query={quote_plus(name)}', ('title', 'art', 'uniqueid'))
+        if not people:
+            continue
+        person = people[0]
+        pid = str((person.get('uniqueid') or {}).get('tmdb') or '')
+        art = person.get('art') or {}
+        # The newest of their twenty best-known films: the newest of all was often a cameo, a
+        # voice or a producer credit (Alia Bhatt's read "Don't Be Shy!")
+        films = listing(f'info=stars_in_movies&tmdb_type=person&tmdb_id={pid}&hide_unaired=true',
+                        ('title', 'year')) if pid else []
+        films = sorted((f for f in films[:20] if f.get('year')), key=lambda f: -int(f['year']))
+        latest = f"{films[0].get('label')}  ·  {films[0].get('year')}" if films else ''
+        found.append({'id': pid, 'name': person.get('label') or name,
+                      'thumb': art.get('thumb') or art.get('poster') or art.get('icon') or '', 'latest': latest})
+    if found:
+        state.update(stars=found, stars_at=time.time(), stars_v=2)
+    log('stars: ' + ', '.join(f"{s['name']} ({s['latest']})" for s in found[:4]))
+    return found
+
+
 def set_string(name, value):
     if xbmc.getInfoLabel(f'Skin.String({name})') != value:
         if value:
@@ -263,6 +293,10 @@ def refresh(force=False):
     charts = build(state, since)
     save(state)
     publish(charts)
+    for slot, star in enumerate(stars(state), 1):
+        for field in ('id', 'name', 'thumb', 'latest'):
+            set_string(f'ATVStar.{slot}.{field}', star.get(field, ''))
+    save(state)
     spot = spotlight(charts)
     if spot:
         for field in SPOT_FIELDS:

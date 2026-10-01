@@ -12,6 +12,7 @@ Row kinds:
     rank    a numbered Top 10 (tools/gen_rank.py)
     chart   a numbered Top 10 from what people watch, India first (extras/charts.py)
     spotlight  one wide feature card between the rows (ATVSpot.*, extras/charts.py)
+    stars   Stars You Love: circle portraits (ATVStar.*, extras/charts.py)
     poster  an ordinary poster row
 """
 import os
@@ -113,6 +114,7 @@ ROWS = [
     ('rank', 'Top 10 on JioHotstar', provider_chart(PROVIDERS['JioHotstar'])),
     ('poster', 'New in Hindi', new_language_row('hi')),
     ('poster', 'New in Tamil', new_language_row('ta')),
+    ('stars', 'Stars You Love', ''),
     # Home had no Indian series at all - the TV page has the charts
     ('poster', 'Hindi Series Everyone\'s Watching', language_row('hi', media='tv', votes=10, without=',16,35')),
     ('poster', 'World Cinema', WORLD_CINEMA),
@@ -212,6 +214,13 @@ def build_row(index, top):
                 <param name="onup" value="{onup}" />{ondown.replace(chr(10) + " " * 20, chr(10) + " " * 16)}
                 <param name="content" value="{content}" />{empty}
             </include>'''
+    if kind == 'stars':
+        return f'''                <include content="ATV_StarsRow">
+                    <param name="id" value="{row_id(index)}" />
+                    <param name="top" value="{top}" />
+                    <param name="label" value="{label}" />
+                    <param name="onup" value="{onup}" />{ondown}
+                </include>'''
     if kind == 'spotlight':
         return f'''                <include content="ATV_SpotlightRow">
                     <param name="id" value="{row_id(index)}" />

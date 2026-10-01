@@ -378,10 +378,10 @@ def time_left(kind, tmdb_id, season='', episode=''):
     return None
 
 
-def open_person(container):
+def open_person(container, person=None):
+    """person: (name, tmdb id) without a list item - Home's Stars You Love (ATVStar.n.*)"""
     prefix = f'Container({container}).ListItem'
-    name = info(f'{prefix}.Label')
-    person_id = info(f'{prefix}.UniqueID(tmdb)')
+    name, person_id = person or (info(f'{prefix}.Label'), info(f'{prefix}.UniqueID(tmdb)'))
     if not person_id:
         return
     # Pre-fill the actor search (window 1121, strings with a "B" suffix) with this person
@@ -402,6 +402,9 @@ def main():
         open_details(args[1], args[2] if len(args) > 2 else None)
     elif action == 'person' and len(args) > 1:
         open_person(args[1])
+    elif action == 'star' and len(args) > 1:
+        slot = args[1]
+        open_person(None, (info(f'Skin.String(ATVStar.{slot}.name)'), info(f'Skin.String(ATVStar.{slot}.id)')))
     elif action == 'title' and len(args) > 2:
         open_details(None, item=(args[1], args[2]))
 

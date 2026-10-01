@@ -4,7 +4,7 @@
 
 	<!-- ===================== EXPRESSIONS ===================== -->
 
-	<expression name="ATV_RowsFocused">Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62)</expression>
+	<expression name="ATV_RowsFocused">Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63)</expression>
 	<!-- A hero trailer is on screen: everything over it fades so it plays full-screen, as on
 	     Apple TV; any press stops the preview (extras/trailer.py) and brings it all back. -->
 	<expression name="ATV_TrailerFull">!String.IsEmpty(Window(home).Property(ATVPreview)) + !String.IsEmpty(Window(home).Property(ATVPreviewShape)) + Player.HasVideo</expression>
@@ -537,6 +537,161 @@
 					<onup>$PARAM[onup]</onup>
 					<ondown>$PARAM[ondown]</ondown>
 					<onback>SetFocus(8001)</onback>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- Stars You Love: circle portraits, each opening that person's films, newest first
+	     (extras/charts.py writes ATVStar.n.*; details.py star,n opens them) -->
+	<include name="ATV_StarsRow">
+		<param name="id" />
+		<param name="top" />
+		<param name="label" />
+		<param name="onup" />
+		<param name="ondown">noop</param>
+		<definition>
+			<control type="group">
+				<top>$PARAM[top]</top>
+				<visible>!String.IsEmpty(Skin.String(ATVStar.1.id))</visible>
+				<control type="label">
+					<left>90</left><top>0</top><width>1400</width><height>44</height>
+					<label>$PARAM[label]</label>
+					<font>atv_row</font><textcolor>FFFFFFFF</textcolor>
+				</control>
+				<control type="list" id="$PARAM[id]">
+					<left>76</left><top>78</top><width>1844</width><height>290</height>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">380</scrolltime>
+					<onup>$PARAM[onup]</onup>
+					<ondown>$PARAM[ondown]</ondown>
+					<onback>SetFocus(8001)</onback>
+					<itemlayout width="262" height="290">
+						<control type="group">
+							<control type="image">
+								<left>20</left><top>0</top><width>190</width><height>190</height>
+								<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_circle.png">white.png</texture>
+							</control>
+							<control type="image">
+								<left>20</left><top>0</top><width>190</width><height>190</height>
+								<aspectratio scalediffuse="false">scale</aspectratio>
+								<texture background="true" diffuse="atv/mask_circle.png">$INFO[ListItem.Art(thumb)]</texture>
+							</control>
+						</control>
+						<control type="label">
+							<left>0</left><top>208</top><width>230</width><height>32</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>atv_caption</font><textcolor>FFFFFFFF</textcolor><align>center</align>
+							<scroll>false</scroll>
+						</control>
+						<control type="label">
+							<left>0</left><top>240</top><width>230</width><height>28</height>
+							<label>$INFO[ListItem.Property(latest)]</label>
+							<font>atv_small</font><textcolor>99FFFFFF</textcolor><align>center</align>
+							<scroll>false</scroll>
+						</control>
+					</itemlayout>
+					<focusedlayout width="262" height="290">
+						<control type="group"><animation effect="zoom" start="100" end="108" center="115,95" time="220" tween="cubic" easing="out">Focus</animation>
+							<control type="image">
+								<left>16</left><top>-4</top><width>198</width><height>198</height>
+								<texture colordiffuse="FFFFFFFF">circle.png</texture>
+							</control>
+							<control type="image">
+								<left>20</left><top>0</top><width>190</width><height>190</height>
+								<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_circle.png">white.png</texture>
+							</control>
+							<control type="image">
+								<left>20</left><top>0</top><width>190</width><height>190</height>
+								<aspectratio scalediffuse="false">scale</aspectratio>
+								<texture background="true" diffuse="atv/mask_circle.png">$INFO[ListItem.Art(thumb)]</texture>
+							</control>
+						</control>
+						<control type="label">
+							<left>0</left><top>208</top><width>230</width><height>32</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>atv_caption</font><textcolor>FFFFFFFF</textcolor><align>center</align>
+							<scroll>true</scroll>
+						</control>
+						<control type="label">
+							<left>0</left><top>240</top><width>230</width><height>28</height>
+							<label>$INFO[ListItem.Property(latest)]</label>
+							<font>atv_small</font><textcolor>99FFFFFF</textcolor><align>center</align>
+							<scroll>true</scroll>
+						</control>
+					</focusedlayout>
+					<content>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.1.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.1.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.1.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,1)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.1.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.2.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.2.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.2.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,2)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.2.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.3.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.3.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.3.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,3)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.3.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.4.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.4.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.4.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,4)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.4.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.5.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.5.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.5.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,5)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.5.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.6.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.6.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.6.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,6)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.6.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.7.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.7.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.7.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,7)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.7.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.8.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.8.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.8.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,8)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.8.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.9.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.9.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.9.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,9)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.9.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.10.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.10.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.10.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,10)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.10.id))</visible>
+						</item>
+					</content>
 				</control>
 			</control>
 		</definition>
