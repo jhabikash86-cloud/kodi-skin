@@ -13,6 +13,8 @@ Row kinds:
     chart   a numbered Top 10 from what people watch, India first (extras/charts.py)
     spotlight  one wide feature card between the rows (ATVSpot.*, extras/charts.py)
     stars   Stars You Love: circle portraits (ATVStar.*, extras/charts.py)
+    picks   Top Picks for Tonight: the world's most watched this week, in this house's genres
+            (ATVTop.picks.*, extras/charts.py)
     moods   Browse by Mood: six tiles, each opening a page (extras/moods.py, tools/gen_browse.py)
     poster  an ordinary poster row
 """
@@ -101,6 +103,8 @@ def paused(kind):
 ROWS = [
     # One row for films and episodes, built by extras/continuing.py (static items)
     ('continue', 'Continue Watching', ''),
+    # What the world watched most this week, any language, in the genres this house watches
+    ('picks', '', ''),
     # What India is watching (Netflix's weekly Top 10 for India), then the world: charts.py
     ('chart', 'Top 10 Movies in India', 'in_movie'),
     ('chart', 'Top 10 Shows in India', 'in_tv'),
@@ -223,6 +227,12 @@ def build_row(index, top):
                     <param name="id" value="{row_id(index)}" />
                     <param name="top" value="{top}" />
                     <param name="label" value="{label}" />
+                    <param name="onup" value="{onup}" />{ondown}
+                </include>'''
+    if kind == 'picks':
+        return f'''                <include content="ATV_PicksRow">
+                    <param name="id" value="{row_id(index)}" />
+                    <param name="top" value="{top}" />
                     <param name="onup" value="{onup}" />{ondown}
                 </include>'''
     if kind == 'moods':

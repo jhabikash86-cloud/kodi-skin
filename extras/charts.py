@@ -53,6 +53,12 @@ STAR_SLOTS = 20
 WATCHED_STARS = 6             # at most this many from the watch history
 STARS_V = 4                   # raised when the list's rules change: the weekly cache is redone
 STARS_EVERY = 7 * 86400
+TRUE_STORY = '9672'            # TMDb's "based on true story" keyword
+PICKS = 20
+PICKS_GENRES = {'thriller', 'romance', 'horror', 'crime', 'mystery'}
+PICKS_NEVER = {'documentary', 'animation', 'family', 'kids', 'reality', 'talk', 'news'}
+PICKS_FILL = ('info=trakt_mostviewers&tmdb_type={kind}&genres=thriller,romance,horror,crime,mystery,'
+              '-animation,-anime,-documentary,-family,-reality&hide_unaired=true')
 MOOD = 'ATVMood'              # Browse by Mood's tiles: three posters each (extras/moods.py)
 MOODS_EVERY = 86400
 SPOT_FIELDS = ('tmdb', 'type', 'title', 'kicker', 'fanart', 'logo', 'plot', 'year', 'rating', 'genre1', 'genre2')
@@ -112,7 +118,13 @@ def world():
         for kind, category in WORLD_CATEGORY.items():
             if row[0] == latest and row[1] == category:
                 found[kind].append((int(row[2]), clean(row[3])))
-    return {kind: [t for _, t in sorted(items)] for kind, items in found.items()}, latest
+    # Top Picks: all four lists (English and not, films and shows) as one, most viewed first
+    everything = []
+    for row in rows:
+        if row[0] == latest and len(row) > 7 and row[7].isdigit():
+            everything.append((int(row[7]), 'tv' if row[1].startswith('TV') else 'movie', clean(row[3])))
+    found['all'] = [[kind, title] for _, kind, title in sorted(everything, reverse=True)]
+    return {kind: [t for _, t in sorted(items)] if kind != 'all' else items for kind, items in found.items()}, latest
 
 
 def listing(query, properties=('title', 'art', 'uniqueid', 'year')):
@@ -185,6 +197,51 @@ def build(state, since):
         charts[chart] = tiles
         log(f'{chart}: ' + ', '.join(t['title'] for t in tiles[:5]))
     return charts
+
+
+def genres_of(entry, state):
+    """A title's genres and, for a film, whether it is a true story: once per title, kept."""
+    cache = state.setdefault('genres', {})
+    key = f"{entry['type']}|{entry['tmdb']}"
+    if key not in cache:
+        items = listing(f"info=details&tmdb_type={entry['type']}&tmdb_id={entry['tmdb']}", ('title', 'genre'))
+        names = (items[0].get('genre') or []) if items else []
+        true = False
+        if entry['type'] == 'movie':
+            true = any(re.search(r'[?&]tmdb_id=%s(?:&|$)' % TRUE_STORY, k.get('file', ''))
+                       for k in listing(f"info=movie_keywords&tmdb_type=movie&tmdb_id={entry['tmdb']}"))
+        cache[key] = {'genres': names, 'true': true}
+    return cache[key]
+
+
+def in_taste(entry, state):
+    found = genres_of(entry, state)
+    names = {g.lower() for g in found['genres']}
+    if names & PICKS_NEVER:
+        return False
+    return bool(names & PICKS_GENRES) or found['true']
+
+
+def picks(state):
+    """Top Picks for Tonight: what the world watched most this week, whatever the language -
+    Netflix's four worldwide lists as one, by views - kept to the genres this house watches,
+    then Trakt's weekly most-watched in them, to twenty."""
+    known = state.setdefault('known', {})
+    tiles, seen = [], set()
+
+    def add(entry):
+        if entry and entry.get('tmdb') and entry['tmdb'] not in seen and len(tiles) < PICKS and in_taste(entry, state):
+            seen.add(entry['tmdb'])
+            tiles.append(entry)
+
+    for kind, title in state['lists'].get('world_all', []):
+        add(match(title, kind, None, known))
+    fill = [listing(PICKS_FILL.format(kind=kind), ('title', 'art', 'uniqueid')) for kind in ('movie', 'tv')]
+    for movie, show in zip(*fill):
+        add(tile(movie, 'movie'))
+        add(tile(show, 'tv'))
+    log('picks: ' + ', '.join(t['title'] for t in tiles[:8]))
+    return tiles
 
 
 def spotlight(charts):
@@ -294,7 +351,7 @@ def publish(charts):
     for chart, tiles in charts.items():
         if not tiles:
             continue                 # a failed build keeps the row as it was
-        for slot in range(1, SIZE + 1):
+        for slot in range(1, (PICKS if chart == 'picks' else SIZE) + 1):
             entry = tiles[slot - 1] if slot <= len(tiles) else {}
             for field in FIELDS:
                 name, value = f'{PREFIX}.{chart}.{slot}.{field}', str(entry.get(field, ''))
@@ -348,6 +405,7 @@ def refresh(force=False):
     import dates
     since = dates.values()['d540']
     charts = build(state, since)
+    charts['picks'] = picks(state)
     save(state)
     publish(charts)
     for slot, star in enumerate(stars(state), 1):

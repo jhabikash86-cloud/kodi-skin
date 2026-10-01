@@ -300,4 +300,249 @@
 			</control>
 		</definition>
 	</include>
+	<!-- Evenings it is Top Picks for Tonight; the rest of the day, for You -->
+	<variable name="ATV_PicksLabel">
+		<value condition="System.Time(17:00,23:59) | System.Time(00:00,03:59)">Top Picks for Tonight</value>
+		<value>Top Picks for You</value>
+	</variable>
+	<include name="ATV_PicksRow">
+		<param name="id" />
+		<param name="top" />
+		<param name="onup" />
+		<param name="ondown">noop</param>
+		<definition>
+			<control type="group">
+				<top>$PARAM[top]</top>
+				<visible>!String.IsEmpty(Skin.String(ATVTop.picks.1.tmdb))</visible>
+				<control type="label">
+					<left>90</left><top>0</top><width>1400</width><height>44</height>
+					<label>$VAR[ATV_PicksLabel][COLOR 80FFFFFF]   Most watched around the world this week[/COLOR]</label>
+					<font>atv_row</font><textcolor>FFFFFFFF</textcolor>
+				</control>
+				<control type="list" id="$PARAM[id]">
+					<left>70</left><top>34</top><width>1850</width><height>455</height>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">420</scrolltime>
+					<onup>$PARAM[onup]</onup>
+					<ondown>$PARAM[ondown]</ondown>
+					<onback>SetFocus(8001)</onback>
+					<itemlayout width="282" height="455">
+						<control type="image">
+							<left>16</left><top>30</top><width>250</width><height>375</height>
+							<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_poster.png">white.png</texture>
+						</control>
+						<control type="label">
+							<left>32</left><top>30</top><width>218</width><height>375</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>atv_caption</font><textcolor>B3FFFFFF</textcolor>
+							<align>center</align><aligny>center</aligny><wrapmultiline>true</wrapmultiline>
+							<visible>String.IsEmpty(ListItem.Art(thumb))</visible>
+						</control>
+						<control type="image">
+							<left>16</left><top>30</top><width>250</width><height>375</height>
+							<aspectratio scalediffuse="false">scale</aspectratio>
+							<fadetime>200</fadetime>
+							<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Art(thumb)]</texture>
+						</control>
+						<include content="ATV_PosterChips"><param name="tag" value="" /><param name="tag_s" value="false" /><param name="tag_m" value="false" /><param name="tag_l" value="false" /><param name="lang" value="false" /></include>
+						<!-- Watched, straight from Trakt -->
+						<control type="image">
+							<left>16</left><top>30</top><width>250</width><height>375</height>
+							<texture colordiffuse="59000000" diffuse="atv/mask_poster.png">white.png</texture>
+							<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+						</control>
+						<control type="image">
+							<left>206</left><top>42</top><width>46</width><height>46</height>
+							<texture colordiffuse="E6000000" diffuse="atv/mask_circle.png">white.png</texture>
+							<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+						</control>
+						<control type="image">
+							<left>216</left><top>52</top><width>26</width><height>26</height>
+							<texture colordiffuse="FFFFFFFF">atv/icon_check.png</texture>
+							<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+						</control>
+					</itemlayout>
+					<focusedlayout width="282" height="455">
+						<control type="group">
+							<!-- Apple TV's focus: the poster comes forward - 14% larger, lifted a little, over a
+								     deeper shadow - rather than a highlight moving across it -->
+							<!-- Anchored a third of the way down the poster, so it grows mostly downward: from
+							     the middle, its top edge reached the row title above it -->
+							<include content="ATV_Lift"><param name="center" value="141,161" /><param name="zoom" value="114" /></include>
+							<animation effect="slide" start="0,0" end="0,-4" time="220" tween="cubic" easing="out">Focus</animation>
+							<animation effect="slide" start="0,-4" end="0,0" time="180" tween="cubic" easing="out">Unfocus</animation>
+							<control type="image">
+								<left>-30</left><top>-2</top><width>342</width><height>470</height>
+								<texture border="64">atv/shadow.png</texture>
+								<animation effect="fade" start="0" end="100" time="220">Focus</animation>
+								<animation effect="fade" start="100" end="0" time="160">Unfocus</animation>
+							</control>
+							<control type="image">
+								<left>16</left><top>30</top><width>250</width><height>375</height>
+								<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_poster.png">white.png</texture>
+							</control>
+							<control type="label">
+								<left>32</left><top>30</top><width>218</width><height>375</height>
+								<label>$INFO[ListItem.Label]</label>
+								<font>atv_caption</font><textcolor>FFFFFFFF</textcolor>
+								<align>center</align><aligny>center</aligny><wrapmultiline>true</wrapmultiline>
+								<visible>String.IsEmpty(ListItem.Art(thumb))</visible>
+							</control>
+							<control type="image">
+								<left>16</left><top>30</top><width>250</width><height>375</height>
+								<aspectratio scalediffuse="false">scale</aspectratio>
+								<fadetime>200</fadetime>
+								<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Art(thumb)]</texture>
+							</control>
+							<include content="ATV_PosterChips"><param name="tag" value="" /><param name="tag_s" value="false" /><param name="tag_m" value="false" /><param name="tag_l" value="false" /><param name="lang" value="false" /></include>
+							<!-- A thin light edge that lifts the poster off the black -->
+							<control type="image">
+								<left>16</left><top>30</top><width>250</width><height>375</height>
+								<texture border="16" colordiffuse="33FFFFFF">atv/ring16.png</texture>
+								<animation effect="fade" start="0" end="100" time="220">Focus</animation>
+							</control>
+							<!-- Watched, straight from Trakt -->
+							<control type="image">
+								<left>16</left><top>30</top><width>250</width><height>375</height>
+								<texture colordiffuse="59000000" diffuse="atv/mask_poster.png">white.png</texture>
+								<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+							</control>
+							<control type="image">
+								<left>206</left><top>42</top><width>46</width><height>46</height>
+								<texture colordiffuse="E6000000" diffuse="atv/mask_circle.png">white.png</texture>
+								<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+							</control>
+							<control type="image">
+								<left>216</left><top>52</top><width>26</width><height>26</height>
+								<texture colordiffuse="FFFFFFFF">atv/icon_check.png</texture>
+								<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+							</control>
+						</control>
+					</focusedlayout>
+					<content>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.1.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.1.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.1.type)],$INFO[Skin.String(ATVTop.picks.1.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.1.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.2.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.2.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.2.type)],$INFO[Skin.String(ATVTop.picks.2.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.2.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.3.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.3.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.3.type)],$INFO[Skin.String(ATVTop.picks.3.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.3.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.4.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.4.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.4.type)],$INFO[Skin.String(ATVTop.picks.4.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.4.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.5.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.5.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.5.type)],$INFO[Skin.String(ATVTop.picks.5.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.5.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.6.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.6.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.6.type)],$INFO[Skin.String(ATVTop.picks.6.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.6.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.7.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.7.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.7.type)],$INFO[Skin.String(ATVTop.picks.7.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.7.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.8.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.8.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.8.type)],$INFO[Skin.String(ATVTop.picks.8.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.8.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.9.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.9.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.9.type)],$INFO[Skin.String(ATVTop.picks.9.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.9.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.10.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.10.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.10.type)],$INFO[Skin.String(ATVTop.picks.10.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.10.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.11.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.11.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.11.type)],$INFO[Skin.String(ATVTop.picks.11.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.11.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.12.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.12.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.12.type)],$INFO[Skin.String(ATVTop.picks.12.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.12.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.13.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.13.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.13.type)],$INFO[Skin.String(ATVTop.picks.13.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.13.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.14.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.14.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.14.type)],$INFO[Skin.String(ATVTop.picks.14.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.14.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.15.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.15.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.15.type)],$INFO[Skin.String(ATVTop.picks.15.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.15.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.16.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.16.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.16.type)],$INFO[Skin.String(ATVTop.picks.16.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.16.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.17.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.17.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.17.type)],$INFO[Skin.String(ATVTop.picks.17.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.17.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.18.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.18.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.18.type)],$INFO[Skin.String(ATVTop.picks.18.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.18.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.19.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.19.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.19.type)],$INFO[Skin.String(ATVTop.picks.19.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.19.tmdb))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVTop.picks.20.title)]</label>
+							<thumb>$INFO[Skin.String(ATVTop.picks.20.poster)]</thumb>
+							<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVTop.picks.20.type)],$INFO[Skin.String(ATVTop.picks.20.tmdb)])</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVTop.picks.20.tmdb))</visible>
+						</item>
+					</content>
+				</control>
+			</control>
+		</definition>
+	</include>
 </includes>

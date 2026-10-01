@@ -289,6 +289,32 @@ The rank sits on the poster, in a dark glass badge in its top-left corner
 (`tools/gen_rank.py`). It was an outlined numeral beside the poster, which read as a second,
 emptier column; a big numeral on the poster's foot covered the title most posters print there.
 
+## Top Picks for Tonight
+
+The row under Continue Watching: what the world watched most this week, whatever the
+language, in the genres this house watches - thriller, romance, horror, crime, mystery, and
+films based on a true story; never documentaries, cartoons or reality. Netflix's four
+worldwide Top 10s (films and shows, English and not) are read as one list ranked by views,
+each title's genres looked up once and kept; Trakt's weekly most-watched in the same genres
+fill it to twenty (`picks()`, `extras/charts.py`, skin strings `ATVTop.picks.<n>.*`). It is
+"Top Picks for Tonight" from 5 pm to 4 am and "Top Picks for You" the rest of the day. The row
+is drawn with ATV_PosterRow's own layouts, copied by `tools/gen_browse.py`.
+
+## Stars You Love
+
+The house's favourites first - Denzel Washington, Rajinikanth, Nawazuddin Siddiqui, Irrfan
+Khan, Jake Gyllenhaal, Aamir Khan - then whoever it watches most (anyone top-billed in two or
+more titles of the Trakt history), then other stars of what it watches, up to twenty
+(`FAVOURITES`, `watched_most()`, `STARS` in `extras/charts.py`), rebuilt weekly.
+
+## Title pages: the lead first
+
+Under the hero (or a film's collection) comes **More with <the lead>**: the first-billed
+actor's other titles in this one's genres, most popular first - then **More Like This**, the
+genre alone. Films use TMDb's discover by cast and genre; shows the person's own credits kept
+to the genres. When the lead has nothing else in the genre it tries the second billed, and
+otherwise the row is not shown (`star_titles()`, `extras/details.py`).
+
 ## Browse by Mood
 
 Six tiles on Home - True Crime, Edge-of-Seat Thrillers, Horror Night, Bollywood Blockbusters,
