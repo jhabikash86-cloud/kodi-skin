@@ -30,6 +30,7 @@ import xbmcvfs
 
 import dates  # same folder; Kodi puts a RunScript's directory on sys.path
 import continuing
+import charts
 
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 HOME = xbmcgui.Window(10000)
@@ -132,7 +133,9 @@ class Fetcher:
 
 
 HERO = 'Container(40).ListItemAbsolute(0)'
-FIRST_PAINT = {'hero': 40, 'continue watching': 50, 'top 10 movies': 6052}
+FIRST_PAINT = {'hero': 40, 'continue watching': 50}   # the charts are skin strings: there at once
+CHARTS_AFTER = 30        # seconds after start before the Top 10 charts are checked (charts.py)
+CHARTS_EVERY = 3 * 3600  # ... and then this often; it fetches only when its data is 12h old
 CONTINUE_EVERY = 15 * 60   # Continue Watching rebuilt at least this often ...
 # ... and these long after anything stops. TMDb Helper learns of the new pause from Trakt
 # some time after - Awarapan 2, stopped at 48%, was not in its list 10s later, and the row
@@ -203,6 +206,7 @@ def watch():
     after = [time.time() + 60, time.time() + 180]
     reload_seen = HOME.getProperty('ATVContinueReload')
     rebuilding = []                       # the thread doing it, while it runs
+    charting, charted_at = [], started - CHARTS_EVERY + CHARTS_AFTER
     try:
         while not monitor.stopping():
             if len(painted) < len(FIRST_PAINT) and time.time() - started < 30:
@@ -228,6 +232,12 @@ def watch():
                 after = [when for when in after if when > rebuilt_at]
                 rebuilding[:] = [threading.Thread(target=continuing.refresh, daemon=True)]
                 rebuilding[0].start()
+            # The Top 10 charts, from what India is watching (extras/charts.py), never during playback
+            if time.time() - charted_at > CHARTS_EVERY and not playing \
+                    and not (charting and charting[0].is_alive()):
+                charted_at = time.time()
+                charting[:] = [threading.Thread(target=charts.refresh, daemon=True)]
+                charting[0].start()
             if not setup_checked and time.time() - started > SETUP_AFTER:
                 setup_checked = True     # fixes to other add-ons, after an update of them
                 if HOME.getProperty('ATVSetupRan') != '1':

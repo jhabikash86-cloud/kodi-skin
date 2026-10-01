@@ -162,16 +162,15 @@
             </control>
             <control type="group">
                 <visible>Control.HasFocus(57) | Control.HasFocus(58) | ControlGroup(59).HasFocus(0) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62) | Control.HasFocus(63) | Control.HasFocus(64) | ControlGroup(65).HasFocus(0) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70) | Control.HasFocus(71) | Control.HasFocus(72)</visible>
-                <include content="ATV_RankRow">
+                <include content="ATV_ChartRow">
                     <param name="id" value="59" />
                     <param name="idbase" value="78" />
-                    <param name="data" value="6108" />
+                    <param name="chart" value="hi_movie" />
                     <param name="top" value="4060" />
-                    <param name="label" value="Top 10 Hindi Movies Right Now" />
+                    <param name="label" value="Top 10 Hindi Movies" />
                     <param name="onup" value="58" />
                     <param name="ondown" value="60" />
                     <param name="onback" value="7001" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=hi&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=15&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">
@@ -236,16 +235,15 @@
             </control>
             <control type="group">
                 <visible>Control.HasFocus(63) | Control.HasFocus(64) | ControlGroup(65).HasFocus(0) | Control.HasFocus(66) | Control.HasFocus(67) | Control.HasFocus(68) | Control.HasFocus(69) | Control.HasFocus(70) | Control.HasFocus(71) | Control.HasFocus(72)</visible>
-                <include content="ATV_RankRow">
+                <include content="ATV_ChartRow">
                     <param name="id" value="65" />
                     <param name="idbase" value="714" />
-                    <param name="data" value="6114" />
+                    <param name="chart" value="ta_movie" />
                     <param name="top" value="6910" />
-                    <param name="label" value="Top 10 Tamil Movies Right Now" />
+                    <param name="label" value="Top 10 Tamil Movies" />
                     <param name="onup" value="64" />
                     <param name="ondown" value="66" />
                     <param name="onback" value="7001" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=movie&amp;with_original_language=ta&amp;sort_by=popularity.desc&amp;primary_release_date.gte=$INFO[Skin.String(ATVDate.d540)]&amp;vote_count.gte=10&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;hide_unaired=true&amp;nextpage=false" />
                 </include>
             </control>
             <control type="group">

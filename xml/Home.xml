@@ -259,25 +259,23 @@
 
             <control type="group">
                 <animation effect="slide" end="0,-405" time="400" tween="quadratic" easing="inout" condition="$EXP[ATV_UpNextEmpty]">Conditional</animation>
-                <include content="ATV_RankRow">
+                <include content="ATV_ChartRow">
                     <param name="id" value="51" />
                     <param name="idbase" value="61" />
-                    <param name="data" value="6051" />
+                    <param name="chart" value="in_movie" />
                     <param name="top" value="1265" />
-                    <param name="label" value="Top 10 Movies Right Now" />
+                    <param name="label" value="Top 10 Movies in India" />
                     <param name="onup" value="50" />
                     <param name="ondown" value="52" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_trending&amp;tmdb_type=movie&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false" />
                 </include>
-                <include content="ATV_RankRow">
+                <include content="ATV_ChartRow">
                     <param name="id" value="52" />
                     <param name="idbase" value="62" />
-                    <param name="data" value="6052" />
+                    <param name="chart" value="in_tv" />
                     <param name="top" value="1740" />
-                    <param name="label" value="Top 10 Shows Right Now" />
+                    <param name="label" value="Top 10 Shows in India" />
                     <param name="onup" value="51" />
                     <param name="ondown" value="53" />
-                    <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=trakt_trending&amp;tmdb_type=tv&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false" />
                 </include>
                 <control type="group">
                     <visible>ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)</visible>

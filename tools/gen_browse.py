@@ -201,13 +201,13 @@ PAGES = {
             ('poster', "Dramas Everyone's Hooked On", FILM_GENRES['dramas']),
             ('poster', 'Based on a True Story', TRUE_FILMS),
             ('poster', 'Blockbusters', BLOCKBUSTERS),
-            ('rank', 'Top 10 Hindi Movies Right Now', language_chart('hi')),
+            ('chart', 'Top 10 Hindi Movies', 'hi_movie'),   # India first, then the world: charts.py
             ('poster', 'New Hindi Releases', new_releases('hi')),
             ('poster', 'Hindi Films of the Decade', best_of_language('hi', votes=120)),
             ('poster', 'Must-Watch Indian Thrillers', INDIAN_THRILLERS),
             ('poster', 'Bollywood Romance', FILM_GENRES['romance']),
             ('poster', 'Must-Watch Thrillers: The All-Time Greats', FILM_GENRES['great_thrillers']),
-            ('rank', 'Top 10 Tamil Movies Right Now', language_chart('ta', votes=10)),
+            ('chart', 'Top 10 Tamil Movies', 'ta_movie'),
             ('poster', 'New Tamil Releases', new_releases('ta')),
             ('poster', 'Tamil Films of the Decade', best_of_language('ta', votes=60)),
             ('poster', 'True Stories from India', TRUE_FILMS_INDIA),
@@ -237,9 +237,9 @@ PAGES = {
             ('rank', 'Top 10 on the BBC', network(4)),
             ('poster', 'Gripping Crime Dramas', SERIES_GENRES['crime']),
             ('poster', 'Must-Watch Drama Series', SERIES_GENRES['great_dramas']),
-            ('rank', 'Top 10 Hindi Series Right Now', language_chart('hi', media='tv', votes=10)),
+            ('chart', 'Top 10 Hindi Series', 'hi_tv'),
             ('poster', 'Indian Crime &amp; Thriller Series', INDIAN_CRIME_SERIES),
-            ('rank', 'Top 10 Tamil Series Right Now', language_chart('ta', media='tv', votes=3, recent=False)),
+            ('chart', 'Top 10 Tamil Series', 'ta_tv'),
             ('poster', 'International Thrillers: Must-Watch', WORLD_THRILLERS),
             ('poster', 'Coming Soon', f'{PLUGIN}info=trakt_anticipated&amp;tmdb_type=tv&amp;nextpage=false'),
         ],
@@ -286,7 +286,7 @@ def row_id(index):
 def focus_condition(index, kind):
     """A numbered row's tiles are children, so it needs ControlGroup()."""
     rid = row_id(index)
-    return f'ControlGroup({rid}).HasFocus(0)' if kind == 'rank' else f'Control.HasFocus({rid})'
+    return f'ControlGroup({rid}).HasFocus(0)' if kind in ('rank', 'chart') else f'Control.HasFocus({rid})'
 
 
 # Rows load as you reach them - see tools/gen_home.py. The first three always load; after
@@ -320,9 +320,20 @@ def build_rows(rows, tab=9000):
         # (a numbered row cannot take focus itself; its first tile, 7<row>01, can)
         # A control id, not SetFocus(): Kodi treats an id as a move and stops there, but after
         # a command it still runs the window's own Back, which left the page for Home.
-        first = '7001' if rows[0][0] == 'rank' else row_id(0)
+        first = '7001' if rows[0][0] in ('rank', 'chart') else row_id(0)
         onback = f'{tab}' if i == 0 else f'{first}'
-        if kind == 'rank':
+        if kind == 'chart':
+            row = (f'''            <include content="ATV_ChartRow">
+                <param name="id" value="{row_id(i)}" />
+                <param name="idbase" value="7{i}" />
+                <param name="chart" value="{content}" />
+                <param name="top" value="{top}" />
+                <param name="label" value="{label}" />
+                <param name="onup" value="{onup}" />
+                <param name="ondown" value="{ondown}" />
+                <param name="onback" value="{onback}" />
+            </include>''')
+        elif kind == 'rank':
             row = (f'''            <include content="ATV_RankRow">
                 <param name="id" value="{row_id(i)}" />
                 <param name="idbase" value="7{i}" />

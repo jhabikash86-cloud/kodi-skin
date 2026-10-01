@@ -10,6 +10,7 @@ and a stop position by hand.
 Row kinds:
     upnext  the wide episode tiles ("Continue Watching"); must be first if present
     rank    a numbered Top 10 (tools/gen_rank.py)
+    chart   a numbered Top 10 from what people watch, India first (extras/charts.py)
     poster  an ordinary poster row
 """
 import os
@@ -95,10 +96,9 @@ def paused(kind):
 ROWS = [
     # One row for films and episodes, built by extras/continuing.py (static items)
     ('continue', 'Continue Watching', ''),
-    ('rank', 'Top 10 Movies Right Now',
-     f'{PLUGIN}info=trakt_trending&tmdb_type=movie&nextpage=false'),
-    ('rank', 'Top 10 Shows Right Now',
-     f'{PLUGIN}info=trakt_trending&tmdb_type=tv&nextpage=false'),
+    # What India is watching (Netflix's weekly Top 10 for India), then the world: charts.py
+    ('chart', 'Top 10 Movies in India', 'in_movie'),
+    ('chart', 'Top 10 Shows in India', 'in_tv'),
     ('poster', 'Recommended for You',
      f'{PLUGIN}info=trakt_recommendations&tmdb_type=movie&nextpage=false'),
     # Follows the last film you finished - the row's own label names it. The path is a
@@ -142,7 +142,7 @@ def tops():
 def focus_condition(index):
     """A numbered row's tiles are its children, so it needs ControlGroup()."""
     rid = row_id(index)
-    return f'ControlGroup({rid}).HasFocus(0)' if ROWS[index][0] == 'rank' else f'Control.HasFocus({rid})'
+    return f'ControlGroup({rid}).HasFocus(0)' if ROWS[index][0] in ('rank', 'chart') else f'Control.HasFocus({rid})'
 
 
 def build_scroll():
@@ -209,6 +209,15 @@ def build_row(index, top):
                 <param name="onup" value="{onup}" />{ondown.replace(chr(10) + " " * 20, chr(10) + " " * 16)}
                 <param name="content" value="{content}" />{empty}
             </include>'''
+    if kind == 'chart':
+        return f'''                <include content="ATV_ChartRow">
+                    <param name="id" value="{row_id(index)}" />
+                    <param name="idbase" value="{RANK_IDBASE[index]}" />
+                    <param name="chart" value="{content}" />
+                    <param name="top" value="{top}" />
+                    <param name="label" value="{label}" />
+                    <param name="onup" value="{onup}" />{ondown}
+                </include>'''
     if kind == 'rank':
         return f'''                <include content="ATV_RankRow">
                     <param name="id" value="{row_id(index)}" />
@@ -277,7 +286,7 @@ def build_expression():
 def main():
     base = 61
     for i, (kind, _, _) in enumerate(ROWS):
-        if kind == 'rank':
+        if kind in ('rank', 'chart'):
             RANK_IDBASE[i] = base
             base += 1
 

@@ -269,6 +269,25 @@ title's details again for itself, queueing on the lock. Now the details come fir
 the rest follow and read them from the cache (`ATV_DetailReady`). Measured afterwards: every
 part of a page loaded, including a soap with 38 seasons and 195 episodes, with no lock timeout.
 
+## Top 10: what India is watching
+
+Trakt's and TMDb's charts are popularity across the world; neither says what one country
+watches. Netflix publishes its weekly Top 10 for every country - real viewing - so the Top 10
+rows are built from that (`extras/charts.py`): **Top 10 Movies / Shows in India** are India's
+lists as they stand; **Top 10 Hindi / Tamil Movies and Series** take India's titles in that
+language first, then the worldwide non-English list's, then TMDb's most popular recent titles
+in it, to ten. Only Netflix publishes this (Prime and JioHotstar do not), but it is the one
+public record of what India is watching. Netflix's India pages are read every 12 hours
+(`prefetch.py` asks every 3), titles are matched to TMDb through TMDb Helper's own search -
+its language filter tells a Hindi title from a Tamil one, and a language match must be the
+same title and released (the Hindi "Gandhari" found an unreleased Tamil film of that name) -
+and each match is kept, in `addon_data/skin.appletv.minimal/charts.json`. The tiles are skin
+strings (`ATVTop.<chart>.<n>.*`), so the rows are there the moment Home opens.
+
+The rank sits on the poster, in a dark glass badge in its top-left corner
+(`tools/gen_rank.py`). It was an outlined numeral beside the poster, which read as a second,
+emptier column; a big numeral on the poster's foot covered the title most posters print there.
+
 ## Rows stay current while Kodi runs
 
 Home stays in memory, and a row fetches again only when its path changes. The date windows
