@@ -403,6 +403,54 @@
 	     episode, newest first. extras/continuing.py builds the tiles into skin strings - Kodi
 	     keeps them between runs, so the row is there as Home opens - and rebuilds them after
 	     each playback. One row of static items, not two lists in one row: that froze Kodi. -->
+
+	<!-- A Continue Watching card, as Apple TV's Up Next: a wide picture with the title's logo and
+	     the progress on it, and what is left underneath ("S1 · E7  ·  44 min left") -->
+	<include name="ATV_ContinueTile">
+		<param name="focused">false</param>
+		<definition>
+			<control type="image">
+				<left>20</left><top>24</top><width>480</width><height>270</height>
+				<texture colordiffuse="FF1C1C1E" diffuse="atv/mask_landscape.png">white.png</texture>
+			</control>
+			<control type="image">
+				<left>20</left><top>24</top><width>480</width><height>270</height>
+				<aspectratio scalediffuse="false">scale</aspectratio>
+				<texture background="true" diffuse="atv/mask_landscape.png">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
+			<control type="image">
+				<left>20</left><top>24</top><width>480</width><height>270</height>
+				<texture diffuse="atv/mask_landscape.png" colordiffuse="E6FFFFFF">atv/grad_bottom.png</texture>
+			</control>
+			<!-- the title's logo, else its name - unless the picture is a landscape, which has it -->
+			<control type="image">
+				<left>44</left><top>176</top><width>280</width><height>84</height>
+				<aspectratio aligny="bottom" align="left">keep</aspectratio>
+				<texture background="true">$INFO[ListItem.Property(cw.logo)]</texture>
+				<visible>!String.IsEmpty(ListItem.Property(cw.logo))</visible>
+			</control>
+			<control type="label">
+				<left>44</left><top>208</top><width>432</width><height>52</height>
+				<label>$INFO[ListItem.Label]</label>
+				<font>atv_row</font><textcolor>FFFFFFFF</textcolor><shadowcolor>66000000</shadowcolor>
+				<aligny>bottom</aligny>
+				<visible>String.IsEmpty(ListItem.Property(cw.logo)) + String.IsEmpty(ListItem.Property(cw.named))</visible>
+			</control>
+			<control type="progress">
+				<left>44</left><top>270</top><width>432</width><height>6</height>
+				<info>ListItem.Property(cw.percent)</info>
+				<texturebg border="3,0,3,0" colordiffuse="4DFFFFFF">atv/bar6.png</texturebg>
+				<midtexture border="3,0,3,0" colordiffuse="FFFFFFFF">atv/bar6.png</midtexture>
+				<visible>Integer.IsGreater(ListItem.Property(cw.percent),0)</visible>
+			</control>
+			<control type="label">
+				<left>20</left><top>310</top><width>480</width><height>32</height>
+				<label>$INFO[ListItem.Property(cw.subtitle)]</label>
+				<font>atv_small</font><textcolor>B3FFFFFF</textcolor>
+				<scroll>$PARAM[focused]</scroll>
+			</control>
+		</definition>
+	</include>
 	<include name="ATV_ContinueRow">
 		<param name="id" />
 		<param name="top" />
@@ -421,26 +469,26 @@
 					<visible>!$PARAM[empty]</visible>
 				</control>
 				<control type="list" id="$PARAM[id]">
-					<left>70</left><top>34</top><width>1850</width><height>340</height>
+					<left>70</left><top>34</top><width>1850</width><height>360</height>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">420</scrolltime>
 					<onup>$PARAM[onup]</onup>
 					<ondown>$PARAM[ondown]</ondown>
 					<onback>SetFocus(8001)</onback>
 					<onclick>RunScript(special://skin/extras/play.py,item,$PARAM[id])</onclick>
-					<itemlayout width="416" height="340">
-						<include content="ATV_UpNextTile" />
+					<itemlayout width="508" height="360">
+						<include content="ATV_ContinueTile" />
 					</itemlayout>
-					<focusedlayout width="416" height="340">
+					<focusedlayout width="508" height="360">
 						<control type="group">
-							<include content="ATV_Lift"><param name="center" value="212,138" /><param name="zoom" value="106" /></include>
+							<include content="ATV_Lift"><param name="center" value="260,160" /><param name="zoom" value="106" /></include>
 							<control type="image">
-								<left>-24</left><top>-4</top><width>472</width><height>290</height>
+								<left>-24</left><top>-6</top><width>568</width><height>336</height>
 								<texture border="64">atv/shadow.png</texture>
 								<animation effect="fade" start="0" end="100" time="220">Focus</animation>
 								<animation effect="fade" start="100" end="0" time="160">Unfocus</animation>
 							</control>
-							<include content="ATV_UpNextTile"><param name="focused" value="true" /></include>
+							<include content="ATV_ContinueTile"><param name="focused" value="true" /></include>
 						</control>
 					</focusedlayout>
 					<onfocus>SetProperty(ATVContinueFocus,1,home)</onfocus>
@@ -450,6 +498,8 @@
 							<label>$INFO[Skin.String(ATVCW.1.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.1.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.1.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.1.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.1.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.1.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.1.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.1.tmdb)]</property>
@@ -463,6 +513,8 @@
 							<label>$INFO[Skin.String(ATVCW.2.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.2.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.2.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.2.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.2.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.2.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.2.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.2.tmdb)]</property>
@@ -476,6 +528,8 @@
 							<label>$INFO[Skin.String(ATVCW.3.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.3.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.3.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.3.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.3.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.3.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.3.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.3.tmdb)]</property>
@@ -489,6 +543,8 @@
 							<label>$INFO[Skin.String(ATVCW.4.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.4.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.4.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.4.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.4.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.4.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.4.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.4.tmdb)]</property>
@@ -502,6 +558,8 @@
 							<label>$INFO[Skin.String(ATVCW.5.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.5.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.5.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.5.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.5.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.5.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.5.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.5.tmdb)]</property>
@@ -515,6 +573,8 @@
 							<label>$INFO[Skin.String(ATVCW.6.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.6.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.6.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.6.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.6.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.6.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.6.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.6.tmdb)]</property>
@@ -528,6 +588,8 @@
 							<label>$INFO[Skin.String(ATVCW.7.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.7.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.7.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.7.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.7.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.7.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.7.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.7.tmdb)]</property>
@@ -541,6 +603,8 @@
 							<label>$INFO[Skin.String(ATVCW.8.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.8.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.8.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.8.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.8.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.8.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.8.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.8.tmdb)]</property>
@@ -554,6 +618,8 @@
 							<label>$INFO[Skin.String(ATVCW.9.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.9.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.9.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.9.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.9.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.9.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.9.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.9.tmdb)]</property>
@@ -567,6 +633,8 @@
 							<label>$INFO[Skin.String(ATVCW.10.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.10.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.10.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.10.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.10.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.10.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.10.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.10.tmdb)]</property>
@@ -580,6 +648,8 @@
 							<label>$INFO[Skin.String(ATVCW.11.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.11.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.11.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.11.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.11.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.11.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.11.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.11.tmdb)]</property>
@@ -593,6 +663,8 @@
 							<label>$INFO[Skin.String(ATVCW.12.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.12.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.12.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.12.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.12.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.12.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.12.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.12.tmdb)]</property>
@@ -606,6 +678,8 @@
 							<label>$INFO[Skin.String(ATVCW.13.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.13.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.13.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.13.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.13.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.13.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.13.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.13.tmdb)]</property>
@@ -619,6 +693,8 @@
 							<label>$INFO[Skin.String(ATVCW.14.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.14.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.14.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.14.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.14.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.14.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.14.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.14.tmdb)]</property>
@@ -632,6 +708,8 @@
 							<label>$INFO[Skin.String(ATVCW.15.title)]</label>
 							<thumb>$INFO[Skin.String(ATVCW.15.art)]</thumb>
 							<property name="cw.subtitle">$INFO[Skin.String(ATVCW.15.subtitle)]</property>
+							<property name="cw.logo">$INFO[Skin.String(ATVCW.15.logo)]</property>
+							<property name="cw.named">$INFO[Skin.String(ATVCW.15.named)]</property>
 							<property name="cw.percent">$INFO[Skin.String(ATVCW.15.percent)]</property>
 							<property name="cw.kind">$INFO[Skin.String(ATVCW.15.kind)]</property>
 							<property name="cw.tmdb">$INFO[Skin.String(ATVCW.15.tmdb)]</property>

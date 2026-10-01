@@ -32,7 +32,7 @@ PREFIX = 'ATVCW'
 SLOTS = 15                 # tiles in the row (Home.xml has as many static items)
 RECENT_DAYS = 90           # older than this and it is not "continue", it is abandoned
 HIDDEN = 'ATVCWHidden'     # skin string: kind:tmdb@when for each tile removed from the row
-FIELDS = ('title', 'subtitle', 'art', 'percent', 'kind', 'tmdb', 'season', 'episode', 'path', 'resume')
+FIELDS = ('title', 'subtitle', 'art', 'named', 'logo', 'percent', 'kind', 'tmdb', 'season', 'episode', 'path', 'resume')
 
 
 def listing(path):
@@ -72,6 +72,28 @@ def art(item):
             or a.get('thumb') or a.get('poster') or '')
 
 
+def named(item):
+    """'1' when the card's picture is a landscape, which carries the title in it: then the
+    card does not print the name again (it read twice, "Awarapan 2" over Awarapan 2)."""
+    a = item.get('art') or {}
+    return '1' if a.get('landscape') or a.get('tvshow.landscape') else ''
+
+
+def logo(item):
+    a = item.get('art') or {}
+    return a.get('clearlogo') or a.get('tvshow.clearlogo') or ''
+
+
+def left(item):
+    """'44 min left' - what a card says under its picture, as Apple TV's Up Next does."""
+    r = item.get('resume') or {}
+    position, total = float(r.get('position') or 0), float(r.get('total') or 0)
+    if not position or total <= position:
+        return ''
+    minutes = int((total - position) // 60) or 1
+    return f'{minutes // 60} h {minutes % 60} min left' if minutes >= 60 else f'{minutes} min left'
+
+
 def progress(item):
     r = item.get('resume') or {}
     position, total = float(r.get('position') or 0), float(r.get('total') or 0)
@@ -84,9 +106,10 @@ def build():
     for f in listing(FILMS):
         tmdb = (f.get('uniqueid') or {}).get('tmdb')
         resume, percent = progress(f)
+        remaining = left(f)
         tiles.append({'kind': 'movie', 'tmdb': tmdb, 'title': f.get('label') or f.get('title') or '',
-                      'subtitle': 'Movie' + (f'  ·  {f["year"]}' if f.get('year') else ''),
-                      'art': art(f), 'percent': percent, 'resume': resume, 'path': f.get('file') or '',
+                      'subtitle': 'Movie  ·  ' + (remaining or str(f.get('year') or '')),
+                      'art': art(f), 'named': named(f), 'logo': logo(f), 'percent': percent, 'resume': resume, 'path': f.get('file') or '',
                       'when': when.get(f'movie.{tmdb}'), 'season': '', 'episode': ''})
     in_progress = {}
     for f in listing(EPISODES):
@@ -103,9 +126,10 @@ def build():
         if paused and (paused.get('season'), paused.get('episode')) == (f.get('season'), f.get('episode')):
             f = paused
         resume, percent = progress(f)
+        remaining = left(f)
         tiles.append({'kind': 'episode', 'tmdb': show, 'title': f.get('showtitle') or f.get('label') or '',
-                      'subtitle': f'Season {f.get("season")}  ·  Episode {f.get("episode")}',
-                      'art': art(f), 'percent': percent, 'resume': resume, 'path': f.get('file') or '',
+                      'subtitle': f'S{f.get("season")} · E{f.get("episode")}  ·  ' + (remaining or 'Up next'),
+                      'art': art(f), 'named': named(f), 'logo': logo(f), 'percent': percent, 'resume': resume, 'path': f.get('file') or '',
                       'when': when.get(f'tv.{show}'), 'season': str(f.get('season')), 'episode': str(f.get('episode'))})
     hidden = set(filter(None, xbmc.getInfoLabel(f'Skin.String({HIDDEN})').split('|')))
     tiles = [t for t in tiles if recent(t['when'])
