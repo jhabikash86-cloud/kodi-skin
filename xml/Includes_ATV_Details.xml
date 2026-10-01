@@ -59,6 +59,12 @@
 	<variable name="ATV_RecommendedPath0">
 		<value condition="$EXP[ATV_DetailReady0] + !String.IsEmpty(Skin.String(DetailRecommend0))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend0)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
+	<!-- More with <the lead>: their titles in this genre, the first row under the hero (or
+	     under a film's collection). extras/details.py fills it, and clears it when it is empty. -->
+	<expression name="ATV_DetailHasStar0">!String.IsEmpty(Skin.String(DetailStar0))</expression>
+	<variable name="ATV_StarPath0">
+		<value condition="$EXP[ATV_DetailReady0] + !String.IsEmpty(Skin.String(DetailStar0))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailStar0)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
 	<variable name="ATV_RecommendedLabel0">
 		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel0))">$INFO[Skin.String(DetailRecommendLabel0)]</value>
 		<value>You May Also Like</value>
@@ -140,6 +146,12 @@
 	     true story", other true stories (the row is then called More True Stories). -->
 	<variable name="ATV_RecommendedPath1">
 		<value condition="$EXP[ATV_DetailReady1] + !String.IsEmpty(Skin.String(DetailRecommend1))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend1)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- More with <the lead>: their titles in this genre, the first row under the hero (or
+	     under a film's collection). extras/details.py fills it, and clears it when it is empty. -->
+	<expression name="ATV_DetailHasStar1">!String.IsEmpty(Skin.String(DetailStar1))</expression>
+	<variable name="ATV_StarPath1">
+		<value condition="$EXP[ATV_DetailReady1] + !String.IsEmpty(Skin.String(DetailStar1))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailStar1)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
 	<variable name="ATV_RecommendedLabel1">
 		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel1))">$INFO[Skin.String(DetailRecommendLabel1)]</value>
@@ -223,6 +235,12 @@
 	<variable name="ATV_RecommendedPath2">
 		<value condition="$EXP[ATV_DetailReady2] + !String.IsEmpty(Skin.String(DetailRecommend2))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend2)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
+	<!-- More with <the lead>: their titles in this genre, the first row under the hero (or
+	     under a film's collection). extras/details.py fills it, and clears it when it is empty. -->
+	<expression name="ATV_DetailHasStar2">!String.IsEmpty(Skin.String(DetailStar2))</expression>
+	<variable name="ATV_StarPath2">
+		<value condition="$EXP[ATV_DetailReady2] + !String.IsEmpty(Skin.String(DetailStar2))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailStar2)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
 	<variable name="ATV_RecommendedLabel2">
 		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel2))">$INFO[Skin.String(DetailRecommendLabel2)]</value>
 		<value>You May Also Like</value>
@@ -305,6 +323,12 @@
 	<variable name="ATV_RecommendedPath3">
 		<value condition="$EXP[ATV_DetailReady3] + !String.IsEmpty(Skin.String(DetailRecommend3))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend3)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
+	<!-- More with <the lead>: their titles in this genre, the first row under the hero (or
+	     under a film's collection). extras/details.py fills it, and clears it when it is empty. -->
+	<expression name="ATV_DetailHasStar3">!String.IsEmpty(Skin.String(DetailStar3))</expression>
+	<variable name="ATV_StarPath3">
+		<value condition="$EXP[ATV_DetailReady3] + !String.IsEmpty(Skin.String(DetailStar3))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailStar3)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
 	<variable name="ATV_RecommendedLabel3">
 		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel3))">$INFO[Skin.String(DetailRecommendLabel3)]</value>
 		<value>You May Also Like</value>
@@ -386,6 +410,12 @@
 	     true story", other true stories (the row is then called More True Stories). -->
 	<variable name="ATV_RecommendedPath4">
 		<value condition="$EXP[ATV_DetailReady4] + !String.IsEmpty(Skin.String(DetailRecommend4))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend4)]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
+	<!-- More with <the lead>: their titles in this genre, the first row under the hero (or
+	     under a film's collection). extras/details.py fills it, and clears it when it is empty. -->
+	<expression name="ATV_DetailHasStar4">!String.IsEmpty(Skin.String(DetailStar4))</expression>
+	<variable name="ATV_StarPath4">
+		<value condition="$EXP[ATV_DetailReady4] + !String.IsEmpty(Skin.String(DetailStar4))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailStar4)]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
 	<variable name="ATV_RecommendedLabel4">
 		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel4))">$INFO[Skin.String(DetailRecommendLabel4)]</value>

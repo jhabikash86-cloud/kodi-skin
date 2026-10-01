@@ -195,6 +195,31 @@ def recommendations(item_type, tmdb_id, prefix, leave_out=()):
     return path
 
 
+def leads(item_type, tmdb_id):
+    """The first two billed, (name, tmdb id). The same path as the Cast & Crew row, so the one
+    request serves both."""
+    cast = listing(f'info=cast&tmdb_type={item_type}&tmdb_id={tmdb_id}&nextpage=false', ('title', 'uniqueid'))
+    found = [(c.get('label'), str((c.get('uniqueid') or {}).get('tmdb') or '')) for c in cast]
+    return [(name, pid) for name, pid in found if name and pid][:2]
+
+
+def star_titles(item_type, tmdb_id, person_id, prefix, leave_out=()):
+    """More with <the lead>: their other titles in this one's genres, most popular first - the
+    row before More Like This. Films come from TMDb's discover (cast and genre together);
+    shows from the person's own credits, kept to the genres (TMDb cannot discover shows by
+    cast), which also drops their talk-show appearances."""
+    ids = genre_ids(prefix).split(',')[:2]
+    if item_type == 'movie':
+        path = (f'info=discover&tmdb_type=movie&with_cast={person_id}&sort_by=popularity.desc&with_id=True'
+                + (f'&with_genres={"%7C".join(ids)}' if ids[0] else ''))
+        titles = [t for t in leave_out if t and ' / ' not in t] + [info(f'{prefix}.Title')]
+        titles = list(dict.fromkeys(t for t in titles if t))
+        return path + '&exclude_key=title&exclude_value=' + quote(' / '.join(titles)) + '&exclude_operator=eq'
+    names = [g.strip() for g in info(f'{prefix}.Genre').split('/') if g.strip()][:2]
+    path = f'info=stars_in_tvshows&tmdb_type=person&tmdb_id={person_id}&exclude_key=tmdb_id&exclude_value={tmdb_id}&exclude_operator=eq'
+    return path + ('&filter_key=genre&filter_value=' + quote(' / '.join(names)) if names else '')
+
+
 def collection_titles(window, set_id, timeout=4):
     """The films in the page's own collection row, once it has loaded - read off the row
     rather than asked for again (each TMDb Helper request is about 2s on the Xbox). Only
@@ -302,6 +327,8 @@ def open_details(container, index=None, item=None):
         (f'DetailRecommend{page}', ''),  # and so do You May Also Like
         (f'DetailRecommendLabel{page}', ''),
         (f'DetailSet{page}', ''),        # and the film's collection row
+        (f'DetailStar{page}', ''),       # and More with <the lead>
+        (f'DetailStarLabel{page}', ''),
         (f'DetailNext{page}', ''),      # clear the previous title's episode first
         (f'DetailID{page}', tmdb_id),
     ])
@@ -329,11 +356,13 @@ def open_details(container, index=None, item=None):
     if wait_for_details(window, tmdb_id):
         details = 'Container(9500).ListItem'
         set_string(f'DetailDiscover{page}', discover_filter(details, item_type, tile_language))
-        in_set, true_story = [], [False]
+        in_set, true_story, cast = [], [False], []
+        import threading
+        casting = threading.Thread(target=lambda: cast.extend(leads(item_type, tmdb_id)))
+        casting.start()
         if item_type == 'movie':
             # Whether it is a true story, asked while the collection row loads: both before
             # the row is filled, so it loads once, not twice
-            import threading
             asking = threading.Thread(target=lambda: true_story.__setitem__(0, is_true_story(tmdb_id)))
             asking.start()
             # A film in a series (Fast & Furious, Drishyam): the whole collection, in order
@@ -341,6 +370,12 @@ def open_details(container, index=None, item=None):
             set_string(f'DetailSet{page}', set_id)
             in_set = collection_titles(window, set_id) if set_id else []
             asking.join(8)
+        # First the lead's own titles in this genre, then the genre (More Like This)
+        casting.join(8)
+        if cast:
+            name, person_id = cast[0]
+            set_string(f'DetailStarLabel{page}', f'More with {name}')
+            set_string(f'DetailStar{page}', star_titles(item_type, tmdb_id, person_id, details, in_set))
         if true_story[0]:
             set_string(f'DetailRecommendLabel{page}', 'More True Stories')
             set_string(f'DetailRecommend{page}', true_stories(tmdb_id, details, tile_language))
@@ -349,6 +384,14 @@ def open_details(container, index=None, item=None):
                 set_string(f'DetailRecommend{page}', recommendations(item_type, tmdb_id, details, in_set))
         else:
             set_string(f'DetailRecommend{page}', recommendations(item_type, tmdb_id, details, in_set))
+        # The lead has nothing else in this genre: the second billed, else no row
+        if cast and row_came_back_empty(window, 9628):
+            if len(cast) > 1:
+                name, person_id = cast[1]
+                set_string(f'DetailStarLabel{page}', f'More with {name}')
+                set_string(f'DetailStar{page}', star_titles(item_type, tmdb_id, person_id, details, in_set))
+            if len(cast) < 2 or row_came_back_empty(window, 9628):
+                set_string(f'DetailStar{page}', '')
         # Few of the recommendations can share the genres: then all of them
         if row_came_back_empty(window, 9640):
             set_string(f'DetailRecommend{page}', f'info=recommendations&tmdb_type={item_type}&tmdb_id={tmdb_id}')

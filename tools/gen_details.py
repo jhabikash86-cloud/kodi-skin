@@ -73,6 +73,12 @@ VARIABLES = '''
 	<variable name="ATV_RecommendedPath{n}">
 		<value condition="$EXP[ATV_DetailReady{n}] + !String.IsEmpty(Skin.String(DetailRecommend{n}))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailRecommend{n})]&amp;hide_unaired=true&amp;nextpage=false</value>
 	</variable>
+	<!-- More with <the lead>: their titles in this genre, the first row under the hero (or
+	     under a film's collection). extras/details.py fills it, and clears it when it is empty. -->
+	<expression name="ATV_DetailHasStar{n}">!String.IsEmpty(Skin.String(DetailStar{n}))</expression>
+	<variable name="ATV_StarPath{n}">
+		<value condition="$EXP[ATV_DetailReady{n}] + !String.IsEmpty(Skin.String(DetailStar{n}))">plugin://plugin.video.themoviedb.helper/?$INFO[Skin.String(DetailStar{n})]&amp;hide_unaired=true&amp;nextpage=false</value>
+	</variable>
 	<variable name="ATV_RecommendedLabel{n}">
 		<value condition="!String.IsEmpty(Skin.String(DetailRecommendLabel{n}))">$INFO[Skin.String(DetailRecommendLabel{n})]</value>
 		<value>You May Also Like</value>

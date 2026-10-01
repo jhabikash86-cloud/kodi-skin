@@ -207,11 +207,12 @@
                           Movies: More Like This -750, last two -1225.
                           A film in a collection: collection -750, More Like This -1225, last two -1700. -->
             <animation effect="slide" end="0,-760" time="380" tween="sine" easing="inout" condition="$EXP[ATV_DetailScrolled] + $EXP[ATV_DetailIsTV2]">Conditional</animation>
-            <animation effect="slide" end="0,-490" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailIsTV2]">Conditional</animation>
+            <animation effect="slide" end="0,-490" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9628) | Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailIsTV2]">Conditional</animation>
             <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailIsTV2]">Conditional</animation>
             <animation effect="slide" end="0,-750" time="380" tween="sine" easing="inout" condition="$EXP[ATV_DetailScrolled] + !$EXP[ATV_DetailIsTV2]">Conditional</animation>
             <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9640) | Control.HasFocus(9650)] + !$EXP[ATV_DetailIsTV2]">Conditional</animation>
-            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailHasSet2]">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9628) | Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailHasSet2]">Conditional</animation>
+            <animation effect="slide" end="0,-475" time="380" tween="sine" easing="inout" condition="[Control.HasFocus(9630) | Control.HasFocus(9640) | Control.HasFocus(9650)] + $EXP[ATV_DetailHasStar2]">Conditional</animation>
 
             <!-- ===== TV: SEASON PICKER + EPISODES ===== -->
             <control type="group">
@@ -318,27 +319,51 @@
                         <param name="top" value="1400" />
                         <param name="label" value="$INFO[Container(9500).ListItem.Set]" />
                         <param name="onup" value="9620" />
-                        <param name="ondown" value="9630" />
+                        <param name="ondown" value="9628" />
                         <param name="onback" value="noop" />
                         <param name="content" value="$VAR[ATV_CollectionPath2]" />
                         <param name="stale" value="Container(9625).IsUpdating" />
+                        <param name="lang" value="false" />
                     </include>
                 </control>
 
                 <!-- The rows below make room for it -->
                 <control type="group">
                 <animation effect="slide" end="0,475" time="0" condition="$EXP[ATV_DetailHasSet2]">Conditional</animation>
+
+                <!-- More with <the lead>, in this title's genres: before More Like This, which is
+                     the genre alone. Hidden when they have nothing else in it. -->
+                <control type="group">
+                    <visible>$EXP[ATV_DetailHasStar2]</visible>
+                    <include content="ATV_PosterRow">
+                        <param name="id" value="9628" />
+                        <param name="top" value="1400" />
+                        <param name="label" value="$INFO[Skin.String(DetailStarLabel2)]" />
+                        <param name="onup" value="9625" />
+                        <param name="ondown" value="9630" />
+                        <param name="altup" value="$EXP[ATV_DetailNoSeasons2]" />
+                        <param name="altupto" value="9601" />
+                        <param name="onback" value="noop" />
+                        <param name="content" value="$VAR[ATV_StarPath2]" />
+                        <param name="stale" value="Container(9628).IsUpdating" />
+                        <param name="lang" value="false" />
+                    </include>
+                </control>
+
+                <control type="group">
+                <animation effect="slide" end="0,475" time="0" condition="$EXP[ATV_DetailHasStar2]">Conditional</animation>
                 <include content="ATV_PosterRow">
                     <param name="id" value="9630" />
                     <param name="top" value="1400" />
                     <param name="label" value="More Like This$INFO[Container(9500).ListItem.Genre,[COLOR 80FFFFFF]   ,[/COLOR]]" />
-                    <param name="onup" value="9625" />
+                    <param name="onup" value="9628" />
                     <param name="ondown" value="9640" />
-                    <param name="altup" value="$EXP[ATV_DetailNoSeasons2]" />
+                    <param name="altup" value="[$EXP[ATV_DetailNoSeasons2] + !$EXP[ATV_DetailHasStar2]]" />
                     <param name="altupto" value="9601" />
                     <param name="onback" value="noop" />
                     <param name="content" value="$VAR[ATV_DetailGenrePath2]" />
                     <param name="stale" value="Container(9630).IsUpdating | String.IsEmpty(Skin.String(DetailDiscover2))" />
+                    <param name="lang" value="false" />
                 </include>
                 <include content="ATV_PosterRow">
                     <param name="id" value="9640" />
@@ -383,6 +408,7 @@
                         </focusedlayout>
                         <content target="videos" limit="30">$VAR[ATV_CastPath2]</content>
                     </control>
+                </control>
                 </control>
                 </control>
             </control>
