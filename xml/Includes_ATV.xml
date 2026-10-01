@@ -4,7 +4,7 @@
 
 	<!-- ===================== EXPRESSIONS ===================== -->
 
-	<expression name="ATV_RowsFocused">Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | Control.HasFocus(54) | ControlGroup(55).HasFocus(0) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | Control.HasFocus(58) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61)</expression>
+	<expression name="ATV_RowsFocused">Control.HasFocus(50) | ControlGroup(51).HasFocus(0) | ControlGroup(52).HasFocus(0) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | ControlGroup(56).HasFocus(0) | ControlGroup(57).HasFocus(0) | ControlGroup(58).HasFocus(0) | Control.HasFocus(59) | Control.HasFocus(60) | Control.HasFocus(61) | Control.HasFocus(62)</expression>
 	<!-- A hero trailer is on screen: everything over it fades so it plays full-screen, as on
 	     Apple TV; any press stops the preview (extras/trailer.py) and brings it all back. -->
 	<expression name="ATV_TrailerFull">!String.IsEmpty(Window(home).Property(ATVPreview)) + !String.IsEmpty(Window(home).Property(ATVPreviewShape)) + Player.HasVideo</expression>
@@ -448,6 +448,96 @@
 				<label>$INFO[ListItem.Property(cw.subtitle)]</label>
 				<font>atv_small</font><textcolor>B3FFFFFF</textcolor>
 				<scroll>$PARAM[focused]</scroll>
+			</control>
+		</definition>
+	</include>
+
+	<!-- Spotlight: one wide card that breaks the rows - India's number one this week, a film one
+	     day and a show the next (extras/charts.py writes ATVSpot.*). Select opens its page. -->
+	<include name="ATV_SpotlightRow">
+		<param name="id" />
+		<param name="top" />
+		<param name="onup" />
+		<param name="ondown">noop</param>
+		<definition>
+			<control type="group">
+				<top>$PARAM[top]</top>
+				<visible>!String.IsEmpty(Skin.String(ATVSpot.tmdb))</visible>
+				<control type="group">
+					<left>90</left><top>20</top>
+					<animation effect="zoom" start="100" end="102" center="870,210" time="260" tween="cubic" easing="out" condition="Control.HasFocus($PARAM[id])">Conditional</animation>
+					<control type="image">
+						<left>-36</left><top>-28</top><width>1812</width><height>496</height>
+						<texture border="64">atv/shadow.png</texture>
+						<visible>Control.HasFocus($PARAM[id])</visible>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><width>1740</width><height>420</height>
+						<!-- black, as the fade over the backdrop is: grad_left is black, and a tint
+						     cannot lighten it, so a charcoal card left a seam where they met -->
+						<texture border="24" colordiffuse="FF000000">atv/rounded24.png</texture>
+					</control>
+					<control type="image">
+						<left>520</left><top>0</top><width>1220</width><height>420</height>
+						<aspectratio>scale</aspectratio>
+						<fadetime>300</fadetime>
+						<texture background="true" diffuse="atv/mask_landscape.png">$INFO[Skin.String(ATVSpot.fanart)]</texture>
+					</control>
+					<!-- twice: the fade starts at 92%, and once left the backdrop's edge showing -->
+					<control type="image">
+						<left>520</left><top>0</top><width>760</width><height>420</height>
+						<texture colordiffuse="FFFFFFFF">atv/grad_left.png</texture>
+					</control>
+					<control type="image">
+						<left>520</left><top>0</top><width>560</width><height>420</height>
+						<texture colordiffuse="FFFFFFFF">atv/grad_left.png</texture>
+					</control>
+					<control type="label">
+						<left>64</left><top>52</top><width>900</width><height>34</height>
+						<label>$INFO[Skin.String(ATVSpot.kicker)]</label>
+						<font>atv_caption</font><textcolor>B3FFFFFF</textcolor>
+					</control>
+					<control type="image">
+						<left>64</left><top>96</top><width>560</width><height>140</height>
+						<aspectratio align="left" aligny="bottom">keep</aspectratio>
+						<texture background="true">$INFO[Skin.String(ATVSpot.logo)]</texture>
+						<visible>!String.IsEmpty(Skin.String(ATVSpot.logo))</visible>
+					</control>
+					<control type="label">
+						<left>64</left><top>130</top><width>900</width><height>100</height>
+						<label>$INFO[Skin.String(ATVSpot.title)]</label>
+						<font>atv_hero</font><textcolor>FFFFFFFF</textcolor>
+						<aligny>bottom</aligny>
+						<visible>String.IsEmpty(Skin.String(ATVSpot.logo))</visible>
+					</control>
+					<control type="label">
+						<left>64</left><top>254</top><width>900</width><height>36</height>
+						<label>$INFO[Skin.String(ATVSpot.year)]$INFO[Skin.String(ATVSpot.genre1),  ·  ]$INFO[Skin.String(ATVSpot.genre2),  ·  ]$INFO[Skin.String(ATVSpot.rating),  ·  ★ ]</label>
+						<font>atv_meta</font><textcolor>E6FFFFFF</textcolor>
+					</control>
+					<control type="textbox">
+						<left>64</left><top>298</top><width>760</width><height>80</height>
+						<label>$INFO[Skin.String(ATVSpot.plot)]</label>
+						<font>atv_small</font><textcolor>B3FFFFFF</textcolor>
+					</control>
+					<control type="image">
+						<left>0</left><top>0</top><width>1740</width><height>420</height>
+						<texture border="24" colordiffuse="4DFFFFFF">atv/ring16.png</texture>
+						<visible>Control.HasFocus($PARAM[id])</visible>
+						<animation effect="fade" start="0" end="100" time="220">Visible</animation>
+					</control>
+				</control>
+				<control type="button" id="$PARAM[id]">
+					<left>90</left><top>20</top><width>1740</width><height>420</height>
+					<label></label><font></font>
+					<texturefocus />
+					<texturenofocus />
+					<pulseonselect>false</pulseonselect>
+					<onclick>RunScript(special://skin/extras/details.py,title,$INFO[Skin.String(ATVSpot.type)],$INFO[Skin.String(ATVSpot.tmdb)])</onclick>
+					<onup>$PARAM[onup]</onup>
+					<ondown>$PARAM[ondown]</ondown>
+					<onback>SetFocus(8001)</onback>
+				</control>
 			</control>
 		</definition>
 	</include>

@@ -11,6 +11,7 @@ Row kinds:
     upnext  the wide episode tiles ("Continue Watching"); must be first if present
     rank    a numbered Top 10 (tools/gen_rank.py)
     chart   a numbered Top 10 from what people watch, India first (extras/charts.py)
+    spotlight  one wide feature card between the rows (ATVSpot.*, extras/charts.py)
     poster  an ordinary poster row
 """
 import os
@@ -105,6 +106,8 @@ ROWS = [
     # variable that stays empty until that film is known (see Includes_ATV.xml).
     ('poster', 'Because You Watched $INFO[Container(6070).ListItem.Title]',
      '$VAR[ATV_BecauseYouWatchedPath]'),
+    # A break in the rows: India's number one this week, as one wide card
+    ('spotlight', '', ''),
     ('rank', 'Top 10 on Netflix', provider_chart(PROVIDERS['Netflix'])),
     ('rank', 'Top 10 on Prime Video', provider_chart(PROVIDERS['Prime Video'])),
     ('rank', 'Top 10 on JioHotstar', provider_chart(PROVIDERS['JioHotstar'])),
@@ -209,6 +212,12 @@ def build_row(index, top):
                 <param name="onup" value="{onup}" />{ondown.replace(chr(10) + " " * 20, chr(10) + " " * 16)}
                 <param name="content" value="{content}" />{empty}
             </include>'''
+    if kind == 'spotlight':
+        return f'''                <include content="ATV_SpotlightRow">
+                    <param name="id" value="{row_id(index)}" />
+                    <param name="top" value="{top}" />
+                    <param name="onup" value="{onup}" />{ondown}
+                </include>'''
     if kind == 'chart':
         return f'''                <include content="ATV_ChartRow">
                     <param name="id" value="{row_id(index)}" />

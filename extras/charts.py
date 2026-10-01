@@ -42,6 +42,8 @@ RETRY_MISS = 7 * 86400        # a title that matched nothing is looked up again 
 MATCHING = 2                  # raised when the matching rules change: older matches are redone
 HEADERS = {'User-Agent': 'Mozilla/5.0 (ATV Minimal Kodi skin)'}
 FIELDS = ('tmdb', 'type', 'title', 'poster', 'fanart')
+SPOT = 'ATVSpot'               # Home's Spotlight: India's number one, a film one day, a show the next
+SPOT_FIELDS = ('tmdb', 'type', 'title', 'kicker', 'fanart', 'logo', 'plot', 'year', 'rating', 'genre1', 'genre2')
 
 # chart -> (media type, language or None for every language)
 CHARTS = {
@@ -101,10 +103,10 @@ def world():
     return {kind: [t for _, t in sorted(items)] for kind, items in found.items()}, latest
 
 
-def listing(query):
+def listing(query, properties=('title', 'art', 'uniqueid', 'year')):
     request = {'jsonrpc': '2.0', 'id': 1, 'method': 'Files.GetDirectory',
                'params': {'directory': PLUGIN + query + '&nextpage=false', 'media': 'video',
-                          'properties': ['title', 'art', 'uniqueid', 'year']}}
+                          'properties': list(properties)}}
     try:
         return json.loads(xbmc.executeJSONRPC(json.dumps(request)))['result'].get('files') or []
     except (ValueError, KeyError, TypeError):
@@ -173,6 +175,33 @@ def build(state, since):
     return charts
 
 
+def spotlight(charts):
+    """India's number one this week, with what the Spotlight card shows of it."""
+    kind = 'movie' if time.localtime().tm_yday % 2 == 0 else 'tv'
+    pick = (charts.get('in_' + kind) or charts.get('in_movie') or [None])[0]
+    if not pick:
+        return {}
+    items = listing(f'info=details&tmdb_type={pick["type"]}&tmdb_id={pick["tmdb"]}',
+                    ('title', 'art', 'plot', 'genre', 'year', 'rating'))
+    if not items:
+        return {}
+    item, art = items[0], items[0].get('art') or {}
+    genres = item.get('genre') or []
+    return {'tmdb': pick['tmdb'], 'type': pick['type'], 'title': item.get('label') or pick['title'],
+            'kicker': '#1 IN INDIA THIS WEEK', 'fanart': art.get('fanart') or pick['fanart'],
+            'logo': art.get('clearlogo') or '', 'plot': (item.get('plot') or '').replace('\n', ' '),
+            'year': str(item.get('year') or ''), 'rating': f'{item["rating"]:.1f}' if item.get('rating') else '',
+            'genre1': genres[0] if genres else '', 'genre2': genres[1] if len(genres) > 1 else ''}
+
+
+def set_string(name, value):
+    if xbmc.getInfoLabel(f'Skin.String({name})') != value:
+        if value:
+            xbmc.executebuiltin(f'Skin.SetString({name},"%s")' % value.replace('"', '\\"'))
+        else:
+            xbmc.executebuiltin(f'Skin.Reset({name})')
+
+
 def publish(charts):
     """Only what changed: each skin string set is a write of the skin's settings."""
     for chart, tiles in charts.items():
@@ -234,6 +263,11 @@ def refresh(force=False):
     charts = build(state, since)
     save(state)
     publish(charts)
+    spot = spotlight(charts)
+    if spot:
+        for field in SPOT_FIELDS:
+            set_string(f'{SPOT}.{field}', spot.get(field, ''))
+        log(f'spotlight: {spot["title"]}')
     return charts
 
 
