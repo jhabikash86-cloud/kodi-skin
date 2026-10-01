@@ -134,7 +134,10 @@ class Fetcher:
 HERO = 'Container(40).ListItemAbsolute(0)'
 FIRST_PAINT = {'hero': 40, 'continue watching': 50, 'top 10 movies': 6052}
 CONTINUE_EVERY = 15 * 60   # Continue Watching rebuilt at least this often ...
-AFTER_PLAYBACK = 5         # ... and this long after anything stops, once Trakt has it
+# ... and these long after anything stops. TMDb Helper learns of the new pause from Trakt
+# some time after - Awarapan 2, stopped at 48%, was not in its list 10s later, and the row
+# then waited 15 minutes - so it is built again until that has had time to land.
+AFTER_PLAYBACK = (5, 45, 120)
 
 
 def quoted(text):
@@ -194,7 +197,7 @@ def watch():
     started, painted = time.time(), {}   # first paint of Home after a start, for the log
     setup_checked = False
     player = xbmc.Player()
-    playing, stopped_at, rebuilt_at = False, 0.0, 0.0
+    playing, stopped_at, rebuilt_at, after = False, 0.0, 0.0, []
     reload_seen = HOME.getProperty('ATVContinueReload')
     rebuilding = []                       # the thread doing it, while it runs
     try:
@@ -211,13 +214,15 @@ def watch():
             now_playing = watching(player)
             if playing and not now_playing:
                 stopped_at = time.time()
+                after = [stopped_at + delay for delay in AFTER_PLAYBACK]
             playing = now_playing
             reload_now = HOME.getProperty('ATVContinueReload')
             due = (not rebuilt_at or time.time() - rebuilt_at > CONTINUE_EVERY
-                   or (stopped_at and time.time() - stopped_at > AFTER_PLAYBACK)
+                   or (after and time.time() > after[0])
                    or reload_now != reload_seen)
             if due and not playing and not (rebuilding and rebuilding[0].is_alive()):
-                rebuilt_at, stopped_at, reload_seen = time.time(), 0.0, reload_now
+                rebuilt_at, reload_seen = time.time(), reload_now
+                after = [when for when in after if when > rebuilt_at]
                 rebuilding[:] = [threading.Thread(target=continuing.refresh, daemon=True)]
                 rebuilding[0].start()
             if not setup_checked and time.time() - started > SETUP_AFTER:

@@ -36,12 +36,16 @@ def values(today=None):
     today = today or datetime.date.today()
     now = {name: (today - datetime.timedelta(days=days)).isoformat() for name, days in WINDOWS.items()}
     now.update({name: f'{today.year - back}-{today.year}' for name, back in YEARS.items()})
+    # A quarter of the day, in every row's path (tools/gen_*.py), so a row fetches anew every
+    # six hours: Home stays in memory while Kodi runs - days, on the Xbox - and a row whose path
+    # never changes (the Trakt charts, Recommended) kept what it loaded at start
+    now['slot'] = f'{today.isoformat()}-{datetime.datetime.now().hour // 6}'
     return now
 
 
 def refresh():
-    """Set every window; only a value that changed is touched, so rows reload once a day
-    at most."""
+    """Set every window; only a value that changed is touched, so rows reload every six
+    hours at most (the slot), and the date windows move on at midnight."""
     for name, value in values().items():
         if xbmc.getInfoLabel(f'Skin.String({PREFIX}{name})') != value:
             xbmc.executebuiltin(f'Skin.SetString({PREFIX}{name},{value})')

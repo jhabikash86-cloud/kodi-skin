@@ -118,6 +118,16 @@ ROWS = [
 RANK_IDBASE = {}  # filled in below: one distinct tile-id base per numbered row
 
 
+# Every row path carries the six-hour slot (extras/dates.py) so it fetches anew while Kodi runs
+SLOT = 'atvslot=$INFO[Skin.String(ATVDate.slot)]'
+
+
+def with_slot(path):
+    if not path.startswith('plugin') or 'atvslot=' in path:
+        return path
+    return path.replace('nextpage=false', SLOT + '&nextpage=false', 1)
+
+
 def row_id(index):
     return 50 + index
 
@@ -179,7 +189,7 @@ def watchable(path):
 
 def build_row(index, top):
     kind, label, content = ROWS[index]
-    content = watchable(content).replace('&', '&amp;')
+    content = with_slot(watchable(content)).replace('&', '&amp;')
     onup = 8001 if index == 0 else row_id(index - 1)
     ondown = f'\n                    <param name="ondown" value="{row_id(index + 1)}" />' if index < len(ROWS) - 1 else ''
     if kind == 'continue':

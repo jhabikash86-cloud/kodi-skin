@@ -269,6 +269,16 @@ def watchable(path):
     return path.replace('nextpage=false', 'hide_unaired=true&amp;nextpage=false')
 
 
+# Every row path carries the six-hour slot (extras/dates.py) so it fetches anew while Kodi runs
+SLOT = 'atvslot=$INFO[Skin.String(ATVDate.slot)]'
+
+
+def with_slot(path):
+    if not path.startswith('plugin') or 'atvslot=' in path:
+        return path
+    return path.replace('nextpage=false', SLOT + '&amp;nextpage=false', 1)
+
+
 def row_id(index):
     return 51 + index
 
@@ -300,6 +310,7 @@ TABS = {1140: 9002, 1141: 9003, 1142: 9006}   # each page's own tab in the tab b
 def build_rows(rows, tab=9000):
     out = []
     for i, (kind, label, content) in enumerate(rows):
+        content = with_slot(content)
         content = watchable(content)
         top = FIRST_ROW_TOP + i * ROW_STRIDE
         onup = 9000 if i == 0 else row_id(i - 1)

@@ -269,6 +269,18 @@ title's details again for itself, queueing on the lock. Now the details come fir
 the rest follow and read them from the cache (`ATV_DetailReady`). Measured afterwards: every
 part of a page loaded, including a soap with 38 seasons and 195 episodes, with no lock timeout.
 
+## Rows stay current while Kodi runs
+
+Home stays in memory, and a row fetches again only when its path changes. The date windows
+move on at midnight, but a row with no date in it - the Trakt charts, Recommended for You -
+kept what it loaded at start for as long as Kodi ran, which on the Xbox is days. Every row
+path now carries `atvslot`, a quarter of the day (`ATVDate.slot`, `extras/dates.py`), so each
+row fetches anew every six hours; TMDb Helper's own cache of a list is a day.
+
+Continue Watching is rebuilt 5s, 45s and 2 minutes after anything stops: TMDb Helper learns
+of a new pause from Trakt some time after it is sent - Awarapan 2, stopped at 48%, was not in
+its list ten seconds later, and the row then waited fifteen minutes.
+
 ## How pages load
 
 Measured on this skin, a TMDb Helper listing takes 0.7-1.5s the first time and
