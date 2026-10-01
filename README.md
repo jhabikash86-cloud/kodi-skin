@@ -277,7 +277,9 @@ kept what it loaded at start for as long as Kodi ran, which on the Xbox is days.
 path now carries `atvslot`, a quarter of the day (`ATVDate.slot`, `extras/dates.py`), so each
 row fetches anew every six hours; TMDb Helper's own cache of a list is a day.
 
-Continue Watching is rebuilt 5s, 45s and 2 minutes after anything stops: TMDb Helper learns
+Continue Watching is rebuilt as Kodi starts and again a minute and three minutes in (TMDb
+Helper syncs with Trakt as Kodi starts - the Mac's first build missed a film just paused on the
+Xbox), and 5s, 45s and 2 minutes after anything stops: TMDb Helper learns
 of a new pause from Trakt some time after it is sent - Awarapan 2, stopped at 48%, was not in
 its list ten seconds later, and the row then waited fifteen minutes.
 

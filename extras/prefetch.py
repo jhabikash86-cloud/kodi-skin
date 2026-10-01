@@ -197,7 +197,10 @@ def watch():
     started, painted = time.time(), {}   # first paint of Home after a start, for the log
     setup_checked = False
     player = xbmc.Player()
-    playing, stopped_at, rebuilt_at, after = False, 0.0, 0.0, []
+    # Built at once, then again a minute and three in: TMDb Helper syncs with Trakt as Kodi
+    # starts, and the first build came before it (the Mac's, missing a film paused on the Xbox)
+    playing, stopped_at, rebuilt_at = False, 0.0, 0.0
+    after = [time.time() + 60, time.time() + 180]
     reload_seen = HOME.getProperty('ATVContinueReload')
     rebuilding = []                       # the thread doing it, while it runs
     try:
