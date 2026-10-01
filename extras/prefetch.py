@@ -155,7 +155,7 @@ def save_hero():
     if not tmdb_id or tmdb_id == xbmc.getInfoLabel('Skin.String(ATVHero.id)'):
         return
     info = lambda label: xbmc.getInfoLabel(f'{HERO}.{label}')
-    meta = 'Movie' + ''.join(f'  ·  {v}' for v in (info('Year'), info('Genre')) if v)
+    meta = '  ·  '.join(v for v in (info('Year'), info('Genre')) if v)   # as ATV_HeroMeta, less the language
     if info('Rating'):
         meta += f'  ·  ★ {info("Rating")}'
     for name, value in (('fanart', info('Art(fanart)')), ('clearlogo', info('Art(clearlogo)')),

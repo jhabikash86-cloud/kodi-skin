@@ -134,9 +134,21 @@
                 <visible>!$EXP[ATV_HeroHasLogo]</visible>
             </control>
 
-            <!-- Movie · 2025 · Thriller / Drama · ★ 7.8 -->
+            <!-- [IN CINEMAS]  Hindi · 2025 · Thriller / Drama · ★ 7.8 - the chip as on the posters -->
+            <control type="group">
+                <left>0</left><top>581</top>
+                <control type="image">
+                    <width>128</width><height>32</height>
+                    <texture border="7" colordiffuse="F2FFFFFF">atv/rounded7.png</texture>
+                </control>
+                <control type="label">
+                    <width>128</width><height>32</height>
+                    <label>IN CINEMAS</label>
+                    <font>atv_chip</font><textcolor>FF0B0B0D</textcolor><align>center</align><aligny>center</aligny>
+                </control>
+            </control>
             <control type="label">
-                <left>0</left><top>580</top><width>1100</width><height>34</height>
+                <left>146</left><top>580</top><width>960</width><height>34</height>
                 <label>$VAR[ATV_HeroMeta]</label>
                 <font>atv_meta</font>
                 <textcolor>B3FFFFFF</textcolor>

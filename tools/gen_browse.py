@@ -368,7 +368,10 @@ def language_chips():
         codes = [code for code, name in LANGUAGES.items() if chip_class(name) == size]
         test = ' | '.join(f'String.IsEqual(ListItem.Property(original_language),{c})' for c in codes)
         out += f'\t<expression name="ATV_Lang_{size}">{test}</expression>\n'
-    return out
+    # the hero's info line names the language of a film not in English: "Hindi  ·  2025  ·  ..."
+    hero = '\n'.join(f'\t\t<value condition="String.IsEqual(Container(40).ListItem.Property(original_language),{code})">{name.title()}</value>'
+                     for code, name in LANGUAGES.items())
+    return out + f'\t<variable name="ATV_HeroLang">\n{hero}\n\t</variable>\n'
 
 
 TILE_WIDTH, TILE_HEIGHT, TILE_GAP = 272, 300, 20
