@@ -43,9 +43,15 @@ MATCHING = 2                  # raised when the matching rules change: older mat
 HEADERS = {'User-Agent': 'Mozilla/5.0 (ATV Minimal Kodi skin)'}
 FIELDS = ('tmdb', 'type', 'title', 'poster', 'fanart')
 SPOT = 'ATVSpot'               # Home's Spotlight: India's number one, a film one day, a show the next
-# Home's Stars You Love: whose films this house watches, Hindi and Tamil. Edit freely.
-STARS = ['Kareena Kapoor Khan', 'Shah Rukh Khan', 'Vijay', 'Rajinikanth', 'Alia Bhatt', 'Fahadh Faasil',
+# Home's Stars You Love, in order: the house's favourites, then whoever it has watched most
+# (watched_most), then other stars of what it watches. Edit freely.
+FAVOURITES = ['Denzel Washington', 'Rajinikanth', 'Nawazuddin Siddiqui', 'Irrfan Khan', 'Jake Gyllenhaal',
+              'Aamir Khan']
+STARS = ['Kareena Kapoor Khan', 'Shah Rukh Khan', 'Vijay', 'Alia Bhatt', 'Fahadh Faasil',
          'Vijay Sethupathi', 'Ranbir Kapoor', 'Deepika Padukone', 'Nayanthara']
+STAR_SLOTS = 20
+WATCHED_STARS = 6             # at most this many from the watch history
+STARS_V = 4                   # raised when the list's rules change: the weekly cache is redone
 STARS_EVERY = 7 * 86400
 MOOD = 'ATVMood'              # Browse by Mood's tiles: three posters each (extras/moods.py)
 MOODS_EVERY = 86400
@@ -200,12 +206,42 @@ def spotlight(charts):
             'genre1': genres[0] if genres else '', 'genre2': genres[1] if len(genres) > 1 else ''}
 
 
+def watched_most(known):
+    """The actors this house watches most: the top three billed of everything in its Trakt
+    history (three pages each of films and shows), anyone in at least two titles. A history
+    item carries its cast only once TMDb Helper has its details, so the rest are asked for -
+    the same request a title page's Cast & Crew makes, cached."""
+    counts, seen = {}, set()
+    for kind in ('movie', 'tv'):
+        for page in (1, 2, 3):
+            items = listing(f'info=trakt_history&tmdb_type={kind}&page={page}', ('title', 'cast', 'uniqueid'))
+            for item in items:
+                title = item.get('label')
+                if not title or title in seen:
+                    continue
+                seen.add(title)
+                names = [p.get('name') for p in (item.get('cast') or [])[:3]]
+                tmdb = (item.get('uniqueid') or {}).get('tmdb')
+                if not names and tmdb:
+                    names = [c.get('label') for c in listing(f'info=cast&tmdb_type={kind}&tmdb_id={tmdb}', ('title',))[:3]]
+                for name in names:
+                    counts[name] = counts.get(name, 0) + 1
+            if len(items) < 20:
+                break
+    lower = {name.lower() for name in known}
+    ranked = sorted((n for n, c in counts.items() if n and c >= 2 and n.lower() not in lower), key=lambda n: -counts[n])
+    log('watched most: ' + ', '.join(f'{n} {counts[n]}' for n in ranked[:WATCHED_STARS]))
+    return ranked[:WATCHED_STARS]
+
+
 def stars(state):
     """Each star's TMDb id and photo, and their newest released film, weekly."""
-    if time.time() - state.get('stars_at', 0) < STARS_EVERY and state.get('stars') and state.get('stars_v') == 2:
+    if time.time() - state.get('stars_at', 0) < STARS_EVERY and state.get('stars') and state.get('stars_v') == STARS_V:
         return state['stars']
     found = []
-    for name in STARS:
+    names = FAVOURITES + watched_most(FAVOURITES + STARS)
+    names += [n for n in STARS if n not in names]
+    for name in names[:STAR_SLOTS]:
         people = listing(f'info=search&tmdb_type=person&query={quote_plus(name)}', ('title', 'art', 'uniqueid'))
         if not people:
             continue
@@ -221,7 +257,7 @@ def stars(state):
         found.append({'id': pid, 'name': person.get('label') or name,
                       'thumb': art.get('thumb') or art.get('poster') or art.get('icon') or '', 'latest': latest})
     if found:
-        state.update(stars=found, stars_at=time.time(), stars_v=2)
+        state.update(stars=found, stars_at=time.time(), stars_v=STARS_V)
     log('stars: ' + ', '.join(f"{s['name']} ({s['latest']})" for s in found[:4]))
     return found
 

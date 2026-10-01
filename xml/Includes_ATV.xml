@@ -741,6 +741,76 @@
 							<onclick>RunScript(special://skin/extras/details.py,star,10)</onclick>
 							<visible>!String.IsEmpty(Skin.String(ATVStar.10.id))</visible>
 						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.11.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.11.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.11.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,11)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.11.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.12.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.12.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.12.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,12)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.12.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.13.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.13.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.13.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,13)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.13.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.14.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.14.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.14.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,14)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.14.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.15.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.15.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.15.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,15)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.15.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.16.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.16.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.16.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,16)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.16.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.17.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.17.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.17.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,17)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.17.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.18.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.18.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.18.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,18)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.18.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.19.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.19.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.19.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,19)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.19.id))</visible>
+						</item>
+						<item>
+							<label>$INFO[Skin.String(ATVStar.20.name)]</label>
+							<thumb>$INFO[Skin.String(ATVStar.20.thumb)]</thumb>
+							<property name="latest">$INFO[Skin.String(ATVStar.20.latest)]</property>
+							<onclick>RunScript(special://skin/extras/details.py,star,20)</onclick>
+							<visible>!String.IsEmpty(Skin.String(ATVStar.20.id))</visible>
+						</item>
 					</content>
 				</control>
 			</control>
