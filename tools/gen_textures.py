@@ -127,6 +127,7 @@ circle(f'{M}/mask_circle.png', 256)               # people / avatars
 # 9-slice fills (use border="N" so corners never stretch)
 rrect(f'{M}/rounded16.png', 64, 64, 16)           # border="16"
 rrect(f'{M}/rounded12.png', 48, 48, 12)           # border="12"
+rrect(f'{M}/rounded7.png', 28, 28, 7)             # tag chips    border="7"
 rrect(f'{M}/rounded24.png', 96, 96, 24)           # dialog panels   border="24"
 # Focus shadow (9-slice, border="64")
 shadow(f'{M}/shadow.png', 192, 40, 18, 40, 0.75)

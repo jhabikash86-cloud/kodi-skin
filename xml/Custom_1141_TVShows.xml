@@ -121,6 +121,8 @@
                     <param name="ondown" value="56" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_keywords=9672&amp;with_genres=80&amp;without_genres=99,16,10751,35,10766,10763,10767,10764,10762&amp;vote_count.gte=100&amp;sort_by=popularity.desc&amp;with_id=True&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;hide_unaired=true&amp;nextpage=false" />
+                    <param name="tag" value="TRUE STORY" />
+                    <param name="tag_l" value="true" />
                 </include>
             </control>
             <control type="group">
@@ -199,6 +201,7 @@
                     <param name="ondown" value="62" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_genres=80,18&amp;without_genres=10766,10763,10767,10764,10762,16&amp;with_original_language=en&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=300&amp;sort_by=vote_average.desc&amp;with_id=True&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;hide_unaired=true&amp;nextpage=false" />
+                    <param name="lang" value="false" />
                 </include>
             </control>
             <control type="group">
@@ -211,6 +214,7 @@
                     <param name="ondown" value="63" />
                     <param name="onback" value="7001" />
                     <param name="content" value="plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_genres=18&amp;without_genres=10766,10763,10767,10764,10762,16,35,10751,10765&amp;with_original_language=en&amp;vote_count.gte=2500&amp;sort_by=vote_average.desc&amp;with_id=True&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;hide_unaired=true&amp;nextpage=false" />
+                    <param name="lang" value="false" />
                 </include>
             </control>
             <control type="group">

@@ -88,6 +88,46 @@
 		<value>Movie$INFO[ListItem.Year,  ·  ]</value>
 	</variable>
 
+	<!-- The chips in a poster's top-left corner, Monochrome: a row's own tag (NEW, TRUE STORY)
+	     in white, else the title's language in dark glass when it is not English. A chip cannot
+	     size itself to its text in a list, so it is one of three widths (s 84, m 104, l 128),
+	     picked by the generator for a tag and by ATV_Lang_* for a language. -->
+	<include name="ATV_PosterChips">
+		<param name="tag" />
+		<param name="tag_s">false</param>
+		<param name="tag_m">false</param>
+		<param name="tag_l">false</param>
+		<param name="lang">true</param>
+		<definition>
+			<control type="group">
+				<left>28</left><top>42</top>
+				<control type="group"><visible>$PARAM[tag_s]</visible>
+					<control type="image"><width>84</width><height>32</height><texture border="7" colordiffuse="F2FFFFFF">atv/rounded7.png</texture></control>
+					<control type="label"><width>84</width><height>32</height><label>$PARAM[tag]</label><font>atv_chip</font><textcolor>FF0B0B0D</textcolor><align>center</align><aligny>center</aligny></control>
+				</control>
+				<control type="group"><visible>$PARAM[tag_m]</visible>
+					<control type="image"><width>104</width><height>32</height><texture border="7" colordiffuse="F2FFFFFF">atv/rounded7.png</texture></control>
+					<control type="label"><width>104</width><height>32</height><label>$PARAM[tag]</label><font>atv_chip</font><textcolor>FF0B0B0D</textcolor><align>center</align><aligny>center</aligny></control>
+				</control>
+				<control type="group"><visible>$PARAM[tag_l]</visible>
+					<control type="image"><width>128</width><height>32</height><texture border="7" colordiffuse="F2FFFFFF">atv/rounded7.png</texture></control>
+					<control type="label"><width>128</width><height>32</height><label>$PARAM[tag]</label><font>atv_chip</font><textcolor>FF0B0B0D</textcolor><align>center</align><aligny>center</aligny></control>
+				</control>
+				<control type="group"><visible>$PARAM[lang] + !$PARAM[tag_s] + !$PARAM[tag_m] + !$PARAM[tag_l] + $EXP[ATV_Lang_s]</visible>
+					<control type="image"><width>84</width><height>32</height><texture border="7" colordiffuse="D90B0B0D">atv/rounded7.png</texture></control>
+					<control type="label"><width>84</width><height>32</height><label>$VAR[ATV_LangChip]</label><font>atv_chip</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny></control>
+				</control>
+				<control type="group"><visible>$PARAM[lang] + !$PARAM[tag_s] + !$PARAM[tag_m] + !$PARAM[tag_l] + $EXP[ATV_Lang_m]</visible>
+					<control type="image"><width>104</width><height>32</height><texture border="7" colordiffuse="D90B0B0D">atv/rounded7.png</texture></control>
+					<control type="label"><width>104</width><height>32</height><label>$VAR[ATV_LangChip]</label><font>atv_chip</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny></control>
+				</control>
+				<control type="group"><visible>$PARAM[lang] + !$PARAM[tag_s] + !$PARAM[tag_m] + !$PARAM[tag_l] + $EXP[ATV_Lang_l]</visible>
+					<control type="image"><width>128</width><height>32</height><texture border="7" colordiffuse="D90B0B0D">atv/rounded7.png</texture></control>
+					<control type="label"><width>128</width><height>32</height><label>$VAR[ATV_LangChip]</label><font>atv_chip</font><textcolor>FFFFFFFF</textcolor><align>center</align><aligny>center</aligny></control>
+				</control>
+			</control>
+		</definition>
+	</include>
 	<include name="ATV_PosterRow">
 		<param name="id" />
 		<param name="top" />
@@ -105,6 +145,13 @@
 		<!-- Where Up goes instead when altup is true - past a row that has nothing in it -->
 		<param name="altup">false</param>
 		<param name="altupto">noop</param>
+		<!-- The row's chip (ATV_PosterChips): a tag on every poster, its width class, and
+		     whether non-English titles carry their language -->
+		<param name="tag"></param>
+		<param name="tag_s">false</param>
+		<param name="tag_m">false</param>
+		<param name="tag_l">false</param>
+		<param name="lang">true</param>
 		<definition>
 			<control type="group">
 				<top>$PARAM[top]</top>
@@ -204,6 +251,7 @@
 							<fadetime>200</fadetime>
 							<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Art(poster)]</texture>
 						</control>
+						<include content="ATV_PosterChips"><param name="tag" value="$PARAM[tag]" /><param name="tag_s" value="$PARAM[tag_s]" /><param name="tag_m" value="$PARAM[tag_m]" /><param name="tag_l" value="$PARAM[tag_l]" /><param name="lang" value="$PARAM[lang]" /></include>
 						<!-- Watched, straight from Trakt -->
 						<control type="image">
 							<left>16</left><top>30</top><width>250</width><height>375</height>
@@ -253,6 +301,7 @@
 								<fadetime>200</fadetime>
 								<texture background="true" diffuse="atv/mask_poster.png">$INFO[ListItem.Art(poster)]</texture>
 							</control>
+							<include content="ATV_PosterChips"><param name="tag" value="$PARAM[tag]" /><param name="tag_s" value="$PARAM[tag_s]" /><param name="tag_m" value="$PARAM[tag_m]" /><param name="tag_l" value="$PARAM[tag_l]" /><param name="lang" value="$PARAM[lang]" /></include>
 							<!-- A thin light edge that lifts the poster off the black -->
 							<control type="image">
 								<left>16</left><top>30</top><width>250</width><height>375</height>

@@ -226,6 +226,11 @@
 			<size>32</size>
 		</font>
 		<font>
+			<name>atv_chip</name>
+			<filename>Inter-Bold.ttf</filename>
+			<size>17</size>
+		</font>
+		<font>
 			<name>atv_pagetitle</name>
 			<filename>Inter-Bold.ttf</filename>
 			<size>54</size>
@@ -468,6 +473,11 @@
 			<name>atv_mood</name>
 			<filename>Inter-Bold.ttf</filename>
 			<size>32</size>
+		</font>
+		<font>
+			<name>atv_chip</name>
+			<filename>Inter-Bold.ttf</filename>
+			<size>17</size>
 		</font>
 		<font>
 			<name>atv_pagetitle</name>

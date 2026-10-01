@@ -18,6 +18,8 @@ Row kinds:
 """
 import os
 
+from gen_browse import chip_params
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLUGIN = 'plugin://plugin.video.themoviedb.helper/?'
 
@@ -260,7 +262,7 @@ def build_row(index, top):
                     <param name="top" value="{top}" />
                     <param name="label" value="{label}" />
                     <param name="onup" value="{onup}" />{ondown}
-                    <param name="content" value="{content}" />
+                    <param name="content" value="{content}" />{chip_params(label, content, ' ' * 20)}
                 </include>'''
 
 

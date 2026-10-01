@@ -59,6 +59,36 @@
 		<value condition="String.IsEqual(Skin.String(ATVMood),tamil)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_original_language=ta&amp;without_genres=99,16,10766,10763,10767,10764,10762&amp;first_air_date.gte=$INFO[Skin.String(ATVDate.d3650)]&amp;vote_count.gte=5&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
 		<value condition="String.IsEqual(Skin.String(ATVMood),truestories)">plugin://plugin.video.themoviedb.helper/?info=discover&amp;tmdb_type=tv&amp;with_keywords=9672&amp;without_genres=99,16,35,10766,10763,10767,10764,10762&amp;vote_count.gte=50&amp;sort_by=popularity.desc&amp;with_id=True&amp;hide_unaired=true&amp;atvslot=$INFO[Skin.String(ATVDate.slot)]&amp;nextpage=false</value>
 	</variable>
+	<variable name="ATV_LangChip">
+		<value condition="String.IsEqual(ListItem.Property(original_language),hi)">HINDI</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),ta)">TAMIL</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),te)">TELUGU</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),ml)">MALAYALAM</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),kn)">KANNADA</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),bn)">BENGALI</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),mr)">MARATHI</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),pa)">PUNJABI</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),ko)">KOREAN</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),ja)">JAPANESE</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),zh)">CHINESE</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),cn)">CHINESE</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),th)">THAI</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),es)">SPANISH</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),fr)">FRENCH</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),de)">GERMAN</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),it)">ITALIAN</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),pt)">PORTUGUESE</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),da)">DANISH</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),sv)">SWEDISH</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),no)">NORWEGIAN</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),nl)">DUTCH</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),pl)">POLISH</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),tr)">TURKISH</value>
+		<value condition="String.IsEqual(ListItem.Property(original_language),he)">HEBREW</value>
+	</variable>
+	<expression name="ATV_Lang_s">String.IsEqual(ListItem.Property(original_language),hi) | String.IsEqual(ListItem.Property(original_language),ta) | String.IsEqual(ListItem.Property(original_language),th) | String.IsEqual(ListItem.Property(original_language),nl)</expression>
+	<expression name="ATV_Lang_m">String.IsEqual(ListItem.Property(original_language),te) | String.IsEqual(ListItem.Property(original_language),kn) | String.IsEqual(ListItem.Property(original_language),bn) | String.IsEqual(ListItem.Property(original_language),mr) | String.IsEqual(ListItem.Property(original_language),pa) | String.IsEqual(ListItem.Property(original_language),ko) | String.IsEqual(ListItem.Property(original_language),zh) | String.IsEqual(ListItem.Property(original_language),cn) | String.IsEqual(ListItem.Property(original_language),es) | String.IsEqual(ListItem.Property(original_language),fr) | String.IsEqual(ListItem.Property(original_language),de) | String.IsEqual(ListItem.Property(original_language),it) | String.IsEqual(ListItem.Property(original_language),da) | String.IsEqual(ListItem.Property(original_language),sv) | String.IsEqual(ListItem.Property(original_language),pl) | String.IsEqual(ListItem.Property(original_language),tr) | String.IsEqual(ListItem.Property(original_language),he)</expression>
+	<expression name="ATV_Lang_l">String.IsEqual(ListItem.Property(original_language),ml) | String.IsEqual(ListItem.Property(original_language),ja) | String.IsEqual(ListItem.Property(original_language),pt) | String.IsEqual(ListItem.Property(original_language),no)</expression>
 	<include name="ATV_MoodRow">
 		<param name="id" />
 		<param name="top" />

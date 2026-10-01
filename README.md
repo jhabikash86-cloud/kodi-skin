@@ -300,6 +300,16 @@ mood's films and series; the page's title and both rows are variables on
 `extras/charts.py` fetches each tile's posters once a day (`ATVMood.<mood>.p1-3`). Indian series
 are held to the last ten years, or the Bollywood row led with C.I.D. (1998).
 
+## Chips on the posters
+
+A poster carries one chip in its top-left corner, Monochrome (`ATV_PosterChips`): **NEW** on the
+new-release rows and **TRUE STORY** on the true-story rows, in white; elsewhere the title's
+language in dark glass (HINDI, TAMIL, KOREAN), only when it is not English and only on rows that
+mix languages - "New in Hindi" does not say HINDI twenty times. The generators decide the tag
+from the row (`chip_params`, `tools/gen_browse.py`); the language comes from TMDb Helper's
+`original_language`. Kodi cannot size a chip to its text inside a list, so each label falls in
+one of three widths.
+
 ## Rows stay current while Kodi runs
 
 Home stays in memory, and a row fetches again only when its path changes. The date windows
